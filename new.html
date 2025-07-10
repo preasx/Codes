@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML Email Replacer</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    input, button { margin: 10px 0; padding: 10px; width: 100%; }
+  </style>
+</head>
+<body>
+  <h2>Replace Email in HTML File</h2>
+
+  <input type="file" id="fileInput" accept=".html">
+  <input type="text" id="newEmail" placeholder="Enter new email (e.g. user@example.com)">
+  <button onclick="processFile()">Replace and Download</button>
+
+  <script>
+    function processFile() {
+      const fileInput = document.getElementById('fileInput');
+      const newEmail = document.getElementById('newEmail').value;
+      const oldEmail = "kiddxxq1@gmail.com";
+
+      if (!fileInput.files.length || !newEmail) {
+        alert("Please upload a file and enter the new email.");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        let content = e.target.result;
+
+        // Replace the email
+        const updatedContent = content.replaceAll(oldEmail, newEmail);
+
+        // Create downloadable file
+        const blob = new Blob([updatedContent], { type: "text/html" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = file.name.replace(".html", "_updated.html");
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+
+      reader.readAsText(file);
+    }
+  </script>
+</body>
+</html>
