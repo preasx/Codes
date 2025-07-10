@@ -2,27 +2,232 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>HTML Email Replacer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Email Replacer Tool</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    input, button { margin: 10px 0; padding: 10px; width: 100%; }
+    :root {
+      --primary-color: #4a6fa5;
+      --secondary-color: #166088;
+      --accent-color: #4fc3f7;
+      --light-color: #f8f9fa;
+      --dark-color: #343a40;
+      --success-color: #28a745;
+      --error-color: #dc3545;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--dark-color);
+      background-color: #f5f5f5;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      width: 100%;
+      max-width: 500px;
+      margin: 2rem;
+    }
+    
+    h1 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--secondary-color);
+    }
+    
+    input, button {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+    }
+    
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    
+    button:hover {
+      background-color: var(--secondary-color);
+    }
+    
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+    
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      font-size: 100px;
+      opacity: 0;
+      right: 0;
+      top: 0;
+      cursor: pointer;
+    }
+    
+    .file-input-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem;
+      border: 1px dashed #ddd;
+      border-radius: 4px;
+      background-color: var(--light-color);
+      cursor: pointer;
+    }
+    
+    .file-name {
+      color: #666;
+      font-style: italic;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .status {
+      margin-top: 1.5rem;
+      padding: 0.75rem;
+      border-radius: 4px;
+      display: none;
+    }
+    
+    .status.success {
+      background-color: rgba(40, 167, 69, 0.1);
+      color: var(--success-color);
+      border: 1px solid var(--success-color);
+      display: block;
+    }
+    
+    .status.error {
+      background-color: rgba(220, 53, 69, 0.1);
+      color: var(--error-color);
+      border: 1px solid var(--error-color);
+      display: block;
+    }
+    
+    .info-text {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.25rem;
+    }
+    
+    .old-email {
+      background-color: #fff8e1;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-family: monospace;
+      margin: 0.5rem 0;
+    }
   </style>
 </head>
 <body>
-  <h2>Replace Email in HTML File</h2>
-
-  <input type="file" id="fileInput" accept=".html">
-  <input type="text" id="newEmail" placeholder="Enter new email (e.g. user@example.com)">
-  <button onclick="processFile()">Replace and Download</button>
+  <div class="container">
+    <h1>HTML Email Replacer</h1>
+    
+    <div class="form-group">
+      <label for="fileInput">Select HTML File</label>
+      <div class="file-input-wrapper">
+        <input type="file" id="fileInput" accept=".html,.htm">
+        <div class="file-input-label">
+          <span>Choose a file...</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+          </svg>
+        </div>
+      </div>
+      <div id="fileName" class="file-name">No file selected</div>
+    </div>
+    
+    <div class="form-group">
+      <label for="newEmail">New Email Address</label>
+      <input type="email" id="newEmail" placeholder="Enter new email (e.g. user@example.com)">
+      <p class="info-text">This will replace all instances of the old email in your HTML file.</p>
+    </div>
+    
+    <div class="form-group">
+      <label>Current Email to Replace</label>
+      <div class="old-email">kiddxxq1@gmail.com</div>
+    </div>
+    
+    <button id="processBtn" onclick="processFile()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px;">
+        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+        <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+      </svg>
+      Replace Email and Download
+    </button>
+    
+    <div id="statusMessage" class="status"></div>
+  </div>
 
   <script>
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const fileName = e.target.files.length ? e.target.files[0].name : 'No file selected';
+      document.getElementById('fileName').textContent = fileName;
+    });
+
     function processFile() {
       const fileInput = document.getElementById('fileInput');
-      const newEmail = document.getElementById('newEmail').value;
+      const newEmail = document.getElementById('newEmail').value.trim();
       const oldEmail = "kiddxxq1@gmail.com";
+      const statusMessage = document.getElementById('statusMessage');
+      
+      // Reset status message
+      statusMessage.className = 'status';
+      statusMessage.textContent = '';
 
-      if (!fileInput.files.length || !newEmail) {
-        alert("Please upload a file and enter the new email.");
+      if (!fileInput.files.length) {
+        showError("Please select an HTML file to process.");
+        return;
+      }
+
+      if (!newEmail) {
+        showError("Please enter the new email address.");
+        return;
+      }
+
+      // Simple email validation
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+        showError("Please enter a valid email address.");
         return;
       }
 
@@ -30,23 +235,53 @@
       const reader = new FileReader();
 
       reader.onload = function(e) {
-        let content = e.target.result;
+        try {
+          let content = e.target.result;
+          
+          if (!content.includes(oldEmail)) {
+            showError(`The file does not contain the email "${oldEmail}" to replace.`);
+            return;
+          }
 
-        // Replace the email
-        const updatedContent = content.replaceAll(oldEmail, newEmail);
+          // Replace the email
+          const updatedContent = content.replaceAll(oldEmail, newEmail);
 
-        // Create downloadable file
-        const blob = new Blob([updatedContent], { type: "text/html" });
-        const url = URL.createObjectURL(blob);
+          // Create downloadable file
+          const blob = new Blob([updatedContent], { type: "text/html" });
+          const url = URL.createObjectURL(blob);
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = file.name.replace(".html", "_updated.html");
-        a.click();
-        URL.revokeObjectURL(url);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = file.name.replace(/\.html?$/i, "_updated.html");
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          
+          URL.revokeObjectURL(url);
+          
+          showSuccess(`Email replaced successfully! Download started.`);
+        } catch (error) {
+          showError("An error occurred while processing the file: " + error.message);
+        }
+      };
+
+      reader.onerror = function() {
+        showError("Error reading the file. Please try again.");
       };
 
       reader.readAsText(file);
+    }
+
+    function showError(message) {
+      const statusMessage = document.getElementById('statusMessage');
+      statusMessage.className = 'status error';
+      statusMessage.textContent = message;
+    }
+
+    function showSuccess(message) {
+      const statusMessage = document.getElementById('statusMessage');
+      statusMessage.className = 'status success';
+      statusMessage.textContent = message;
     }
   </script>
 </body>
