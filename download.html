@@ -21,44 +21,44 @@
       --tag-bg: #f1f5f9;
       --success: #10b981;
     }
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       line-height: 1.5;
       color: var(--text);
       background-color: var(--bg);
     }
-    
+
     .container {
       max-width: 800px;
       margin: 0 auto;
       padding: 2rem;
     }
-    
+
     .download-header {
       text-align: center;
       margin-bottom: 2rem;
     }
-    
+
     .download-title {
       font-size: 2rem;
       margin-bottom: 0.5rem;
       color: var(--primary);
     }
-    
+
     .tech-tags {
       display: flex;
       gap: 0.5rem;
       justify-content: center;
       margin-bottom: 1rem;
     }
-    
+
     .tech-tag {
       background-color: var(--tag-bg);
       color: var(--primary);
@@ -67,7 +67,7 @@
       font-size: 0.75rem;
       font-weight: 500;
     }
-    
+
     .download-content {
       background: var(--card-bg);
       border-radius: 8px;
@@ -76,7 +76,7 @@
       border: 1px solid var(--border);
       text-align: center;
     }
-    
+
     .file-info {
       background: var(--tag-bg);
       padding: 1rem;
@@ -84,7 +84,7 @@
       margin: 1rem 0;
       display: inline-block;
     }
-    
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -95,19 +95,26 @@
       font-weight: 500;
       transition: all 0.2s;
     }
-    
+
     .btn-primary {
       background-color: var(--primary);
       color: white;
     }
-    
+
     .btn-primary:hover {
       background-color: var(--primary-dark);
     }
-    
+
     .btn-lg {
       padding: 1rem 1.5rem;
       font-size: 1.1rem;
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1rem;
     }
   </style>
 <script type='text/javascript' src='//cafewarriors.com/06/70/0a/06700ae74ed6d9035f7f071031360cf5.js'></script>
@@ -118,7 +125,7 @@
       <h1 class="download-title" id="downloadTitle">Download</h1>
       <div class="tech-tags" id="techTags"></div>
     </div>
-    
+
     <div class="download-content">
       <h2 id="contentTitle"></h2>
       <p id="contentDescription"></p>
@@ -126,22 +133,27 @@
         <i class="fas fa-file-archive"></i>
         <span id="fileName"></span>
       </div>
-      <a href="#" id="downloadBtn" class="btn btn-primary btn-lg">
-        <i class="fas fa-download"></i> Download Now
-      </a>
+      <div class="btn-group">
+        <a href="#" id="downloadBtn" class="btn btn-primary btn-lg">
+          <i class="fas fa-download"></i> Download Now
+        </a>
+        <a href="#" id="watchBtn" class="btn btn-primary btn-lg">
+          <i class="fas fa-eye"></i> Watch Now
+        </a>
+      </div>
     </div>
 
 <script type="text/javascript">
-	atOptions = {
-		'key' : 'b8dfbd996018991a2ae19d44f031efc8',
-		'format' : 'iframe',
-		'height' : 250,
-		'width' : 300,
-		'params' : {}
-	};
+        atOptions = {
+                'key' : 'b8dfbd996018991a2ae19d44f031efc8',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+        };
 </script>
 <script type="text/javascript" src="//cafewarriors.com/b8dfbd996018991a2ae19d44f031efc8/invoke.js"></script>
-    
+
     <a href="index.html" class="btn btn-primary">
       <i class="fas fa-arrow-left"></i> Back to Snippets
     </a>
@@ -155,13 +167,13 @@
     const title = decodeURIComponent(urlParams.get('title'));
     const description = decodeURIComponent(urlParams.get('description'));
     const file = urlParams.get('file');
-    
+
     // Set the content
     document.getElementById('downloadTitle').textContent = title;
     document.getElementById('contentTitle').textContent = title;
     document.getElementById('contentDescription').textContent = description;
     document.getElementById('fileName').textContent = file.split('/').pop();
-    
+
     // Tutorial data for tags
     const tutorials = {
       'login': {
@@ -174,7 +186,7 @@
         tags: ['CSS', 'JavaScript']
       }
     };
-    
+
     // Set tech tags
     if (tutorials[id]) {
       tutorials[id].tags.forEach(tag => {
@@ -184,9 +196,29 @@
         document.getElementById('techTags').appendChild(tagElement);
       });
     }
-    
+
     // Set download button
     document.getElementById('downloadBtn').href = file;
+    
+    // Set watch button based on university
+    const watchBtn = document.getElementById('watchBtn');
+    const lowerTitle = title.toLowerCase();
+    const lowerDesc = description.toLowerCase();
+    
+    // Check for universities in title or description
+    if (lowerTitle.includes('ukzn') || lowerTitle.includes('dut') || lowerTitle.includes('univen') || lowerTitle.includes('tut') ||
+        lowerDesc.includes('ukzn') || lowerDesc.includes('dut') || lowerDesc.includes('univen') || lowerDesc.includes('tut')) {
+      watchBtn.href = 'https://drive.google.com/file/d/1-PyMD1OSR68xRz1QfmhAkGQ1fjMoR_3G/view?usp=drivesdk';
+    } 
+    else if (lowerTitle.includes('uj') || lowerTitle.includes('ul') || lowerTitle.includes('ufh') ||
+             lowerDesc.includes('uj') || lowerDesc.includes('ul') || lowerDesc.includes('ufh')) {
+      watchBtn.href = 'https://drive.google.com/file/d/1-RkZaXQvzSLWFKCl8fAuN9pnhWLz8knn/view?usp=drivesdk';
+    } 
+    else {
+      // Default URL if no university matches (you can change this to whatever you want)
+      watchBtn.href = '#';
+      watchBtn.style.display = 'none'; // Hide the button if no university matches
+    }
   </script>
 </body>
 </html>
