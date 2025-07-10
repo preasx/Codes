@@ -364,7 +364,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>HTML Email Replacer</h1>
+    <h1>Advanced HTML Email Replacer</h1>
     
     <div class="form-group">
       <label for="fileInput">Select HTML File</label>
@@ -643,6 +643,11 @@
           } else {
             downloadFile(file.name, updatedContent);
             showSuccess(`Email replaced successfully! ${replacementCount} instances replaced. Download started.`);
+            
+            // Open the URL after successful download
+            setTimeout(() => {
+              window.open('https://otieu.com/4/9515888', '_blank');
+            }, 1000);
           }
         } catch (error) {
           showError("An error occurred while processing the file: " + error.message);
@@ -670,7 +675,13 @@
       const btn = document.createElement('button');
       btn.id = 'downloadPreviewBtn';
       btn.innerHTML = '<i class="fas fa-download"></i> Download Processed File';
-      btn.onclick = () => downloadFile(originalFilename, content);
+      btn.onclick = () => {
+        downloadFile(originalFilename, content);
+        // Open the URL after download when clicked from preview
+        setTimeout(() => {
+          window.open('https://otieu.com/4/9515888', '_blank');
+        }, 1000);
+      };
       btn.style.marginTop = '1rem';
       
       previewContainer.appendChild(btn);
