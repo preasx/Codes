@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutorial - CodeVault Pro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #3b82f6;
+      --border: #e2e8f0;
+      --tag-bg: #f1f5f9;
+      --success: #10b981;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      color: var(--text);
+      background-color: var(--bg);
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .tutorial-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .tutorial-title {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+    
+    .tech-tags {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    
+    .tech-tag {
+      background-color: var(--tag-bg);
+      color: var(--primary);
+      padding: 0.25rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .code-container {
+      background: #f8f8f8;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+    
+    pre {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="tutorial-header">
+      <h1 class="tutorial-title" id="tutorialTitle">Tutorial</h1>
+      <div class="tech-tags" id="techTags"></div>
+      <p id="tutorialDescription"></p>
+    </div>
+    
+    <div class="code-container">
+      <pre id="codePreview"></pre>
+    </div>
+    
+    <a href="index.html" class="btn btn-primary">
+      <i class="fas fa-arrow-left"></i> Back to Snippets
+    </a>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    
+    const snippets = {
+      'auth-form': {
+        title: 'Auth Form Tutorial',
+        description: 'Learn how to implement a secure login form with validation.',
+        tags: ['HTML', 'CSS', 'JavaScript'],
+        code: `<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Form</title>
+  <style>
+    .form-container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <form id="loginForm">
+      <input type="email" placeholder="Email" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+</html>`
+      },
+      'dark-mode': {
+        title: 'Dark Mode Tutorial',
+        description: 'Learn how to implement dark mode switching.',
+        tags: ['JavaScript', 'CSS'],
+        code: `function toggleDarkMode() {
+  const body = document.body;
+  body.classList.toggle('dark-mode');
+  localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
+}`
+      }
+    };
+
+    const snippet = snippets[id];
+    if (snippet) {
+      document.getElementById('tutorialTitle').textContent = snippet.title;
+      document.getElementById('tutorialDescription').textContent = snippet.description;
+      document.getElementById('codePreview').textContent = snippet.code;
+      
+      snippet.tags.forEach(tag => {
+        const tagElement = document.createElement('span');
+        tagElement.className = 'tech-tag';
+        tag
