@@ -135,12 +135,12 @@
     if (type === 'tutorial') {
       document.getElementById('redirectTitle').textContent = 'Preparing Tutorial';
       document.getElementById('redirectMessage').textContent = 'Your tutorial will be ready in:';
-      document.getElementById('proceedButton').innerHTML = '<i class="fas fa-play"></i> Start Tutorial Now';
+      document.getElementById('proceedButton').innerHTML = '<i class="fas fa-end"></i>_';
       document.getElementById('proceedButton').href = `tutorial.html?id=${id}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&file=${file}`;
     } else {
       document.getElementById('redirectTitle').textContent = 'Preparing Download';
       document.getElementById('redirectMessage').textContent = 'Your download will be ready in:';
-      document.getElementById('proceedButton').innerHTML = '<i class="fas fa-download"></i>_';
+      document.getElementById('proceedButton').innerHTML = '<i class="fas fa-exit"></i>_';
       document.getElementById('proceedButton').href = `download.html?id=${id}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&file=${file}`;
     }
     
