@@ -128,19 +128,6 @@
     .note-box a:hover {
       text-decoration: underline;
     }
-
-    .video-container {
-      margin: 1.5rem 0;
-      width: 100%;
-      max-width: 640px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    video {
-      width: 100%;
-      border-radius: 8px;
-    }
   </style>
 </head>
 <body>
@@ -161,14 +148,8 @@
       <p id="contentDescription"></p>
       <div id="tutorialSteps"></div>
 
-      <div class="video-container" id="localVideoContainer" style="display: none;">
-        <video controls id="localVideoPlayer">
-          Your browser does not support the video tag.
-        </video>
-      </div>
-
       <a href="#" id="watchTutorial" class="btn btn-primary" target="_blank">
-        <i class="fas fa-play"></i>Video Tutorial
+        <i class="fas fa-play"></i> Watch Video Tutorial
       </a>
       <a href="https://www.dtech24.co.za" id="downloadFiles" class="btn btn-outline" target="_blank">
         <i class="fas fa-download"></i> Download Files
@@ -197,7 +178,6 @@
     const id = urlParams.get('id');
     const title = decodeURIComponent(urlParams.get('title'));
     const description = decodeURIComponent(urlParams.get('description'));
-    const file = urlParams.get('file');
 
     // Set the content
     document.getElementById('tutorialTitle').textContent = title;
@@ -234,8 +214,7 @@
             <li>Integrate the code into your project</li>
             <li>Customize the styling as needed</li>
           </ol>
-        `,
-        videoUrl: getVideoUrl()
+        `
       },
       'modal': {
         tags: ['HTML', 'CSS', 'JavaScript'],
@@ -253,8 +232,7 @@
             <li>Copy the HTML structure</li>
             <li>Initialize the modal with JavaScript</li>
           </ol>
-        `,
-        videoUrl: getVideoUrl()
+        `
       },
       'darkmode': {
         tags: ['CSS', 'JavaScript'],
@@ -272,8 +250,7 @@
             <li>Customize the toggle button</li>
             <li>Extend to support multiple themes</li>
           </ul>
-        `,
-        videoUrl: getVideoUrl()
+        `
       }
     };
 
@@ -292,27 +269,8 @@
       // Set tutorial steps
       document.getElementById('tutorialSteps').innerHTML = tutorial.steps;
 
-      // Try to play local video first
-      if (file) {
-        const videoName = file.replace('.zip', '.mp4');
-        const videoPlayer = document.getElementById('localVideoPlayer');
-        videoPlayer.src = videoName;
-
-        videoPlayer.onerror = function() {
-          // If local video fails, fall back to the appropriate Google Drive link
-          document.getElementById('localVideoContainer').style.display = 'none';
-          document.getElementById('watchTutorial').href = tutorial.videoUrl;
-        };
-
-        videoPlayer.oncanplay = function() {
-          // If local video is available, show the player and hide the watch button
-          document.getElementById('localVideoContainer').style.display = 'block';
-          document.getElementById('watchTutorial').style.display = 'none';
-        };
-      } else {
-        // If no file parameter, use the appropriate Google Drive link
-        document.getElementById('watchTutorial').href = tutorial.videoUrl;
-      }
+      // Set the watch tutorial button URL
+      document.getElementById('watchTutorial').href = getVideoUrl();
     }
 
     // Always set download link to dtech24.co.za
