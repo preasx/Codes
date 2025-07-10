@@ -140,12 +140,12 @@
     } else {
       document.getElementById('redirectTitle').textContent = 'Preparing Download';
       document.getElementById('redirectMessage').textContent = 'Your download will be ready in:';
-      document.getElementById('proceedButton').innerHTML = '<i class="fas fa-download"></i> Download Now';
+      document.getElementById('proceedButton').innerHTML = '<i class="fas fa-download"></i>_';
       document.getElementById('proceedButton').href = `download.html?id=${id}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&file=${file}`;
     }
     
     // Start countdown
-    let seconds = 10;
+    let seconds = 12;
     const countdown = setInterval(() => {
       seconds--;
       document.getElementById('countdown').textContent = seconds;
