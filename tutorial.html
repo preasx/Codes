@@ -160,13 +160,13 @@
       <h2 id="contentTitle"></h2>
       <p id="contentDescription"></p>
       <div id="tutorialSteps"></div>
-      
+
       <div class="video-container" id="localVideoContainer" style="display: none;">
         <video controls id="localVideoPlayer">
           Your browser does not support the video tag.
         </video>
       </div>
-      
+
       <a href="#" id="watchTutorial" class="btn btn-primary" target="_blank">
         <i class="fas fa-play"></i> Watch Video Tutorial
       </a>
@@ -175,13 +175,13 @@
       </a>
     </div>
 <script type="text/javascript">
-	atOptions = {
-		'key' : 'b8dfbd996018991a2ae19d44f031efc8',
-		'format' : 'iframe',
-		'height' : 250,
-		'width' : 300,
-		'params' : {}
-	};
+        atOptions = {
+                'key' : 'b8dfbd996018991a2ae19d44f031efc8',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+        };
 </script>
 <script type="text/javascript" src="//cafewarriors.com/b8dfbd996018991a2ae19d44f031efc8/invoke.js"></script>
 
@@ -204,6 +204,23 @@
     document.getElementById('contentTitle').textContent = `${title} Tutorial`;
     document.getElementById('contentDescription').textContent = description;
 
+    // Determine which Google Drive URL to use based on the passed down info
+    function getVideoUrl() {
+      const lowerTitle = title.toLowerCase();
+      const lowerDesc = description.toLowerCase();
+      
+      // Check for ukzn, dut, univen or tut
+      if (/ukzn|dut|univen|tut/.test(lowerTitle) || /ukzn|dut|univen|tut/.test(lowerDesc)) {
+        return 'https://drive.google.com/file/d/1-PyMD1OSR68xRz1QfmhAkGQ1fjMoR_3G/view?usp=drivesdk';
+      }
+      // Check for UJ, UL or UFH
+      else if (/uj|ul|ufh/.test(lowerTitle) || /uj|ul|ufh/.test(lowerDesc)) {
+        return 'https://drive.google.com/file/d/1-RkZaXQvzSLWFKCl8fAuN9pnhWLz8knn/view?usp=drivesdk';
+      }
+      // Default URL if none of the above
+      return '#';
+    }
+
     // Tutorial data
     const tutorials = {
       'login': {
@@ -218,7 +235,7 @@
             <li>Customize the styling as needed</li>
           </ol>
         `,
-        videoUrl: 'https://youtube.com/watch?v=login-tutorial'
+        videoUrl: getVideoUrl()
       },
       'modal': {
         tags: ['HTML', 'CSS', 'JavaScript'],
@@ -237,7 +254,7 @@
             <li>Initialize the modal with JavaScript</li>
           </ol>
         `,
-        videoUrl: 'https://youtube.com/watch?v=modal-tutorial'
+        videoUrl: getVideoUrl()
       },
       'darkmode': {
         tags: ['CSS', 'JavaScript'],
@@ -256,7 +273,7 @@
             <li>Extend to support multiple themes</li>
           </ul>
         `,
-        videoUrl: 'https://youtube.com/watch?v=darkmode-tutorial'
+        videoUrl: getVideoUrl()
       }
     };
 
@@ -280,20 +297,20 @@
         const videoName = file.replace('.zip', '.mp4');
         const videoPlayer = document.getElementById('localVideoPlayer');
         videoPlayer.src = videoName;
-        
+
         videoPlayer.onerror = function() {
-          // If local video fails, fall back to YouTube link
+          // If local video fails, fall back to the appropriate Google Drive link
           document.getElementById('localVideoContainer').style.display = 'none';
           document.getElementById('watchTutorial').href = tutorial.videoUrl;
         };
-        
+
         videoPlayer.oncanplay = function() {
-          // If local video is available, show the player and hide the YouTube link
+          // If local video is available, show the player and hide the watch button
           document.getElementById('localVideoContainer').style.display = 'block';
           document.getElementById('watchTutorial').style.display = 'none';
         };
       } else {
-        // If no file parameter, use YouTube link
+        // If no file parameter, use the appropriate Google Drive link
         document.getElementById('watchTutorial').href = tutorial.videoUrl;
       }
     }
