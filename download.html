@@ -66,20 +66,21 @@
       font-weight: 500;
     }
     
-    .code-container {
-      background: #f8f8f8;
-      border: 1px solid var(--border);
+    .download-content {
+      background: var(--card-bg);
       border-radius: 8px;
       padding: 1.5rem;
       margin-bottom: 2rem;
-      overflow-x: auto;
+      border: 1px solid var(--border);
+      text-align: center;
     }
     
-    pre {
-      margin: 0;
-      font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
-      line-height: 1.5;
+    .file-info {
+      background: var(--tag-bg);
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      display: inline-block;
     }
     
     .btn {
@@ -101,25 +102,33 @@
     .btn-primary:hover {
       background-color: var(--primary-dark);
     }
+    
+    .btn-lg {
+      padding: 1rem 1.5rem;
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="download-header">
-      <h1 class="download-title" id="downloadTitle">Download Code</h1>
+      <h1 class="download-title" id="downloadTitle">Download</h1>
       <div class="tech-tags" id="techTags"></div>
-      <p id="downloadDescription"></p>
     </div>
     
-    <div class="code-container">
-      <pre id="codePreview"></pre>
+    <div class="download-content">
+      <h2 id="contentTitle"></h2>
+      <p id="contentDescription"></p>
+      <div class="file-info">
+        <i class="fas fa-file-archive"></i>
+        <span id="fileName"></span>
+      </div>
+      <a href="#" id="downloadBtn" class="btn btn-primary btn-lg">
+        <i class="fas fa-download"></i> Download Now
+      </a>
     </div>
     
-    <button id="downloadBtn" class="btn btn-primary">
-      <i class="fas fa-download"></i> Download Now
-    </button>
-    
-    <a href="index.html" class="btn">
+    <a href="index.html" class="btn btn-primary">
       <i class="fas fa-arrow-left"></i> Back to Snippets
     </a>
   </div>
@@ -127,51 +136,41 @@
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
+    const title = decodeURIComponent(urlParams.get('title'));
+    const description = decodeURIComponent(urlParams.get('description'));
+    const file = urlParams.get('file');
     
-    const snippets = {
-      'auth-form': {
-        title: 'Auth Form Code',
-        description: 'Download this secure login form with validation.',
-        tags: ['HTML', 'CSS', 'JavaScript'],
-        code: `<!DOCTYPE html>\n<html>\n<head>\n  <title>Login Form</title>\n</head>\n<body>\n  <!-- Form HTML -->\n</body>\n</html>`,
-        filename: 'auth-form.html'
+    // Set the content
+    document.getElementById('downloadTitle').textContent = title;
+    document.getElementById('contentTitle').textContent = title;
+    document.getElementById('contentDescription').textContent = description;
+    document.getElementById('fileName').textContent = file.split('/').pop();
+    
+    // Tutorial data for tags
+    const tutorials = {
+      'login': {
+        tags: ['HTML', 'CSS', 'JavaScript']
       },
-      'dark-mode': {
-        title: 'Dark Mode Code',
-        description: 'Download this dark mode toggle implementation.',
-        tags: ['JavaScript'],
-        code: `function toggleDarkMode() {\n  // Toggle logic here\n}`,
-        filename: 'dark-mode.js'
+      'modal': {
+        tags: ['HTML', 'CSS', 'JavaScript']
+      },
+      'darkmode': {
+        tags: ['CSS', 'JavaScript']
       }
     };
-
-    const snippet = snippets[id];
-    if (snippet) {
-      document.getElementById('downloadTitle').textContent = snippet.title;
-      document.getElementById('downloadDescription').textContent = snippet.description;
-      document.getElementById('codePreview').textContent = snippet.code;
-      
-      snippet.tags.forEach(tag => {
+    
+    // Set tech tags
+    if (tutorials[id]) {
+      tutorials[id].tags.forEach(tag => {
         const tagElement = document.createElement('span');
         tagElement.className = 'tech-tag';
         tagElement.textContent = tag;
         document.getElementById('techTags').appendChild(tagElement);
       });
-
-      document.getElementById('downloadBtn').addEventListener('click', () => {
-        const blob = new Blob([snippet.code], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = snippet.filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      });
-    } else {
-      document.getElementById('downloadTitle').textContent = 'Download Not Found';
     }
+    
+    // Set download button
+    document.getElementById('downloadBtn').href = file;
   </script>
 </body>
 </html>
