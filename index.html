@@ -1,188 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="monetag" content="3158bf2947fe46331812ab7634bfbee9">
-<script src="https://fpyf8.com/88/tag.min.js" data-zone="156441" async data-cfasync="false"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CodeVault | Dev Resources</title>
+  <title>CodeVault Pro</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --black: #0a0a0a;
-      --dark: #121212;
-      --blue: #2563eb;
-      --blue-dark: #1e40af;
-      --blue-light: #3b82f6;
-      --gray: #6b7280;
-      --light: #f9fafb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #3b82f6;
+      --border: #e2e8f0;
+      --tag-bg: #f1f5f9;
+      --success: #10b981;
     }
-
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      line-height: 1.6;
-      color: var(--light);
-      background-color: var(--black);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      color: var(--text);
+      background-color: var(--bg);
     }
-
+    
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 2rem;
+      padding: 0 1.5rem;
     }
-
-    /* Header */
+    
     header {
-      background-color: var(--dark);
-      padding: 1.5rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background-color: var(--card-bg);
+      padding: 1rem 0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
-
+    
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-
+    
     .logo {
       font-size: 1.5rem;
       font-weight: 700;
-      color: var(--blue-light);
+      color: var(--primary);
     }
-
-    /* Main Content */
+    
     .hero {
-      padding: 4rem 0;
+      padding: 3rem 0 2rem;
       text-align: center;
-      background: linear-gradient(to bottom, var(--black), var(--dark));
     }
-
+    
     .hero h1 {
       font-size: 2.5rem;
       margin-bottom: 1rem;
-      background: linear-gradient(to right, var(--blue), var(--blue-light));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+      color: var(--text);
     }
-
+    
     .hero p {
-      color: var(--gray);
+      color: var(--text-light);
       max-width: 700px;
-      margin: 0 auto 2rem;
+      margin: 0 auto 1.5rem;
     }
-
-    /* Search */
+    
     .search-container {
       max-width: 600px;
-      margin: 0 auto 3rem;
+      margin: 0 auto 2rem;
     }
-
+    
     .search-bar {
       display: flex;
       width: 100%;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
-
+    
+    .search-bar:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
     .search-bar input {
       flex: 1;
-      padding: 1rem;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: white;
+      padding: 0.8rem 1rem;
+      border: none;
       font-size: 1rem;
-      border-radius: 6px 0 0 6px;
     }
-
+    
     .search-bar input:focus {
       outline: none;
-      border-color: var(--blue);
     }
-
+    
     .search-bar button {
-      background-color: var(--blue);
+      background-color: var(--primary);
       color: white;
       border: none;
       padding: 0 1.5rem;
-      border-radius: 0 6px 6px 0;
       cursor: pointer;
       transition: background 0.2s;
     }
-
+    
     .search-bar button:hover {
-      background-color: var(--blue-dark);
+      background-color: var(--primary-dark);
     }
-
-    /* Snippets Grid */
+    
     .snippets-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.5rem;
-      padding: 2rem 0;
+      padding: 1rem 0 3rem;
     }
-
+    
     .snippet-card {
-      background: var(--dark);
+      background: var(--card-bg);
       border-radius: 8px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: transform 0.2s;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
     }
-
+    
     .snippet-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--blue);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      border-color: var(--primary);
     }
-
+    
     .card-header {
-      padding: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1.25rem 1.25rem 0;
     }
-
+    
     .card-header h3 {
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
-      color: white;
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      color: var(--text);
     }
-
+    
     .tech-stack {
       display: flex;
       gap: 0.5rem;
       margin-bottom: 1rem;
+      flex-wrap: wrap;
     }
-
+    
     .tech-tag {
-      background-color: rgba(37, 99, 235, 0.2);
-      color: var(--blue-light);
+      background-color: var(--tag-bg);
+      color: var(--primary);
       padding: 0.25rem 0.75rem;
-      border-radius: 50px;
+      border-radius: 6px;
       font-size: 0.75rem;
       font-weight: 500;
     }
-
+    
     .card-body {
-      padding: 1.5rem;
+      padding: 0 1.25rem 1.25rem;
     }
-
+    
     .card-body p {
-      color: var(--gray);
-      margin-bottom: 1.5rem;
+      color: var(--text-light);
+      font-size: 0.9rem;
     }
-
+    
     .card-footer {
-      padding: 1rem 1.5rem;
-      background-color: rgba(0, 0, 0, 0.3);
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-
-    /* Buttons */
+    
     .btn {
       display: inline-flex;
       align-items: center;
@@ -194,71 +193,63 @@
       font-size: 0.875rem;
       transition: all 0.2s;
     }
-
+    
     .btn-primary {
-      background-color: var(--blue);
+      background-color: var(--primary);
       color: white;
     }
-
+    
     .btn-primary:hover {
-      background-color: var(--blue-dark);
+      background-color: var(--primary-dark);
     }
-
+    
     .btn-outline {
       background: transparent;
-      color: var(--blue);
-      border: 1px solid var(--blue);
+      color: var(--primary);
+      border: 1px solid var(--primary);
     }
-
+    
     .btn-outline:hover {
-      background-color: rgba(37, 99, 235, 0.1);
+      background-color: rgba(37, 99, 235, 0.05);
     }
-
+    
     .favorite-btn {
       background: none;
       border: none;
-      color: var(--gray);
+      color: var(--text-light);
       cursor: pointer;
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       transition: color 0.2s;
     }
-
+    
     .favorite-btn:hover, .favorite-btn.active {
-      color: var(--blue);
+      color: var(--success);
     }
-
-    /* No Results */
+    
     .no-results {
       grid-column: 1 / -1;
       text-align: center;
-      padding: 3rem;
-      color: var(--gray);
+      padding: 2rem;
+      color: var(--text-light);
     }
-
-    /* Footer */
+    
     footer {
-      background-color: var(--dark);
-      padding: 2rem 0;
-      margin-top: 3rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .footer-content {
-      display: flex;
-      justify-content: center;
-    }
-
-    .copyright {
+      background-color: var(--card-bg);
+      padding: 1.5rem 0;
+      border-top: 1px solid var(--border);
       text-align: center;
-      color: var(--gray);
+    }
+    
+    .copyright {
+      color: var(--text-light);
       font-size: 0.875rem;
     }
-
+    
     @media (max-width: 768px) {
       .hero h1 {
         font-size: 2rem;
       }
-
+      
       .snippets-grid {
         grid-template-columns: 1fr;
       }
@@ -269,17 +260,17 @@
   <header>
     <div class="container">
       <nav>
-        <div class="logo">CodeVault</div>
+        <div class="logo">CodeVault Pro</div>
       </nav>
     </div>
   </header>
-
+  
   <main>
     <section class="hero">
       <div class="container">
-        <h1>Essential Code Snippets</h1>
-        <p>Curated collection of production-ready components for modern developers</p>
-
+        <h1>Developer Code Snippets</h1>
+        <p>Ready-to-use components to speed up your development workflow</p>
+        
         <div class="search-container">
           <div class="search-bar">
             <input type="text" id="searchInput" placeholder="Search snippets...">
@@ -290,159 +281,131 @@
         </div>
       </div>
     </section>
-
+    
     <div class="container">
       <div class="snippets-grid" id="snippetsContainer">
         <!-- Snippet cards will be dynamically inserted here -->
       </div>
     </div>
   </main>
-
+  
   <footer>
     <div class="container">
-      <div class="footer-content">
-        <div class="copyright">
-          <p>&copy; 2023 CodeVault. All rights reserved.</p>
-        </div>
+      <div class="copyright">
+        <p>&copy; 2023 CodeVault Pro. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
   <script>
-    // Sample data for snippets
     const snippets = [
       {
-        id: 'login-form',
-        title: 'Secure Login Form',
-        description: 'Authentication form with validation and error handling.',
-        tags: ['HTML', 'CSS', 'JS'],
-        tutorialUrl: '#',
-        downloadUrl: '#'
+        id: 'auth-form',
+        title: 'Auth Form',
+        description: 'Secure login form with validation and error handling.',
+        tags: ['React', 'CSS', 'Validation'],
+        tutorialUrl: 'redirect.html?type=tutorial&id=auth-form',
+        downloadUrl: 'redirect.html?type=download&id=auth-form',
+        code: `<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Form</title>
+  <style>
+    .form-container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <form id="loginForm">
+      <input type="email" placeholder="Email" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+</html>`
       },
       {
         id: 'dark-mode',
         title: 'Dark Mode Toggle',
         description: 'System-aware dark/light mode switcher with localStorage.',
-        tags: ['CSS', 'JavaScript'],
-        tutorialUrl: '#',
-        downloadUrl: '#'
-      },
-      {
-        id: 'modal',
-        title: 'Accessible Modal',
-        description: 'WCAG-compliant modal dialog with focus management.',
-        tags: ['HTML', 'CSS', 'JS'],
-        tutorialUrl: '#',
-        downloadUrl: '#'
-      },
-      {
-        id: 'table',
-        title: 'Sortable Table',
-        description: 'Data table with column sorting and pagination.',
-        tags: ['JavaScript'],
-        tutorialUrl: '#',
-        downloadUrl: '#'
-      },
-      {
-        id: 'carousel',
-        title: 'Image Carousel',
-        description: 'Touch-friendly image slider with smooth transitions.',
-        tags: ['CSS', 'JavaScript'],
-        tutorialUrl: '#',
-        downloadUrl: '#'
-      },
-      {
-        id: 'validation',
-        title: 'Form Validation',
-        description: 'Client-side validation with custom error messages.',
-        tags: ['JavaScript'],
-        tutorialUrl: '#',
-        downloadUrl: '#'
+        tags: ['JavaScript', 'CSS'],
+        tutorialUrl: 'redirect.html?type=tutorial&id=dark-mode',
+        downloadUrl: 'redirect.html?type=download&id=dark-mode',
+        code: `function toggleDarkMode() {
+  const body = document.body;
+  body.classList.toggle('dark-mode');
+  localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
+}`
       }
     ];
 
-    // DOM elements
     const snippetsContainer = document.getElementById('snippetsContainer');
     const searchInput = document.getElementById('searchInput');
     const searchButton = document.getElementById('searchButton');
 
-    // Render all snippets initially
     renderSnippets(snippets);
 
-    // Search functionality
     searchInput.addEventListener('input', () => filterSnippets());
     searchButton.addEventListener('click', () => filterSnippets());
 
     function filterSnippets() {
       const searchTerm = searchInput.value.toLowerCase();
-      if (searchTerm.trim() === '') {
-        renderSnippets(snippets);
-        return;
-      }
-
-      const filtered = snippets.filter(snippet => 
-        snippet.title.toLowerCase().includes(searchTerm) ||
-        snippet.description.toLowerCase().includes(searchTerm) ||
-        snippet.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-      );
-
+      const filtered = searchTerm.trim() === '' 
+        ? snippets 
+        : snippets.filter(snippet => 
+            snippet.title.toLowerCase().includes(searchTerm) ||
+            snippet.description.toLowerCase().includes(searchTerm) ||
+            snippet.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+          );
       renderSnippets(filtered);
     }
 
     function renderSnippets(snippetsToRender) {
-      snippetsContainer.innerHTML = '';
-
-      if (snippetsToRender.length === 0) {
-        snippetsContainer.innerHTML = `
+      snippetsContainer.innerHTML = snippetsToRender.length === 0
+        ? `
           <div class="no-results">
-            <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+            <i class="fas fa-search" style="margin-bottom: 1rem; font-size: 1.5rem;"></i>
             <h3>No snippets found</h3>
             <p>Try a different search term</p>
           </div>
-        `;
-        return;
-      }
-
-      snippetsToRender.forEach(snippet => {
-        const card = document.createElement('div');
-        card.className = 'snippet-card';
-        card.innerHTML = `
-          <div class="card-header">
-            <h3>${snippet.title}</h3>
-            <div class="tech-stack">
-              ${snippet.tags.map(tag => `<span class="tech-tag">${tag}</span>`).join('')}
+        `
+        : snippetsToRender.map(snippet => `
+          <div class="snippet-card">
+            <div class="card-header">
+              <h3>${snippet.title}</h3>
+              <div class="tech-stack">
+                ${snippet.tags.map(tag => `<span class="tech-tag">${tag}</span>`).join('')}
+              </div>
+            </div>
+            <div class="card-body">
+              <p>${snippet.description}</p>
+            </div>
+            <div class="card-footer">
+              <div class="actions">
+                <a href="${snippet.tutorialUrl}" class="btn btn-primary">
+                  <i class="fas fa-play"></i> View Tutorial
+                </a>
+                <a href="${snippet.downloadUrl}" class="btn btn-outline">
+                  <i class="fas fa-download"></i> Download
+                </a>
+              </div>
+              <button class="favorite-btn" aria-label="Add to favorites">
+                <i class="far fa-heart"></i>
+              </button>
             </div>
           </div>
-          <div class="card-body">
-            <p>${snippet.description}</p>
-          </div>
-          <div class="card-footer">
-            <div class="actions">
-              <a href="${snippet.tutorialUrl}" class="btn btn-primary">
-                <i class="fas fa-play"></i> Tutorial
-              </a>
-              <a href="${snippet.downloadUrl}" download class="btn btn-outline">
-                <i class="fas fa-download"></i> Code
-              </a>
-            </div>
-            <button class="favorite-btn" aria-label="Add to favorites">
-              <i class="far fa-heart"></i>
-            </button>
-          </div>
-        `;
-        snippetsContainer.appendChild(card);
-      });
+        `).join('');
 
-      // Reattach favorite button event listeners
       document.querySelectorAll('.favorite-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-          this.classList.toggle('active');
           const icon = this.querySelector('i');
-          if (this.classList.contains('active')) {
-            icon.classList.replace('far', 'fas');
-          } else {
-            icon.classList.replace('fas', 'far');
-          }
+          icon.classList.toggle('far');
+          icon.classList.toggle('fas');
         });
       });
     }
