@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecting - CodeVault Pro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #3b82f6;
+      --border: #e2e8f0;
+      --tag-bg: #f1f5f9;
+      --success: #10b981;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      color: var(--text);
+      background-color: var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    
+    .redirect-container {
+      max-width: 600px;
+      padding: 2rem;
+      background: var(--card-bg);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    
+    .countdown {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin: 2rem 0;
+    }
+    
+    .code-preview {
+      background: #f8f8f8;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      text-align: left;
+      font-family: monospace;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 2rem;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="redirect-container">
+    <h1 id="redirectTitle">Preparing Your Content</h1>
+    <p id="redirectMessage">Please wait while we prepare your content...</p>
+    <div class="countdown" id="countdown">10</div>
+    <div class="code-preview" id="codePreview"></div>
+    <a href="#" class="btn btn-primary hidden" id="proceedButton">
+      <i class="fas fa-arrow-right"></i> Proceed
+    </a>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type');
+    const id = urlParams.get('id');
+    
+    const snippets = {
+      'auth-form': {
+        title: 'Auth Form',
+        code: `<!DOCTYPE html>\n<html>\n<head>\n  <title>Login Form</title>\n</head>\n<body>\n  <!-- Form HTML -->\n</body>\n</html>`,
+        tutorialUrl: 'tutorial.html?id=auth-form',
+        downloadUrl: 'download.html?id=auth-form'
+      },
+      'dark-mode': {
+        title: 'Dark Mode Toggle',
+        code: `function toggleDarkMode() {\n  // Toggle logic here\n}`,
+        tutorialUrl: 'tutorial.html?id=dark-mode',
+        downloadUrl: 'download.html?id=dark-mode'
+      }
+    };
+
+    const snippet = snippets[id];
+    if (snippet) {
+      document.getElementById('codePreview').textContent = snippet.code;
+      
+      if (type === 'tutorial') {
+        document.getElementById('redirectTitle').textContent = 'Preparing Tutorial';
+        document.getElementById('redirectMessage').textContent = 'Your tutorial will be ready in:';
+        document.getElementById('proceedButton').innerHTML = '<i class="fas fa-play"></i> Start Tutorial';
+        document.getElementById('proceedButton').href = snippet.tutorialUrl;
+      } else {
+        document.getElementById('redirectTitle').textContent = 'Preparing Download';
+        document.getElementById('redirectMessage').textContent = 'Your download will be ready in:';
+        document.getElementById('proceedButton').innerHTML = '<i class="fas fa-download"></i> Download Now';
+        document.getElementById('proceedButton').href = snippet.downloadUrl;
+      }
+
+      let seconds = 10;
+      const countdown = setInterval(() => {
+        seconds--;
+        document.getElementById('countdown').textContent = seconds;
+        
+        if (seconds <= 0) {
+          clearInterval(countdown);
+          document.getElementById('countdown').classList.add('hidden');
+          document.getElementById('proceedButton').classList.remove('hidden');
+        }
+      }, 1000);
+    } else {
+      document.getElementById('redirectTitle').textContent = 'Error';
+      document.getElementById('redirectMessage').textContent = 'Content not found';
+      document.getElementById('countdown').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
