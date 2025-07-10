@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tutorial - CodeVault Pro</title>
+  <title>Redirecting - CodeVault Pro</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -31,47 +31,39 @@
       line-height: 1.5;
       color: var(--text);
       background-color: var(--bg);
-    }
-    
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-    
-    .tutorial-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    
-    .tutorial-title {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      color: var(--primary);
-    }
-    
-    .tech-tags {
       display: flex;
-      gap: 0.5rem;
       justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    
+    .redirect-container {
+      max-width: 600px;
+      padding: 2rem;
+      background: var(--card-bg);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1 {
+      color: var(--primary);
       margin-bottom: 1rem;
     }
     
-    .tech-tag {
-      background-color: var(--tag-bg);
-      color: var(--primary);
-      padding: 0.25rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 500;
+    .snippet-info {
+      background: var(--tag-bg);
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      text-align: left;
     }
     
-    .tutorial-content {
-      background: var(--card-bg);
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      border: 1px solid var(--border);
+    .countdown {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin: 2rem 0;
     }
     
     .btn {
@@ -93,121 +85,69 @@
     .btn-primary:hover {
       background-color: var(--primary-dark);
     }
+    
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="tutorial-header">
-      <h1 class="tutorial-title" id="tutorialTitle">Tutorial</h1>
-      <div class="tech-tags" id="techTags"></div>
+  <div class="redirect-container">
+    <h1 id="redirectTitle">Preparing Content</h1>
+    <div class="snippet-info">
+      <h3 id="snippetTitle"></h3>
+      <p id="snippetDescription"></p>
     </div>
-    
-    <div class="tutorial-content">
-      <h2 id="contentTitle"></h2>
-      <p id="contentDescription"></p>
-      <div id="tutorialSteps"></div>
-      <a href="#" id="watchTutorial" class="btn btn-primary" target="_blank">
-        <i class="fas fa-play"></i> Watch Video Tutorial
-      </a>
-      <a href="#" id="downloadFiles" class="btn btn-outline">
-        <i class="fas fa-download"></i> Download Files
-      </a>
-    </div>
-    
-    <a href="index.html" class="btn btn-primary">
-      <i class="fas fa-arrow-left"></i> Back to Snippets
+    <p id="redirectMessage">Please wait while we prepare your content...</p>
+    <div class="countdown" id="countdown">10</div>
+    <a href="#" class="btn btn-primary hidden" id="proceedButton">
+      <i class="fas fa-arrow-right"></i> Proceed Now
     </a>
   </div>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type');
     const id = urlParams.get('id');
     const title = decodeURIComponent(urlParams.get('title'));
     const description = decodeURIComponent(urlParams.get('description'));
     const file = urlParams.get('file');
     
-    // Set the content
-    document.getElementById('tutorialTitle').textContent = title;
-    document.getElementById('contentTitle').textContent = `${title} Tutorial`;
-    document.getElementById('contentDescription').textContent = description;
+    // Set the snippet info
+    document.getElementById('snippetTitle').textContent = title;
+    document.getElementById('snippetDescription').textContent = description;
     
-    // Tutorial data
-    const tutorials = {
-      'login': {
-        tags: ['HTML', 'CSS', 'JavaScript'],
-        steps: `
-          <h3>Implementation Steps:</h3>
-          <ol>
-            <li>Download the ZIP file containing all necessary files</li>
-            <li>Extract the contents to your project folder</li>
-            <li>Open index.html in your browser to see it in action</li>
-            <li>Integrate the code into your project</li>
-            <li>Customize the styling as needed</li>
-          </ol>
-        `,
-        videoUrl: 'https://youtube.com/watch?v=login-tutorial'
-      },
-      'modal': {
-        tags: ['HTML', 'CSS', 'JavaScript'],
-        steps: `
-          <h3>Key Features:</h3>
-          <ul>
-            <li>Accessible modal dialog</li>
-            <li>Smooth animations</li>
-            <li>Focus management</li>
-            <li>Easy to customize</li>
-          </ul>
-          <h3>Usage Instructions:</h3>
-          <ol>
-            <li>Include the CSS and JS files in your project</li>
-            <li>Copy the HTML structure</li>
-            <li>Initialize the modal with JavaScript</li>
-          </ol>
-        `,
-        videoUrl: 'https://youtube.com/watch?v=modal-tutorial'
-      },
-      'darkmode': {
-        tags: ['CSS', 'JavaScript'],
-        steps: `
-          <h3>Implementation Guide:</h3>
-          <ol>
-            <li>Add the CSS variables for theming</li>
-            <li>Include the toggle button in your HTML</li>
-            <li>Add the JavaScript event listeners</li>
-            <li>Test the color scheme preference detection</li>
-          </ol>
-          <h3>Advanced Customization:</h3>
-          <ul>
-            <li>Add transition effects</li>
-            <li>Customize the toggle button</li>
-            <li>Extend to support multiple themes</li>
-          </ul>
-        `,
-        videoUrl: 'https://youtube.com/watch?v=darkmode-tutorial'
-      }
-    };
-    
-    // Set tutorial-specific content
-    if (tutorials[id]) {
-      const tutorial = tutorials[id];
-      
-      // Add tech tags
-      tutorial.tags.forEach(tag => {
-        const tagElement = document.createElement('span');
-        tagElement.className = 'tech-tag';
-        tagElement.textContent = tag;
-        document.getElementById('techTags').appendChild(tagElement);
-      });
-      
-      // Set tutorial steps
-      document.getElementById('tutorialSteps').innerHTML = tutorial.steps;
-      
-      // Set video tutorial link
-      document.getElementById('watchTutorial').href = tutorial.videoUrl;
-      
-      // Set download link
-      document.getElementById('downloadFiles').href = file;
+    if (type === 'tutorial') {
+      document.getElementById('redirectTitle').textContent = 'Preparing Tutorial';
+      document.getElementById('redirectMessage').textContent = 'Your tutorial will be ready in:';
+      document.getElementById('proceedButton').innerHTML = '<i class="fas fa-play"></i> Start Tutorial Now';
+      document.getElementById('proceedButton').href = `tutorial.html?id=${id}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&file=${file}`;
+    } else {
+      document.getElementById('redirectTitle').textContent = 'Preparing Download';
+      document.getElementById('redirectMessage').textContent = 'Your download will be ready in:';
+      document.getElementById('proceedButton').innerHTML = '<i class="fas fa-download"></i> Download Now';
+      document.getElementById('proceedButton').href = `download.html?id=${id}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&file=${file}`;
     }
+    
+    // Start countdown
+    let seconds = 10;
+    const countdown = setInterval(() => {
+      seconds--;
+      document.getElementById('countdown').textContent = seconds;
+      
+      if (seconds <= 0) {
+        clearInterval(countdown);
+        window.location.href = document.getElementById('proceedButton').href;
+      }
+    }, 1000);
+    
+    // Allow manual proceeding
+    document.getElementById('proceedButton').classList.remove('hidden');
+    document.getElementById('proceedButton').addEventListener('click', (e) => {
+      e.preventDefault();
+      clearInterval(countdown);
+      window.location.href = e.target.href;
+    });
   </script>
 </body>
 </html>
