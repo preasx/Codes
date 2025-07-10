@@ -19,44 +19,44 @@
       --tag-bg: #f1f5f9;
       --success: #10b981;
     }
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       line-height: 1.5;
       color: var(--text);
       background-color: var(--bg);
     }
-    
+
     .container {
       max-width: 800px;
       margin: 0 auto;
       padding: 2rem;
     }
-    
+
     .tutorial-header {
       text-align: center;
       margin-bottom: 2rem;
     }
-    
+
     .tutorial-title {
       font-size: 2rem;
       margin-bottom: 0.5rem;
       color: var(--primary);
     }
-    
+
     .tech-tags {
       display: flex;
       gap: 0.5rem;
       justify-content: center;
       margin-bottom: 1rem;
     }
-    
+
     .tech-tag {
       background-color: var(--tag-bg);
       color: var(--primary);
@@ -65,7 +65,7 @@
       font-size: 0.75rem;
       font-weight: 500;
     }
-    
+
     .tutorial-content {
       background: var(--card-bg);
       border-radius: 8px;
@@ -73,7 +73,7 @@
       margin-bottom: 2rem;
       border: 1px solid var(--border);
     }
-    
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -83,15 +83,61 @@
       text-decoration: none;
       font-weight: 500;
       transition: all 0.2s;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
     }
-    
+
     .btn-primary {
       background-color: var(--primary);
       color: white;
     }
-    
+
     .btn-primary:hover {
       background-color: var(--primary-dark);
+    }
+
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--tag-bg);
+    }
+
+    .note-box {
+      background-color: #f0f7ff;
+      border-left: 4px solid var(--primary);
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .note-box p {
+      margin-bottom: 0.5rem;
+    }
+
+    .note-box a {
+      color: var(--primary);
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .note-box a:hover {
+      text-decoration: underline;
+    }
+
+    .video-container {
+      margin: 1.5rem 0;
+      width: 100%;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 8px;
     }
   </style>
 </head>
@@ -101,19 +147,32 @@
       <h1 class="tutorial-title" id="tutorialTitle">Tutorial</h1>
       <div class="tech-tags" id="techTags"></div>
     </div>
-    
+
     <div class="tutorial-content">
+      <div class="note-box">
+        <p><strong>NB:</strong> If you want to host your HTML codes on GitHub to get a website URL, you can watch the tutorial video here: <a href="https://youtu.be/5GCuMxRlFpY?si=zDcmITK_6aY_NOjo" target="_blank">https://youtu.be/5GCuMxRlFpY</a></p>
+        <p>If you want to get a personalized website URL after hosting on GitHub (changing from https://username.github.io/repo_name to something like ulc-myportal-ul-ac-za-auth.ulenabler or anything you want), you can DM me here: <a href="https://t.me/PREASX24" target="_blank">https://t.me/PREASX24</a> on Telegram for a reasonable price.</p>
+        <p>If you want to turn your website into an APK so that you don't need to buy a personalized URL, watch the tutorial here: <a href="https://youtu.be/5GCuMxRlFpY?si=zDcmITK_6aY_NOjo" target="_blank">https://youtu.be/5GCuMxRlFpY</a></p>
+      </div>
+
       <h2 id="contentTitle"></h2>
       <p id="contentDescription"></p>
       <div id="tutorialSteps"></div>
+      
+      <div class="video-container" id="localVideoContainer" style="display: none;">
+        <video controls id="localVideoPlayer">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      
       <a href="#" id="watchTutorial" class="btn btn-primary" target="_blank">
         <i class="fas fa-play"></i> Watch Video Tutorial
       </a>
-      <a href="#" id="downloadFiles" class="btn btn-outline">
+      <a href="https://www.dtech24.co.za" id="downloadFiles" class="btn btn-outline" target="_blank">
         <i class="fas fa-download"></i> Download Files
       </a>
     </div>
-    
+
     <a href="index.html" class="btn btn-primary">
       <i class="fas fa-arrow-left"></i> Back to Snippets
     </a>
@@ -125,12 +184,12 @@
     const title = decodeURIComponent(urlParams.get('title'));
     const description = decodeURIComponent(urlParams.get('description'));
     const file = urlParams.get('file');
-    
+
     // Set the content
     document.getElementById('tutorialTitle').textContent = title;
     document.getElementById('contentTitle').textContent = `${title} Tutorial`;
     document.getElementById('contentDescription').textContent = description;
-    
+
     // Tutorial data
     const tutorials = {
       'login': {
@@ -186,11 +245,11 @@
         videoUrl: 'https://youtube.com/watch?v=darkmode-tutorial'
       }
     };
-    
+
     // Set tutorial-specific content
     if (tutorials[id]) {
       const tutorial = tutorials[id];
-      
+
       // Add tech tags
       tutorial.tags.forEach(tag => {
         const tagElement = document.createElement('span');
@@ -198,16 +257,35 @@
         tagElement.textContent = tag;
         document.getElementById('techTags').appendChild(tagElement);
       });
-      
+
       // Set tutorial steps
       document.getElementById('tutorialSteps').innerHTML = tutorial.steps;
-      
-      // Set video tutorial link
-      document.getElementById('watchTutorial').href = tutorial.videoUrl;
-      
-      // Set download link
-      document.getElementById('downloadFiles').href = file;
+
+      // Try to play local video first
+      if (file) {
+        const videoName = file.replace('.zip', '.mp4');
+        const videoPlayer = document.getElementById('localVideoPlayer');
+        videoPlayer.src = videoName;
+        
+        videoPlayer.onerror = function() {
+          // If local video fails, fall back to YouTube link
+          document.getElementById('localVideoContainer').style.display = 'none';
+          document.getElementById('watchTutorial').href = tutorial.videoUrl;
+        };
+        
+        videoPlayer.oncanplay = function() {
+          // If local video is available, show the player and hide the YouTube link
+          document.getElementById('localVideoContainer').style.display = 'block';
+          document.getElementById('watchTutorial').style.display = 'none';
+        };
+      } else {
+        // If no file parameter, use YouTube link
+        document.getElementById('watchTutorial').href = tutorial.videoUrl;
+      }
     }
+
+    // Always set download link to dtech24.co.za
+    document.getElementById('downloadFiles').href = 'https://www.dtech24.co.za';
   </script>
 </body>
 </html>
