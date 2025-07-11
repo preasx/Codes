@@ -45,12 +45,6 @@
       margin-bottom: 2rem;
     }
 
-    .tutorial-title {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      color: var(--primary);
-    }
-
     .tech-tags {
       display: flex;
       gap: 0.5rem;
@@ -173,7 +167,7 @@
       <div id="tutorialSteps"></div>
 
       <div class="video-container" id="videoContainer">
-        <div class="video-placeholder">Video will load here...</div>
+        <div class="video-placeholder">Loading video player...</div>
       </div>
 
       <a href="#" id="watchTutorial" class="btn btn-primary" target="_blank">
@@ -202,142 +196,167 @@
   </div>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
-    const title = decodeURIComponent(urlParams.get('title') || '');
-    const description = decodeURIComponent(urlParams.get('description') || '');
-
-    // Set the content
-    document.getElementById('tutorialTitle').textContent = title;
-    document.getElementById('contentTitle').textContent = `${title} Tutorial`;
-    document.getElementById('contentDescription').textContent = description;
-
-    // PROPER Google Drive embed conversion
-    function getEmbedUrl(videoId) {
-      // This is the CORRECT embed format for Google Drive videos
-      return `https://drive.google.com/file/d/${videoId}/preview`;
-    }
-
-    // Search everywhere for university identifiers
-    function findUniversityInContent() {
-      // Get all possible text content
-      const pageContent = document.body.innerText.toLowerCase();
-      const currentUrl = window.location.href.toLowerCase();
-      const pageTitle = document.title.toLowerCase();
+    window.addEventListener('DOMContentLoaded', () => {
+      // Debugging helper
+      console.log('DOM fully loaded - initializing video player');
       
-      // Combine all possible text sources
-      const allText = `${title} ${description} ${pageContent} ${currentUrl} ${pageTitle}`.toLowerCase();
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      const title = decodeURIComponent(urlParams.get('title') || '');
+      const description = decodeURIComponent(urlParams.get('description') || '');
 
-      // Check for universities (case insensitive)
-      if (/ukzn|dut|univen|tut/.test(allText)) {
-        return '1-PyMD1OSR68xRz1QfmhAkGQ1fjMoR_3G'; // Group 1 video ID
+      // Set the content
+      document.getElementById('tutorialTitle').textContent = title;
+      document.getElementById('contentTitle').textContent = `${title} Tutorial`;
+      document.getElementById('contentDescription').textContent = description;
+
+      // PROPER Google Drive embed conversion
+      function getEmbedUrl(videoId) {
+        return `https://drive.google.com/file/d/${videoId}/preview`;
       }
-      else if (/uj|ul|ufh/.test(allText)) {
-        return '1-RkZaXQvzSLWFKCl8fAuN9pnhWLz8knn'; // Group 2 video ID
+
+      // Search everywhere for university identifiers
+      function findUniversityInContent() {
+        try {
+          const pageContent = document.body.innerText.toLowerCase();
+          const currentUrl = window.location.href.toLowerCase();
+          const pageTitle = document.title.toLowerCase();
+          const allText = `${title} ${description} ${pageContent} ${currentUrl} ${pageTitle}`.toLowerCase();
+
+          console.log('Scanning content for university codes...', allText);
+
+          if (/ukzn|dut|univen|tut/.test(allText)) {
+            console.log('Detected Group 1 university (UKZN/DUT/UNIVEN/TUT)');
+            return '1-PyMD1OSR68xRz1QfmhAkGQ1fjMoR_3G';
+          }
+          else if (/uj|ul|ufh/.test(allText)) {
+            console.log('Detected Group 2 university (UJ/UL/UFH)');
+            return '1-RkZaXQvzSLWFKCl8fAuN9pnhWLz8knn';
+          }
+          console.log('No university codes detected');
+          return null;
+        } catch (e) {
+          console.error('Error scanning for university codes:', e);
+          return null;
+        }
       }
-      return null;
-    }
 
-    // Set up the video player
-    function setupVideoPlayer() {
-      const videoId = findUniversityInContent();
-      const videoContainer = document.getElementById('videoContainer');
-      const watchBtn = document.getElementById('watchTutorial');
-      
-      if (videoId) {
-        // Embed the video properly
-        videoContainer.innerHTML = `
-          <iframe src="${getEmbedUrl(videoId)}" 
-                  allow="autoplay; fullscreen" 
-                  allowfullscreen
-                  style="width:100%;height:100%;border:none;"></iframe>`;
-        
-        // Set watch button to open the full video
-        watchBtn.href = `https://drive.google.com/file/d/${videoId}/view`;
-      } else {
-        // No video found - show message
-        videoContainer.innerHTML = '<div class="video-placeholder">No tutorial video available for this content</div>';
-        watchBtn.onclick = function(e) {
-          e.preventDefault();
-          alert('No specific tutorial video found for this content.');
-        };
+      // Set up the video player
+      function setupVideoPlayer() {
+        try {
+          const videoId = findUniversityInContent();
+          const videoContainer = document.getElementById('videoContainer');
+          const watchBtn = document.getElementById('watchTutorial');
+
+          if (videoId) {
+            console.log('Embedding video:', videoId);
+            videoContainer.innerHTML = `
+              <iframe src="${getEmbedUrl(videoId)}" 
+                      allow="autoplay; fullscreen" 
+                      allowfullscreen
+                      style="width:100%;height:100%;border:none;"></iframe>`;
+            
+            watchBtn.href = `https://drive.google.com/file/d/${videoId}/view`;
+            watchBtn.onclick = null; // Remove any previous click handlers
+          } else {
+            console.log('No video ID found - showing placeholder');
+            videoContainer.innerHTML = `
+              <div class="video-placeholder">
+                No tutorial video available for this content
+                <div style="font-size:0.8em;margin-top:10px;">
+                  (Could not detect university codes in URL or content)
+                </div>
+              </div>`;
+            
+            watchBtn.onclick = function(e) {
+              e.preventDefault();
+              alert('No specific tutorial video found for this content.\n\nExpected to find university codes like UKZN, DUT, UJ, UL, etc. in the URL or page content.');
+            };
+          }
+        } catch (e) {
+          console.error('Error setting up video player:', e);
+          document.getElementById('videoContainer').innerHTML = `
+            <div class="video-placeholder" style="color:#dc2626;">
+              Error loading video player
+            </div>`;
+        }
       }
-    }
 
-    // Tutorial data
-    const tutorials = {
-      'login': {
-        tags: ['HTML', 'CSS', 'JavaScript'],
-        steps: `
-          <h3>Implementation Steps:</h3>
-          <ol>
-            <li>Download the ZIP file containing all necessary files</li>
-            <li>Extract the contents to your project folder</li>
-            <li>Open index.html in your browser to see it in action</li>
-            <li>Integrate the code into your project</li>
-            <li>Customize the styling as needed</li>
-          </ol>
-        `
-      },
-      'modal': {
-        tags: ['HTML', 'CSS', 'JavaScript'],
-        steps: `
-          <h3>Key Features:</h3>
-          <ul>
-            <li>Accessible modal dialog</li>
-            <li>Smooth animations</li>
-            <li>Focus management</li>
-            <li>Easy to customize</li>
-          </ul>
-          <h3>Usage Instructions:</h3>
-          <ol>
-            <li>Include the CSS and JS files in your project</li>
-            <li>Copy the HTML structure</li>
-            <li>Initialize the modal with JavaScript</li>
-          </ol>
-        `
-      },
-      'darkmode': {
-        tags: ['CSS', 'JavaScript'],
-        steps: `
-          <h3>Implementation Guide:</h3>
-          <ol>
-            <li>Add the CSS variables for theming</li>
-            <li>Include the toggle button in your HTML</li>
-            <li>Add the JavaScript event listeners</li>
-            <li>Test the color scheme preference detection</li>
-          </ol>
-          <h3>Advanced Customization:</h3>
-          <ul>
-            <li>Add transition effects</li>
-            <li>Customize the toggle button</li>
-            <li>Extend to support multiple themes</li>
-          </ul>
-        `
+      // Tutorial data
+      const tutorials = {
+        'login': {
+          tags: ['HTML', 'CSS', 'JavaScript'],
+          steps: `
+            <h3>Implementation Steps:</h3>
+            <ol>
+              <li>Download the ZIP file containing all necessary files</li>
+              <li>Extract the contents to your project folder</li>
+              <li>Open index.html in your browser to see it in action</li>
+              <li>Integrate the code into your project</li>
+              <li>Customize the styling as needed</li>
+            </ol>
+          `
+        },
+        'modal': {
+          tags: ['HTML', 'CSS', 'JavaScript'],
+          steps: `
+            <h3>Key Features:</h3>
+            <ul>
+              <li>Accessible modal dialog</li>
+              <li>Smooth animations</li>
+              <li>Focus management</li>
+              <li>Easy to customize</li>
+            </ul>
+            <h3>Usage Instructions:</h3>
+            <ol>
+              <li>Include the CSS and JS files in your project</li>
+              <li>Copy the HTML structure</li>
+              <li>Initialize the modal with JavaScript</li>
+            </ol>
+          `
+        },
+        'darkmode': {
+          tags: ['CSS', 'JavaScript'],
+          steps: `
+            <h3>Implementation Guide:</h3>
+            <ol>
+              <li>Add the CSS variables for theming</li>
+              <li>Include the toggle button in your HTML</li>
+              <li>Add the JavaScript event listeners</li>
+              <li>Test the color scheme preference detection</li>
+            </ol>
+            <h3>Advanced Customization:</h3>
+            <ul>
+              <li>Add transition effects</li>
+              <li>Customize the toggle button</li>
+              <li>Extend to support multiple themes</li>
+            </ul>
+          `
+        }
+      };
+
+      // Set tutorial-specific content
+      if (tutorials[id]) {
+        const tutorial = tutorials[id];
+
+        // Add tech tags
+        tutorial.tags.forEach(tag => {
+          const tagElement = document.createElement('span');
+          tagElement.className = 'tech-tag';
+          tagElement.textContent = tag;
+          document.getElementById('techTags').appendChild(tagElement);
+        });
+
+        // Set tutorial steps
+        document.getElementById('tutorialSteps').innerHTML = tutorial.steps;
       }
-    };
 
-    // Set tutorial-specific content
-    if (tutorials[id]) {
-      const tutorial = tutorials[id];
+      // Initialize the video player
+      setupVideoPlayer();
 
-      // Add tech tags
-      tutorial.tags.forEach(tag => {
-        const tagElement = document.createElement('span');
-        tagElement.className = 'tech-tag';
-        tagElement.textContent = tag;
-        document.getElementById('techTags').appendChild(tagElement);
-      });
-
-      // Set tutorial steps
-      document.getElementById('tutorialSteps').innerHTML = tutorial.steps;
-    }
-
-    // Initialize the video player when page loads
-    window.addEventListener('DOMContentLoaded', setupVideoPlayer);
-
-    // Always set download link
-    document.getElementById('downloadFiles').href = 'https://otieu.com/4/9515888';
+      // Always set download link
+      document.getElementById('downloadFiles').href = 'https://otieu.com/4/9515888';
+    });
   </script>
 </body>
 </html>
