@@ -240,14 +240,21 @@
       color: orange;
     }
 
-    .pulse {
-      animation: pulse 2s infinite;
+    .cooldown-timer {
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(255, 158, 0, 0.1);
+      border-radius: var(--border-radius);
+      text-align: center;
+      font-size: 14px;
+      color: var(--accent);
+      display: none;
     }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(123, 44, 191, 0.4); }
-      70% { box-shadow: 0 0 0 15px rgba(123, 44, 191, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(123, 44, 191, 0); }
+    .timer-value {
+      font-weight: bold;
+      font-size: 18px;
+      margin: 0 5px;
     }
 
     @media (max-width: 480px) {
@@ -279,9 +286,13 @@
       <div id="adContent">Ready to show ad</div>
     </div>
 
-    <button onclick="showAdAndUnlock()" id="unlockBtn" class="pulse">
+    <button onclick="showAdAndUnlock()" id="unlockBtn">
       <i class="fas fa-key"></i> Generate Account
     </button>
+
+    <div class="cooldown-timer" id="cooldownTimer">
+      <i class="fas fa-clock"></i> Please wait <span class="timer-value" id="timerValue">15</span> seconds before generating another account
+    </div>
 
     <div class="counter" id="counter">Accounts available: Loading...</div>
 
@@ -299,8 +310,52 @@
     const unlockBtn = document.getElementById('unlockBtn');
     const output = document.getElementById('output');
     const counter = document.getElementById('counter');
-    let inAppAdShown = false;
-    let lastAdType = null;
+    const cooldownTimer = document.getElementById('cooldownTimer');
+    const timerValue = document.getElementById('timerValue');
+    
+    // Cooldown variables
+    let cooldownActive = false;
+    let cooldownInterval;
+    const cooldownDuration = 15; // seconds
+    
+    // Initialize in-app interstitial ads
+    function initializeAds() {
+      // In-App Interstitial configuration
+      show_9558020({
+        type: 'inApp',
+        inAppSettings: {
+          frequency: 2,
+          capping: 0.1,
+          interval: 30,
+          timeout: 5,
+          everyPage: false
+        }
+      });
+      
+      console.log("In-app interstitial ads initialized");
+    }
+    
+    // Start cooldown timer
+    function startCooldown() {
+      cooldownActive = true;
+      unlockBtn.disabled = true;
+      cooldownTimer.style.display = 'block';
+      
+      let secondsLeft = cooldownDuration;
+      timerValue.textContent = secondsLeft;
+      
+      cooldownInterval = setInterval(() => {
+        secondsLeft--;
+        timerValue.textContent = secondsLeft;
+        
+        if (secondsLeft <= 0) {
+          clearInterval(cooldownInterval);
+          cooldownActive = false;
+          cooldownTimer.style.display = 'none';
+          unlockBtn.disabled = false;
+        }
+      }, 1000);
+    }
     
     // Check if Telegram WebApp is available
     if (window.Telegram?.WebApp) {
@@ -323,50 +378,25 @@
       }
     }
     
-    // Function to randomly select ad type with rotation
+    // Function to randomly select ad type
     function getRandomAdType() {
-      const adTypes = ['interstitial', 'pop', 'inApp'];
-      
-      // Filter out inApp if already shown
-      const availableTypes = inAppAdShown 
-        ? ['interstitial', 'pop'] 
-        : adTypes;
-      
-      // Don't show the same ad type twice in a row
-      const filteredTypes = availableTypes.filter(type => type !== lastAdType);
-      const typesToUse = filteredTypes.length > 0 ? filteredTypes : availableTypes;
-      
-      // Random selection
-      const randomIndex = Math.floor(Math.random() * typesToUse.length);
-      lastAdType = typesToUse[randomIndex];
-      return lastAdType;
-    }
-
-    // Show in-app interstitial with configured settings
-    function showInAppInterstitial() {
-      return new Promise((resolve, reject) => {
-        show_9558020({
-          type: 'inApp',
-          inAppSettings: {
-            frequency: 2,
-            capping: 0.1,  // 6 minutes
-            interval: 30,  // 30 seconds between ads
-            timeout: 5,    // 5-second delay before first ad
-            everyPage: false
-          },
-          onDone: () => {
-            inAppAdShown = true;
-            resolve();
-          },
-          onError: (error) => {
-            reject(error);
-          }
-        });
-      });
+      return Math.random() > 0.5 ? 'interstitial' : 'pop';
     }
 
     // Main function to show ad and unlock account
     function showAdAndUnlock() {
+      // Check if cooldown is active
+      if (cooldownActive) {
+        output.innerHTML = `
+          <div class="account-item">
+            <span class="label">Status</span>
+            <span class="value">Please wait for the cooldown to finish before generating another account.</span>
+          </div>
+        `;
+        output.style.display = 'block';
+        return;
+      }
+      
       // Check if already used max accounts
       if (accountsUsed >= maxAccountsPerDay) {
         output.innerHTML = `
@@ -390,24 +420,19 @@
       
       // Randomly select ad type
       const adType = getRandomAdType();
-      let adPromise;
-      
-      if (adType === 'inApp') {
-        adPromise = showInAppInterstitial();
-      } else if (adType === 'pop') {
-        adPromise = show_9558020('pop');
-      } else {
-        adPromise = show_9558020();
-      }
+      const adPromise = adType === 'pop' 
+        ? show_9558020('pop') 
+        : show_9558020();
       
       // Show the selected ad type
       adPromise.then(() => {
         // This executes after user watches the ad
         unlockAccount();
+        startCooldown(); // Start cooldown after successful ad view
       }).catch(error => {
         // Handle ad error
         unlockBtn.disabled = false;
-        unlockBtn.innerHTML = `<i class="fas fa-key"></i> Try Again`;
+        unlockBtn.innerHTML = `<i class="fas fa-key"></i> Generate Account`;
         output.innerHTML = `
           <div class="account-item">
             <span class="label">Error</span>
@@ -416,11 +441,6 @@
         `;
         output.style.display = 'block';
         console.error("Ad error:", error);
-        
-        // If in-app ad failed, mark as shown to prevent repeated attempts
-        if (adType === 'inApp') {
-          inAppAdShown = true;
-        }
       });
     }
 
@@ -483,7 +503,7 @@
         counter.textContent = `✨ ${maxAccountsPerDay - accountsUsed} accounts left today`;
         
         // Log successful unlock
-        console.log(`Account unlocked with ${lastAdType} ad: ${account.email}`);
+        console.log(`Account unlocked: ${account.email}`);
         
         // If Telegram WebApp, close after successful unlock
         if (window.Telegram?.WebApp) {
@@ -566,6 +586,7 @@
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       loadCounter();
+      initializeAds(); // Initialize automatic ads
       
       // If Telegram WebApp, change the button text
       if (window.Telegram?.WebApp) {
