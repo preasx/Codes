@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>✨ Premium Account Generator</title>
+  <script src='//libtl.com/sdk.js' data-zone='9558020' data-sdk='show_9558020'></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
@@ -220,31 +221,6 @@
       font-weight: 600;
     }
 
-    .progress-bar {
-      height: 6px;
-      background: rgba(123, 44, 191, 0.1);
-      border-radius: 50px;
-      margin-top: 15px;
-      overflow: hidden;
-    }
-
-    .progress {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(123, 44, 191, 0.4); }
-      70% { box-shadow: 0 0 0 15px rgba(123, 44, 191, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(123, 44, 191, 0); }
-    }
-
     .verification {
       display: inline-flex;
       align-items: center;
@@ -286,22 +262,18 @@
 <body>
   <div class="container">
     <h2><i class="fas fa-gem"></i> Premium Generator</h2>
-    <p class="subtitle">Unlock exclusive accounts with one click</p>
+    <p class="subtitle">Watch an ad to unlock premium accounts</p>
 
     <div class="ad-container">
-      <div class="ad-label">Support Us</div>
-      <div id="adContent">Quick ad loading...</div>
+      <div class="ad-label">Ad Will Appear Here</div>
+      <div id="adContent">Ready to show ad</div>
     </div>
 
-    <button onclick="unlockAccount()" id="unlockBtn" class="pulse">
+    <button onclick="showAdAndUnlock()" id="unlockBtn">
       <i class="fas fa-key"></i> Generate Account
     </button>
 
-    <div class="progress-bar">
-      <div class="progress" id="progressBar"></div>
-    </div>
-
-    <div class="counter" id="counter">Loading available accounts...</div>
+    <div class="counter" id="counter">Accounts available: Loading...</div>
 
     <div id="output" class="account" style="display: none;"></div>
 
@@ -317,7 +289,6 @@
     const unlockBtn = document.getElementById('unlockBtn');
     const output = document.getElementById('output');
     const counter = document.getElementById('counter');
-    const progressBar = document.getElementById('progressBar');
     
     // Check if Telegram WebApp is available
     if (window.Telegram?.WebApp) {
@@ -325,7 +296,7 @@
       Telegram.WebApp.enableClosingConfirmation();
       Telegram.WebApp.MainButton.setText("Get Premium");
       Telegram.WebApp.MainButton.show();
-      Telegram.WebApp.MainButton.onClick(unlockAccount);
+      Telegram.WebApp.MainButton.onClick(showAdAndUnlock);
     }
 
     // Load account counter
@@ -340,33 +311,8 @@
       }
     }
     
-    // Simulate ad view
-    function showAd() {
-      return new Promise((resolve) => {
-        // Simulate ad loading
-        document.getElementById('adContent').innerHTML = `
-          <div style="text-align: center; padding: 10px;">
-            <i class="fas fa-ad" style="font-size: 24px; color: var(--primary);"></i>
-            <p style="margin-top: 10px; color: var(--text-light);">Thanks for your support!</p>
-          </div>
-        `;
-        
-        // Animate progress bar
-        let progress = 0;
-        const interval = setInterval(() => {
-          progress += 1;
-          progressBar.style.width = `${progress}%`;
-          
-          if (progress >= 100) {
-            clearInterval(interval);
-            resolve();
-          }
-        }, 40);
-      });
-    }
-
-    // Main function to unlock account
-    async function unlockAccount() {
+    // Main function to show ad and unlock account
+    function showAdAndUnlock() {
       // Check if already used max accounts
       if (accountsUsed >= maxAccountsPerDay) {
         output.innerHTML = `
@@ -385,16 +331,32 @@
       
       // Disable button and show loading
       unlockBtn.disabled = true;
-      unlockBtn.innerHTML = `<div class="loading"></div> Generating...`;
+      unlockBtn.innerHTML = `<div class="loading"></div> Preparing...`;
       output.style.display = 'none';
       
+      // Show the rewarded ad
+      show_9558020().then(() => {
+        // This executes after user watches the ad
+        unlockAccount();
+      }).catch(error => {
+        // Handle ad error
+        unlockBtn.disabled = false;
+        unlockBtn.innerHTML = `<i class="fas fa-key"></i> Try Again`;
+        output.innerHTML = `
+          <div class="account-item">
+            <span class="label">Error</span>
+            <span class="value">Ad couldn't load. Please try again.</span>
+          </div>
+        `;
+        output.style.display = 'block';
+        console.error("Ad error:", error);
+      });
+    }
+
+    // Function to actually unlock the account after ad view
+    async function unlockAccount() {
       try {
-        // Show ad first
-        await showAd();
-        
-        // Reset ad display
-        document.getElementById('adContent').textContent = "Thank you for your support!";
-        progressBar.style.width = "0%";
+        unlockBtn.innerHTML = `<div class="loading"></div> Generating...`;
         
         // Fetch account data
         const response = await fetch('hits.json');
