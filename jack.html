@@ -12,43 +12,61 @@
       --primary-light: #9D4EDD;
       --secondary: #C77DFF;
       --accent: #FF9E00;
-      --text: #2B2D42;
-      --text-light: #8D99AE;
-      --background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      --card-bg: #ffffff;
-      --border-radius: 16px;
-      --box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+      --text: #FFFFFF;
+      --text-light: #C0C0C0;
+      --background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      --card-bg: rgba(25, 20, 60, 0.8);
+      --border-radius: 20px;
+      --box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
       --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --glow: 0 0 15px var(--accent);
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
-      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--text);
-      line-height: 1.6;
-      padding: 20px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--text);
       background: var(--background);
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.05) 0%, transparent 30%);
+      z-index: -1;
     }
 
     .container {
       background: var(--card-bg);
       border-radius: var(--border-radius);
-      padding: 30px;
+      padding: 40px 30px;
       box-shadow: var(--box-shadow);
       max-width: 500px;
       width: 100%;
-      margin: auto;
       position: relative;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.3);
+      border: 1px solid rgba(138, 43, 226, 0.3);
+      backdrop-filter: blur(10px);
     }
 
     .container::before {
@@ -57,19 +75,27 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 8px;
+      height: 6px;
       background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+      animation: border-glow 3s infinite alternate;
+    }
+
+    @keyframes border-glow {
+      0% { box-shadow: 0 0 10px var(--primary); }
+      50% { box-shadow: 0 0 20px var(--secondary); }
+      100% { box-shadow: 0 0 15px var(--accent); }
     }
 
     h2 {
-      color: var(--primary);
-      margin-bottom: 15px;
+      color: var(--secondary);
+      margin-bottom: 20px;
       font-size: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 15px;
       font-weight: 700;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
     }
 
     p.subtitle {
@@ -95,12 +121,29 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      box-shadow: 0 4px 15px rgba(123, 44, 191, 0.3);
+      box-shadow: 0 5px 15px rgba(123, 44, 191, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
     }
 
     button:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(123, 44, 191, 0.4);
+      box-shadow: 0 8px 20px rgba(123, 44, 191, 0.6);
+    }
+
+    button:hover::before {
+      left: 100%;
     }
 
     button:active {
@@ -108,10 +151,15 @@
     }
 
     button:disabled {
-      background: #E0AAFF;
+      background: linear-gradient(135deg, #2a0845, #2a0845);
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
+      color: #555;
+    }
+
+    button:disabled:hover::before {
+      display: none;
     }
 
     .account {
@@ -119,11 +167,12 @@
       text-align: left;
       font-size: 15px;
       word-wrap: break-word;
-      background: rgba(123, 44, 191, 0.05);
+      background: rgba(123, 44, 191, 0.15);
       padding: 20px;
       border-radius: var(--border-radius);
-      border-left: 4px solid var(--primary);
+      border-left: 4px solid var(--accent);
       animation: fadeIn 0.5s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
 
     @keyframes fadeIn {
@@ -139,7 +188,7 @@
 
     .label {
       font-weight: 600;
-      color: var(--primary);
+      color: var(--accent);
       min-width: 100px;
       margin-right: 10px;
     }
@@ -168,18 +217,21 @@
     }
 
     .badge-premium {
-      background: rgba(123, 44, 191, 0.1);
-      color: var(--primary);
+      background: rgba(123, 44, 191, 0.2);
+      color: var(--primary-light);
+      border: 1px solid var(--primary);
     }
 
     .badge-vip {
-      background: rgba(255, 158, 0, 0.1);
+      background: rgba(255, 0, 255, 0.2);
       color: var(--accent);
+      border: 1px solid var(--accent);
     }
 
     .badge-new {
-      background: rgba(199, 125, 255, 0.1);
+      background: rgba(0, 255, 255, 0.2);
       color: var(--secondary);
+      border: 1px solid var(--secondary);
     }
 
     .loading {
@@ -188,7 +240,7 @@
       height: 20px;
       border: 3px solid rgba(255,255,255,0.3);
       border-radius: 50%;
-      border-top-color: white;
+      border-top-color: var(--secondary);
       animation: spin 1s ease-in-out infinite;
     }
 
@@ -206,15 +258,15 @@
     .ad-container {
       margin: 20px 0;
       padding: 15px;
-      background: rgba(123, 44, 191, 0.03);
+      background: rgba(10, 5, 30, 0.6);
       border-radius: var(--border-radius);
-      border: 1px dashed rgba(123, 44, 191, 0.2);
+      border: 1px dashed rgba(138, 43, 226, 0.4);
       text-align: center;
     }
 
     .ad-label {
       font-size: 12px;
-      color: var(--primary);
+      color: var(--secondary);
       margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -231,30 +283,15 @@
     }
 
     .verified {
-      background: rgba(46, 213, 115, 0.1);
+      background: rgba(46, 213, 115, 0.15);
       color: #2ED573;
+      border: 1px solid #2ED573;
     }
 
     .unverified {
-      background: rgba(255, 165, 0, 0.1);
+      background: rgba(255, 165, 0, 0.15);
       color: orange;
-    }
-
-    .cooldown-timer {
-      margin-top: 15px;
-      padding: 10px;
-      background: rgba(255, 158, 0, 0.1);
-      border-radius: var(--border-radius);
-      text-align: center;
-      font-size: 14px;
-      color: var(--accent);
-      display: none;
-    }
-
-    .timer-value {
-      font-weight: bold;
-      font-size: 18px;
-      margin: 0 5px;
+      border: 1px solid orange;
     }
 
     @media (max-width: 480px) {
@@ -290,10 +327,6 @@
       <i class="fas fa-key"></i> Generate Account
     </button>
 
-    <div class="cooldown-timer" id="cooldownTimer">
-      <i class="fas fa-clock"></i> Please wait <span class="timer-value" id="timerValue">15</span> seconds before generating another account
-    </div>
-
     <div class="counter" id="counter">Accounts available: Loading...</div>
 
     <div id="output" class="account" style="display: none;"></div>
@@ -310,52 +343,6 @@
     const unlockBtn = document.getElementById('unlockBtn');
     const output = document.getElementById('output');
     const counter = document.getElementById('counter');
-    const cooldownTimer = document.getElementById('cooldownTimer');
-    const timerValue = document.getElementById('timerValue');
-    
-    // Cooldown variables
-    let cooldownActive = false;
-    let cooldownInterval;
-    const cooldownDuration = 15; // seconds
-    
-    // Initialize in-app interstitial ads
-    function initializeAds() {
-      // In-App Interstitial configuration
-      show_9558020({
-        type: 'inApp',
-        inAppSettings: {
-          frequency: 2,
-          capping: 0.1,
-          interval: 30,
-          timeout: 5,
-          everyPage: false
-        }
-      });
-      
-      console.log("In-app interstitial ads initialized");
-    }
-    
-    // Start cooldown timer
-    function startCooldown() {
-      cooldownActive = true;
-      unlockBtn.disabled = true;
-      cooldownTimer.style.display = 'block';
-      
-      let secondsLeft = cooldownDuration;
-      timerValue.textContent = secondsLeft;
-      
-      cooldownInterval = setInterval(() => {
-        secondsLeft--;
-        timerValue.textContent = secondsLeft;
-        
-        if (secondsLeft <= 0) {
-          clearInterval(cooldownInterval);
-          cooldownActive = false;
-          cooldownTimer.style.display = 'none';
-          unlockBtn.disabled = false;
-        }
-      }, 1000);
-    }
     
     // Check if Telegram WebApp is available
     if (window.Telegram?.WebApp) {
@@ -385,18 +372,6 @@
 
     // Main function to show ad and unlock account
     function showAdAndUnlock() {
-      // Check if cooldown is active
-      if (cooldownActive) {
-        output.innerHTML = `
-          <div class="account-item">
-            <span class="label">Status</span>
-            <span class="value">Please wait for the cooldown to finish before generating another account.</span>
-          </div>
-        `;
-        output.style.display = 'block';
-        return;
-      }
-      
       // Check if already used max accounts
       if (accountsUsed >= maxAccountsPerDay) {
         output.innerHTML = `
@@ -428,11 +403,10 @@
       adPromise.then(() => {
         // This executes after user watches the ad
         unlockAccount();
-        startCooldown(); // Start cooldown after successful ad view
       }).catch(error => {
         // Handle ad error
         unlockBtn.disabled = false;
-        unlockBtn.innerHTML = `<i class="fas fa-key"></i> Generate Account`;
+        unlockBtn.innerHTML = `<i class="fas fa-key"></i> Try Again`;
         output.innerHTML = `
           <div class="account-item">
             <span class="label">Error</span>
@@ -586,7 +560,6 @@
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       loadCounter();
-      initializeAds(); // Initialize automatic ads
       
       // If Telegram WebApp, change the button text
       if (window.Telegram?.WebApp) {
