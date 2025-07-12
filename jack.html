@@ -3,22 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Get free premium account access by watching a quick ad">
-  <title>🎁 Premium Account Unlocker | Free Access</title>
+  <title>✨ Premium Account Generator</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary: #4361ee;
-      --primary-dark: #3a56d4;
-      --secondary: #3f37c9;
-      --success: #4cc9f0;
-      --text: #2b2d42;
-      --text-light: #8d99ae;
-      --background: #f8f9fa;
+      --primary: #7B2CBF;
+      --primary-light: #9D4EDD;
+      --secondary: #C77DFF;
+      --accent: #FF9E00;
+      --text: #2B2D42;
+      --text-light: #8D99AE;
+      --background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       --card-bg: #ffffff;
-      --border-radius: 12px;
-      --box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      --transition: all 0.3s ease;
+      --border-radius: 16px;
+      --box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     * {
@@ -28,14 +27,14 @@
     }
 
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: var(--background);
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
       color: var(--text);
       line-height: 1.6;
       padding: 20px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      background: var(--background);
     }
 
     .container {
@@ -48,6 +47,7 @@
       margin: auto;
       position: relative;
       overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.3);
     }
 
     .container::before {
@@ -56,8 +56,8 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 5px;
-      background: linear-gradient(90deg, var(--primary), var(--success));
+      height: 8px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
     }
 
     h2 {
@@ -67,21 +67,23 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
+      font-weight: 700;
     }
 
     p.subtitle {
       color: var(--text-light);
       margin-bottom: 25px;
       font-size: 16px;
+      text-align: center;
     }
 
     button {
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
       color: white;
-      padding: 14px 28px;
+      padding: 16px 32px;
       border: none;
-      border-radius: var(--border-radius);
+      border-radius: 50px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
@@ -92,11 +94,12 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      box-shadow: 0 4px 15px rgba(123, 44, 191, 0.3);
     }
 
     button:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(123, 44, 191, 0.4);
     }
 
     button:active {
@@ -104,9 +107,10 @@
     }
 
     button:disabled {
-      background: #ccc;
+      background: #E0AAFF;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
 
     .account {
@@ -114,7 +118,7 @@
       text-align: left;
       font-size: 15px;
       word-wrap: break-word;
-      background: rgba(67, 97, 238, 0.05);
+      background: rgba(123, 44, 191, 0.05);
       padding: 20px;
       border-radius: var(--border-radius);
       border-left: 4px solid var(--primary);
@@ -134,7 +138,7 @@
 
     .label {
       font-weight: 600;
-      color: var(--text);
+      color: var(--primary);
       min-width: 100px;
       margin-right: 10px;
     }
@@ -155,26 +159,26 @@
 
     .badge {
       display: inline-block;
-      padding: 3px 8px;
-      border-radius: 4px;
+      padding: 4px 10px;
+      border-radius: 50px;
       font-size: 12px;
       font-weight: 600;
       margin-left: 8px;
     }
 
-    .badge-success {
-      background: rgba(76, 201, 240, 0.2);
-      color: #4cc9f0;
+    .badge-premium {
+      background: rgba(123, 44, 191, 0.1);
+      color: var(--primary);
     }
 
-    .badge-warning {
-      background: rgba(255, 166, 0, 0.2);
-      color: orange;
+    .badge-vip {
+      background: rgba(255, 158, 0, 0.1);
+      color: var(--accent);
     }
 
-    .badge-danger {
-      background: rgba(255, 0, 0, 0.1);
-      color: #ff4444;
+    .badge-new {
+      background: rgba(199, 125, 255, 0.1);
+      color: var(--secondary);
     }
 
     .loading {
@@ -195,37 +199,69 @@
       margin-top: 15px;
       font-size: 14px;
       color: var(--text-light);
+      text-align: center;
     }
 
     .ad-container {
       margin: 20px 0;
       padding: 15px;
-      background: rgba(0,0,0,0.03);
+      background: rgba(123, 44, 191, 0.03);
       border-radius: var(--border-radius);
-      border: 1px dashed rgba(0,0,0,0.1);
+      border: 1px dashed rgba(123, 44, 191, 0.2);
+      text-align: center;
     }
 
     .ad-label {
       font-size: 12px;
-      color: var(--text-light);
+      color: var(--primary);
       margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 1px;
+      font-weight: 600;
     }
 
     .progress-bar {
-      height: 5px;
-      background: rgba(67, 97, 238, 0.2);
-      border-radius: 5px;
+      height: 6px;
+      background: rgba(123, 44, 191, 0.1);
+      border-radius: 50px;
       margin-top: 15px;
       overflow: hidden;
     }
 
     .progress {
       height: 100%;
-      background: linear-gradient(90deg, var(--primary), var(--success));
+      background: linear-gradient(90deg, var(--primary), var(--accent));
       width: 0%;
       transition: width 0.3s ease;
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(123, 44, 191, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(123, 44, 191, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(123, 44, 191, 0); }
+    }
+
+    .verification {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    .verified {
+      background: rgba(46, 213, 115, 0.1);
+      color: #2ED573;
+    }
+
+    .unverified {
+      background: rgba(255, 165, 0, 0.1);
+      color: orange;
     }
 
     @media (max-width: 480px) {
@@ -249,29 +285,28 @@
 </head>
 <body>
   <div class="container">
-    <h2><i class="fas fa-gift"></i> Premium Account Unlocker</h2>
-    <p class="subtitle">Watch a quick ad to unlock a premium account instantly</p>
+    <h2><i class="fas fa-gem"></i> Premium Generator</h2>
+    <p class="subtitle">Unlock exclusive accounts with one click</p>
 
     <div class="ad-container">
-      <div class="ad-label">Ad Preview</div>
-      <div id="adContent">Your ad will appear here</div>
+      <div class="ad-label">Support Us</div>
+      <div id="adContent">Quick ad loading...</div>
     </div>
 
-    <button onclick="unlockAccount()" id="unlockBtn">
-      <i class="fas fa-unlock-alt"></i> Unlock Account
+    <button onclick="unlockAccount()" id="unlockBtn" class="pulse">
+      <i class="fas fa-key"></i> Generate Account
     </button>
 
     <div class="progress-bar">
       <div class="progress" id="progressBar"></div>
     </div>
 
-    <div class="counter" id="counter">Accounts available today: Loading...</div>
+    <div class="counter" id="counter">Loading available accounts...</div>
 
     <div id="output" class="account" style="display: none;"></div>
 
     <p class="note">
-      <i class="fas fa-info-circle"></i> One account per user every 24 hours. 
-      Accounts are verified and tested before distribution.
+      <i class="fas fa-sync-alt"></i> Refresh daily for new accounts
     </p>
   </div>
 
@@ -288,7 +323,7 @@
     if (window.Telegram?.WebApp) {
       Telegram.WebApp.expand();
       Telegram.WebApp.enableClosingConfirmation();
-      Telegram.WebApp.MainButton.setText("Get Premium Account");
+      Telegram.WebApp.MainButton.setText("Get Premium");
       Telegram.WebApp.MainButton.show();
       Telegram.WebApp.MainButton.onClick(unlockAccount);
     }
@@ -298,9 +333,9 @@
       try {
         const response = await fetch('https://api.example.com/accounts/count');
         const data = await response.json();
-        counter.textContent = `Accounts available today: ${data.available}`;
+        counter.textContent = `✨ ${data.available} premium accounts available`;
       } catch (error) {
-        counter.textContent = `Accounts available today: ${maxAccountsPerDay - accountsUsed}`;
+        counter.textContent = `✨ ${maxAccountsPerDay - accountsUsed} accounts available for you`;
         console.error("Error fetching account count:", error);
       }
     }
@@ -311,8 +346,8 @@
         // Simulate ad loading
         document.getElementById('adContent').innerHTML = `
           <div style="text-align: center; padding: 10px;">
-            <i class="fas fa-ad" style="font-size: 24px; color: #4361ee;"></i>
-            <p style="margin-top: 10px;">Advertisement (5s)</p>
+            <i class="fas fa-ad" style="font-size: 24px; color: var(--primary);"></i>
+            <p style="margin-top: 10px; color: var(--text-light);">Thanks for your support!</p>
           </div>
         `;
         
@@ -326,7 +361,7 @@
             clearInterval(interval);
             resolve();
           }
-        }, 50);
+        }, 40);
       });
     }
 
@@ -336,11 +371,11 @@
       if (accountsUsed >= maxAccountsPerDay) {
         output.innerHTML = `
           <div class="account-item">
-            <span class="label">Status:</span>
-            <span class="value">You've reached your daily limit (${maxAccountsPerDay} accounts)</span>
+            <span class="label">Status</span>
+            <span class="value">Daily limit reached (${maxAccountsPerDay} accounts)</span>
           </div>
           <div class="account-item">
-            <span class="label">Next Unlock:</span>
+            <span class="label">Next unlock</span>
             <span class="value">Available in ${formatTimeUntilTomorrow()}</span>
           </div>
         `;
@@ -350,7 +385,7 @@
       
       // Disable button and show loading
       unlockBtn.disabled = true;
-      unlockBtn.innerHTML = `<div class="loading"></div> Processing...`;
+      unlockBtn.innerHTML = `<div class="loading"></div> Generating...`;
       output.style.display = 'none';
       
       try {
@@ -358,7 +393,7 @@
         await showAd();
         
         // Reset ad display
-        document.getElementById('adContent').textContent = "Thank you for watching!";
+        document.getElementById('adContent').textContent = "Thank you for your support!";
         progressBar.style.width = "0%";
         
         // Fetch account data
@@ -378,44 +413,43 @@
         // Display account information
         output.innerHTML = `
           <div class="account-item">
-            <span class="label">Service:</span>
+            <span class="label">Service</span>
             <span class="value">${account.service || 'Premium Service'} 
               <span class="badge ${getPlanBadgeClass(account.plan_name)}">${account.plan_name}</span>
             </span>
           </div>
           <div class="account-item">
-            <span class="label">Email:</span>
+            <span class="label">Email</span>
             <span class="value">${account.email}</span>
           </div>
           <div class="account-item">
-            <span class="label">Password:</span>
+            <span class="label">Password</span>
             <span class="value">${account.password}</span>
           </div>
           <div class="account-item">
-            <span class="label">Expires:</span>
+            <span class="label">Expires</span>
             <span class="value">${formatDate(account.expiry)} 
-              <span class="badge ${getDaysBadgeClass(account.remaining_days)}">${account.remaining_days} days left</span>
+              <span class="badge ${getDaysBadgeClass(account.remaining_days)}">${account.remaining_days} days</span>
             </span>
           </div>
           <div class="account-item">
-            <span class="label">Status:</span>
+            <span class="label">Status</span>
             <span class="value">
-              ${account.email_verified ? '<i class="fas fa-check-circle" style="color: #4cc9f0;"></i> Verified' : '<i class="fas fa-times-circle" style="color: #ff4444;"></i> Unverified'}
+              <span class="verification ${account.email_verified ? 'verified' : 'unverified'}">
+                <i class="fas ${account.email_verified ? 'fa-check-circle' : 'fa-info-circle'}"></i>
+                ${account.email_verified ? 'Verified' : 'Not Verified'}
+              </span>
               ${account.country ? `• ${getCountryFlag(account.country)} ${account.country}` : ''}
             </span>
-          </div>
-          <div class="account-item">
-            <span class="label">Instructions:</span>
-            <span class="value">Change password immediately after login</span>
           </div>
         `;
         output.style.display = 'block';
         
         // Increment counter and update UI
         accountsUsed++;
-        counter.textContent = `Accounts available today: ${maxAccountsPerDay - accountsUsed}`;
+        counter.textContent = `✨ ${maxAccountsPerDay - accountsUsed} accounts left today`;
         
-        // Log successful unlock (in a real app, you'd send this to your server)
+        // Log successful unlock
         console.log(`Account unlocked: ${account.email}`);
         
         // If Telegram WebApp, close after successful unlock
@@ -427,33 +461,33 @@
       } catch (error) {
         output.innerHTML = `
           <div class="account-item">
-            <span class="label">Error:</span>
-            <span class="value">${error.message || 'Failed to fetch account'}</span>
+            <span class="label">Oops!</span>
+            <span class="value">${error.message || 'Something went wrong'}</span>
           </div>
           <div class="account-item">
-            <span class="label">Solution:</span>
-            <span class="value">Please try again later or contact support</span>
+            <span class="label">Try</span>
+            <span class="value">Please check back later</span>
           </div>
         `;
         output.style.display = 'block';
         console.error("Account unlock error:", error);
       } finally {
         unlockBtn.disabled = false;
-        unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Unlock Another`;
+        unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Generate Another`;
       }
     }
     
     // Helper functions
     function getPlanBadgeClass(plan) {
-      if (/pro|premium|ultimate/i.test(plan)) return 'badge-success';
-      if (/basic|standard/i.test(plan)) return 'badge-warning';
-      return 'badge-danger';
+      if (/pro|premium|ultimate/i.test(plan)) return 'badge-premium';
+      if (/vip|deluxe/i.test(plan)) return 'badge-vip';
+      return 'badge-new';
     }
     
     function getDaysBadgeClass(days) {
-      if (days > 30) return 'badge-success';
-      if (days > 7) return 'badge-warning';
-      return 'badge-danger';
+      if (days > 30) return 'badge-premium';
+      if (days > 7) return 'badge-vip';
+      return 'badge-new';
     }
     
     function formatDate(dateString) {
@@ -461,7 +495,7 @@
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US', { 
         year: 'numeric', 
-        month: 'long', 
+        month: 'short', 
         day: 'numeric' 
       });
     }
@@ -480,7 +514,6 @@
     }
     
     function getCountryFlag(country) {
-      // Simple emoji flag mapping (in a real app, use a proper library)
       const flags = {
         'usa': '🇺🇸',
         'uk': '🇬🇧',
@@ -503,9 +536,9 @@
       
       // If Telegram WebApp, change the button text
       if (window.Telegram?.WebApp) {
-        document.querySelector('h2').innerHTML = `<i class="fas fa-gift"></i> Telegram Premium Unlocker`;
-        document.querySelector('.subtitle').textContent = "Tap below to get instant access to a premium account";
-        unlockBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Get Premium Account`;
+        document.querySelector('h2').innerHTML = `<i class="fas fa-gem"></i> Telegram Premium`;
+        document.querySelector('.subtitle').textContent = "Tap to get instant premium access";
+        unlockBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Get Premium`;
       }
     });
   </script>
