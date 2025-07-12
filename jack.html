@@ -240,6 +240,16 @@
       color: orange;
     }
 
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(123, 44, 191, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(123, 44, 191, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(123, 44, 191, 0); }
+    }
+
     @media (max-width: 480px) {
       .container {
         padding: 20px;
@@ -269,7 +279,7 @@
       <div id="adContent">Ready to show ad</div>
     </div>
 
-    <button onclick="showAdAndUnlock()" id="unlockBtn">
+    <button onclick="showAdAndUnlock()" id="unlockBtn" class="pulse">
       <i class="fas fa-key"></i> Generate Account
     </button>
 
@@ -289,6 +299,8 @@
     const unlockBtn = document.getElementById('unlockBtn');
     const output = document.getElementById('output');
     const counter = document.getElementById('counter');
+    let inAppAdShown = false;
+    let lastAdType = null;
     
     // Check if Telegram WebApp is available
     if (window.Telegram?.WebApp) {
@@ -311,9 +323,46 @@
       }
     }
     
-    // Function to randomly select ad type
+    // Function to randomly select ad type with rotation
     function getRandomAdType() {
-      return Math.random() > 0.5 ? 'interstitial' : 'pop';
+      const adTypes = ['interstitial', 'pop', 'inApp'];
+      
+      // Filter out inApp if already shown
+      const availableTypes = inAppAdShown 
+        ? ['interstitial', 'pop'] 
+        : adTypes;
+      
+      // Don't show the same ad type twice in a row
+      const filteredTypes = availableTypes.filter(type => type !== lastAdType);
+      const typesToUse = filteredTypes.length > 0 ? filteredTypes : availableTypes;
+      
+      // Random selection
+      const randomIndex = Math.floor(Math.random() * typesToUse.length);
+      lastAdType = typesToUse[randomIndex];
+      return lastAdType;
+    }
+
+    // Show in-app interstitial with configured settings
+    function showInAppInterstitial() {
+      return new Promise((resolve, reject) => {
+        show_9558020({
+          type: 'inApp',
+          inAppSettings: {
+            frequency: 2,
+            capping: 0.1,  // 6 minutes
+            interval: 30,  // 30 seconds between ads
+            timeout: 5,    // 5-second delay before first ad
+            everyPage: false
+          },
+          onDone: () => {
+            inAppAdShown = true;
+            resolve();
+          },
+          onError: (error) => {
+            reject(error);
+          }
+        });
+      });
     }
 
     // Main function to show ad and unlock account
@@ -341,9 +390,15 @@
       
       // Randomly select ad type
       const adType = getRandomAdType();
-      const adPromise = adType === 'pop' 
-        ? show_9558020('pop') 
-        : show_9558020();
+      let adPromise;
+      
+      if (adType === 'inApp') {
+        adPromise = showInAppInterstitial();
+      } else if (adType === 'pop') {
+        adPromise = show_9558020('pop');
+      } else {
+        adPromise = show_9558020();
+      }
       
       // Show the selected ad type
       adPromise.then(() => {
@@ -361,6 +416,11 @@
         `;
         output.style.display = 'block';
         console.error("Ad error:", error);
+        
+        // If in-app ad failed, mark as shown to prevent repeated attempts
+        if (adType === 'inApp') {
+          inAppAdShown = true;
+        }
       });
     }
 
@@ -423,7 +483,7 @@
         counter.textContent = `✨ ${maxAccountsPerDay - accountsUsed} accounts left today`;
         
         // Log successful unlock
-        console.log(`Account unlocked: ${account.email}`);
+        console.log(`Account unlocked with ${lastAdType} ad: ${account.email}`);
         
         // If Telegram WebApp, close after successful unlock
         if (window.Telegram?.WebApp) {
