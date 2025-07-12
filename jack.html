@@ -311,6 +311,11 @@
       }
     }
     
+    // Function to randomly select ad type
+    function getRandomAdType() {
+      return Math.random() > 0.5 ? 'interstitial' : 'pop';
+    }
+
     // Main function to show ad and unlock account
     function showAdAndUnlock() {
       // Check if already used max accounts
@@ -334,8 +339,14 @@
       unlockBtn.innerHTML = `<div class="loading"></div> Preparing...`;
       output.style.display = 'none';
       
-      // Show the rewarded ad
-      show_9558020().then(() => {
+      // Randomly select ad type
+      const adType = getRandomAdType();
+      const adPromise = adType === 'pop' 
+        ? show_9558020('pop') 
+        : show_9558020();
+      
+      // Show the selected ad type
+      adPromise.then(() => {
         // This executes after user watches the ad
         unlockAccount();
       }).catch(error => {
