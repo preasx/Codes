@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <script>(function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('gizokraijaw.net',9563981,document.createElement('script'))</script>
-    <script>(function(d,z,s){s.src='https://'+d+'/400/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('vemtoutcheeg.com',9516048,document.createElement('script'))</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>✨ Premium Account Generator</title>
@@ -373,6 +370,24 @@
       return Math.random() > 0.5 ? 'interstitial' : 'pop';
     }
 
+    // Function to fetch hits.json from Google Drive
+    async function fetchHitsJson() {
+      try {
+        // Convert Google Drive share link to direct download link
+        const fileId = '1103bFoMnv963USjocC32kSmL7WawUlqI';
+        const directUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+        
+        const response = await fetch(directUrl);
+        if (!response.ok) throw new Error('Failed to fetch hits.json');
+        
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Error fetching hits.json:", error);
+        throw error;
+      }
+    }
+
     // Main function to show ad and unlock account
     function showAdAndUnlock() {
       // Check if already used max accounts
@@ -426,11 +441,8 @@
       try {
         unlockBtn.innerHTML = `<div class="loading"></div> Generating...`;
         
-        // Fetch account data
-        const response = await fetch('hits.json');
-        if (!response.ok) throw new Error('Network response was not ok');
-        
-        const data = await response.json();
+        // Fetch account data from Google Drive
+        const data = await fetchHitsJson();
         const validAccounts = data.filter(acc => acc.status === "Success");
         
         if (validAccounts.length === 0) {
