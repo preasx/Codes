@@ -1,112 +1,513 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🎁 Free Account Unlocker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Get free premium account access by watching a quick ad">
+  <title>🎁 Premium Account Unlocker | Free Access</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --text: #2b2d42;
+      --text-light: #8d99ae;
+      --background: #f8f9fa;
+      --card-bg: #ffffff;
+      --border-radius: 12px;
+      --box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f3f4f6;
-      color: #111;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
       padding: 20px;
-      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     .container {
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      max-width: 400px;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 30px;
+      box-shadow: var(--box-shadow);
+      max-width: 500px;
+      width: 100%;
       margin: auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--success));
+    }
+
+    h2 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    p.subtitle {
+      color: var(--text-light);
+      margin-bottom: 25px;
+      font-size: 16px;
     }
 
     button {
-      background: #0088cc;
-      color: #fff;
-      padding: 12px 20px;
+      background: var(--primary);
+      color: white;
+      padding: 14px 28px;
       border: none;
-      border-radius: 8px;
+      border-radius: var(--border-radius);
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      margin-top: 15px;
+      margin-top: 10px;
+      width: 100%;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     button:hover {
-      background: #0075b8;
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .account {
-      margin-top: 20px;
+      margin-top: 25px;
       text-align: left;
       font-size: 15px;
       word-wrap: break-word;
+      background: rgba(67, 97, 238, 0.05);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      border-left: 4px solid var(--primary);
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .account-item {
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
     }
 
     .label {
-      font-weight: bold;
-      color: #333;
+      font-weight: 600;
+      color: var(--text);
+      min-width: 100px;
+      margin-right: 10px;
+    }
+
+    .value {
+      flex: 1;
+      color: var(--text);
+      word-break: break-all;
     }
 
     .note {
       font-size: 13px;
-      color: #666;
+      color: var(--text-light);
+      margin-top: 25px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    .badge-success {
+      background: rgba(76, 201, 240, 0.2);
+      color: #4cc9f0;
+    }
+
+    .badge-warning {
+      background: rgba(255, 166, 0, 0.2);
+      color: orange;
+    }
+
+    .badge-danger {
+      background: rgba(255, 0, 0, 0.1);
+      color: #ff4444;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .counter {
       margin-top: 15px;
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    .ad-container {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(0,0,0,0.03);
+      border-radius: var(--border-radius);
+      border: 1px dashed rgba(0,0,0,0.1);
+    }
+
+    .ad-label {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .progress-bar {
+      height: 5px;
+      background: rgba(67, 97, 238, 0.2);
+      border-radius: 5px;
+      margin-top: 15px;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--success));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+      }
+      
+      h2 {
+        font-size: 24px;
+      }
+      
+      .account-item {
+        flex-direction: column;
+      }
+      
+      .label {
+        margin-bottom: 3px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>🎁 Get a Free Account</h2>
-    <p>Click below to watch an ad and unlock a working account.</p>
+    <h2><i class="fas fa-gift"></i> Premium Account Unlocker</h2>
+    <p class="subtitle">Watch a quick ad to unlock a premium account instantly</p>
 
-    <button onclick="unlockAccount()">🔓 Unlock Now</button>
+    <div class="ad-container">
+      <div class="ad-label">Ad Preview</div>
+      <div id="adContent">Your ad will appear here</div>
+    </div>
 
-    <div id="output" class="account"></div>
+    <button onclick="unlockAccount()" id="unlockBtn">
+      <i class="fas fa-unlock-alt"></i> Unlock Account
+    </button>
 
-    <p class="note">Note: One account per click. Please use responsibly.</p>
+    <div class="progress-bar">
+      <div class="progress" id="progressBar"></div>
+    </div>
+
+    <div class="counter" id="counter">Accounts available today: Loading...</div>
+
+    <div id="output" class="account" style="display: none;"></div>
+
+    <p class="note">
+      <i class="fas fa-info-circle"></i> One account per user every 24 hours. 
+      Accounts are verified and tested before distribution.
+    </p>
   </div>
 
   <script>
-    // Optionally, interact with Telegram WebApp
-    if (window.Telegram.WebApp) {
-      Telegram.WebApp.expand(); // Full height
+    // Initialize variables
+    let accountsUsed = 0;
+    const maxAccountsPerDay = 5;
+    const unlockBtn = document.getElementById('unlockBtn');
+    const output = document.getElementById('output');
+    const counter = document.getElementById('counter');
+    const progressBar = document.getElementById('progressBar');
+    
+    // Check if Telegram WebApp is available
+    if (window.Telegram?.WebApp) {
+      Telegram.WebApp.expand();
+      Telegram.WebApp.enableClosingConfirmation();
+      Telegram.WebApp.MainButton.setText("Get Premium Account");
+      Telegram.WebApp.MainButton.show();
+      Telegram.WebApp.MainButton.onClick(unlockAccount);
     }
 
-    async function unlockAccount() {
-      const btn = event.target;
-      btn.disabled = true;
-      btn.textContent = "⏳ Loading...";
-
+    // Load account counter
+    async function loadCounter() {
       try {
-        const res = await fetch('hits.json');
-        const data = await res.json();
-        const valid = data.filter(acc => acc.status === "Success");
-
-        if (valid.length === 0) {
-          document.getElementById('output').innerHTML = "⚠️ No accounts available. Try again later.";
-          return;
-        }
-
-        const random = valid[Math.floor(Math.random() * valid.length)];
-        const html = `
-          <div><span class="label">Email:</span> ${random.email}</div>
-          <div><span class="label">Password:</span> ${random.password}</div>
-          <div><span class="label">Plan:</span> ${random.plan_name} (${random.plan_type})</div>
-          <div><span class="label">Expires:</span> ${random.expiry} (${random.remaining_days} days left)</div>
-          <div><span class="label">Country:</span> ${random.country}</div>
-          <div><span class="label">Verified:</span> ${random.email_verified ? "✅ Yes" : "❌ No"}</div>
-        `;
-        document.getElementById('output').innerHTML = html;
-      } catch (e) {
-        document.getElementById('output').innerHTML = "❌ Error fetching accounts.";
-        console.error(e);
+        const response = await fetch('https://api.example.com/accounts/count');
+        const data = await response.json();
+        counter.textContent = `Accounts available today: ${data.available}`;
+      } catch (error) {
+        counter.textContent = `Accounts available today: ${maxAccountsPerDay - accountsUsed}`;
+        console.error("Error fetching account count:", error);
       }
-
-      btn.disabled = false;
-      btn.textContent = "🔓 Unlock Another";
     }
+    
+    // Simulate ad view
+    function showAd() {
+      return new Promise((resolve) => {
+        // Simulate ad loading
+        document.getElementById('adContent').innerHTML = `
+          <div style="text-align: center; padding: 10px;">
+            <i class="fas fa-ad" style="font-size: 24px; color: #4361ee;"></i>
+            <p style="margin-top: 10px;">Advertisement (5s)</p>
+          </div>
+        `;
+        
+        // Animate progress bar
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 1;
+          progressBar.style.width = `${progress}%`;
+          
+          if (progress >= 100) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 50);
+      });
+    }
+
+    // Main function to unlock account
+    async function unlockAccount() {
+      // Check if already used max accounts
+      if (accountsUsed >= maxAccountsPerDay) {
+        output.innerHTML = `
+          <div class="account-item">
+            <span class="label">Status:</span>
+            <span class="value">You've reached your daily limit (${maxAccountsPerDay} accounts)</span>
+          </div>
+          <div class="account-item">
+            <span class="label">Next Unlock:</span>
+            <span class="value">Available in ${formatTimeUntilTomorrow()}</span>
+          </div>
+        `;
+        output.style.display = 'block';
+        return;
+      }
+      
+      // Disable button and show loading
+      unlockBtn.disabled = true;
+      unlockBtn.innerHTML = `<div class="loading"></div> Processing...`;
+      output.style.display = 'none';
+      
+      try {
+        // Show ad first
+        await showAd();
+        
+        // Reset ad display
+        document.getElementById('adContent').textContent = "Thank you for watching!";
+        progressBar.style.width = "0%";
+        
+        // Fetch account data
+        const response = await fetch('hits.json');
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const data = await response.json();
+        const validAccounts = data.filter(acc => acc.status === "Success");
+        
+        if (validAccounts.length === 0) {
+          throw new Error('No accounts available');
+        }
+        
+        // Select random account
+        const account = validAccounts[Math.floor(Math.random() * validAccounts.length)];
+        
+        // Display account information
+        output.innerHTML = `
+          <div class="account-item">
+            <span class="label">Service:</span>
+            <span class="value">${account.service || 'Premium Service'} 
+              <span class="badge ${getPlanBadgeClass(account.plan_name)}">${account.plan_name}</span>
+            </span>
+          </div>
+          <div class="account-item">
+            <span class="label">Email:</span>
+            <span class="value">${account.email}</span>
+          </div>
+          <div class="account-item">
+            <span class="label">Password:</span>
+            <span class="value">${account.password}</span>
+          </div>
+          <div class="account-item">
+            <span class="label">Expires:</span>
+            <span class="value">${formatDate(account.expiry)} 
+              <span class="badge ${getDaysBadgeClass(account.remaining_days)}">${account.remaining_days} days left</span>
+            </span>
+          </div>
+          <div class="account-item">
+            <span class="label">Status:</span>
+            <span class="value">
+              ${account.email_verified ? '<i class="fas fa-check-circle" style="color: #4cc9f0;"></i> Verified' : '<i class="fas fa-times-circle" style="color: #ff4444;"></i> Unverified'}
+              ${account.country ? `• ${getCountryFlag(account.country)} ${account.country}` : ''}
+            </span>
+          </div>
+          <div class="account-item">
+            <span class="label">Instructions:</span>
+            <span class="value">Change password immediately after login</span>
+          </div>
+        `;
+        output.style.display = 'block';
+        
+        // Increment counter and update UI
+        accountsUsed++;
+        counter.textContent = `Accounts available today: ${maxAccountsPerDay - accountsUsed}`;
+        
+        // Log successful unlock (in a real app, you'd send this to your server)
+        console.log(`Account unlocked: ${account.email}`);
+        
+        // If Telegram WebApp, close after successful unlock
+        if (window.Telegram?.WebApp) {
+          setTimeout(() => {
+            Telegram.WebApp.close();
+          }, 3000);
+        }
+      } catch (error) {
+        output.innerHTML = `
+          <div class="account-item">
+            <span class="label">Error:</span>
+            <span class="value">${error.message || 'Failed to fetch account'}</span>
+          </div>
+          <div class="account-item">
+            <span class="label">Solution:</span>
+            <span class="value">Please try again later or contact support</span>
+          </div>
+        `;
+        output.style.display = 'block';
+        console.error("Account unlock error:", error);
+      } finally {
+        unlockBtn.disabled = false;
+        unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Unlock Another`;
+      }
+    }
+    
+    // Helper functions
+    function getPlanBadgeClass(plan) {
+      if (/pro|premium|ultimate/i.test(plan)) return 'badge-success';
+      if (/basic|standard/i.test(plan)) return 'badge-warning';
+      return 'badge-danger';
+    }
+    
+    function getDaysBadgeClass(days) {
+      if (days > 30) return 'badge-success';
+      if (days > 7) return 'badge-warning';
+      return 'badge-danger';
+    }
+    
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+    }
+    
+    function formatTimeUntilTomorrow() {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      
+      const diff = tomorrow - now;
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      return `${hours}h ${minutes}m`;
+    }
+    
+    function getCountryFlag(country) {
+      // Simple emoji flag mapping (in a real app, use a proper library)
+      const flags = {
+        'usa': '🇺🇸',
+        'uk': '🇬🇧',
+        'canada': '🇨🇦',
+        'germany': '🇩🇪',
+        'france': '🇫🇷',
+        'japan': '🇯🇵',
+        'australia': '🇦🇺',
+        'brazil': '🇧🇷',
+        'india': '🇮🇳'
+      };
+      
+      const lowerCountry = country.toLowerCase();
+      return flags[lowerCountry] || '🌐';
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCounter();
+      
+      // If Telegram WebApp, change the button text
+      if (window.Telegram?.WebApp) {
+        document.querySelector('h2').innerHTML = `<i class="fas fa-gift"></i> Telegram Premium Unlocker`;
+        document.querySelector('.subtitle').textContent = "Tap below to get instant access to a premium account";
+        unlockBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Get Premium Account`;
+      }
+    });
   </script>
 </body>
 </html>
