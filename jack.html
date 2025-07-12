@@ -373,12 +373,12 @@
     // Function to fetch hits.json from Google Drive
     async function fetchHitsJson() {
       try {
-        // Convert Google Drive share link to direct download link
         const fileId = '1103bFoMnv963USjocC32kSmL7WawUlqI';
-        const directUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+        const response = await fetch(`https://drive.google.com/uc?export=download&id=${fileId}`);
         
-        const response = await fetch(directUrl);
-        if (!response.ok) throw new Error('Failed to fetch hits.json');
+        if (!response.ok) {
+          throw new Error('Failed to fetch hits.json');
+        }
         
         const data = await response.json();
         return data;
