@@ -1,28 +1,28 @@
 [
-    {
-        "timestamp": "2025-07-12 13:49:25",
-        "credentials": "Dahianpaniaguas@gmail.com:Sololeveling1>
-        "email": "Dahianpaniaguas@gmail.com",
-        "password": "Sololeveling10",
-        "email_verified": false,
-        "plan_name": "Free",
-        "plan_type": "FAN",
-        "expiry": "2025-07-20",
-        "remaining_days": 7,
-        "country": "Dominican Republic \ud83c\udde9\ud83c\uddf4>
-        "status": "Success"
-    },
-    {
-        "timestamp": "2025-07-12 13:51:17",
-        "credentials": "sekaiprime682@gmail.com:Aguadefresa.289>
-        "email": "sekaiprime682@gmail.com",
-        "password": "Aguadefresa.2898",
-        "email_verified": true,
-        "plan_name": "Free",
-        "plan_type": "FAN",
-        "expiry": "2026-03-21",
-        "remaining_days": 251,
-        "country": "India \ud83c\uddee\ud83c\uddf3",
-        "status": "Success"
-    }
+  {
+    "timestamp": "2025-07-12 13:49:25",
+    "credentials": "Dahianpaniaguas@gmail.com:Sololeveling10",
+    "email": "Dahianpaniaguas@gmail.com",
+    "password": "Sololeveling10",
+    "email_verified": false,
+    "plan_name": "Free",
+    "plan_type": "FAN",
+    "expiry": "2025-07-20",
+    "remaining_days": 7,
+    "country": "Dominican Republic 🇩🇴",
+    "status": "Success"
+  },
+  {
+    "timestamp": "2025-07-12 13:51:17",
+    "credentials": "sekaiprime682@gmail.com:Aguadefresa.2898",
+    "email": "sekaiprime682@gmail.com",
+    "password": "Aguadefresa.2898",
+    "email_verified": true,
+    "plan_name": "Free",
+    "plan_type": "FAN",
+    "expiry": "2026-03-21",
+    "remaining_days": 251,
+    "country": "India 🇮🇳",
+    "status": "Success"
+  }
 ]
