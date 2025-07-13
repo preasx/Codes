@@ -2,33 +2,84 @@
 <html>
 <head>
   <title>GameMonetize Ad Test</title>
+  <meta charset="UTF-8">
 </head>
-<body>
-  <h2>🎥 Watch an Ad to Unlock Content</h2>
-  <button id="adButton">▶ Watch Ad</button>
+<body style="font-family:sans-serif; padding:20px; background:#f9f9f9;">
+
+  <h2>🎮 GameMonetize Ad Types</h2>
+  <p>Click a button to load the ad:</p>
+
+  <button onclick="showInterstitial()">🔁 Show Interstitial Ad</button><br><br>
+  <button onclick="showRewarded()">🎥 Show Rewarded Video Ad</button><br><br>
+  <button onclick="loadWalkthrough()">🧠 Load Walkthrough Ad</button>
+
+  <div id="walkthrough-container" style="margin-top:30px;"></div>
 
   <script>
-    // Dynamically load the GameMonetize script
+    // Load GameMonetize script dynamically
     const script = document.createElement("script");
     script.src = "https://html5.api.gamemonetize.com/main.min.js";
-    script.onload = () => {
-      document.getElementById("adButton").addEventListener("click", () => {
-        if (typeof GameMonetizeAPI !== "undefined") {
-          GameMonetizeAPI.load({
-            adType: "rewarded",
-            onAdComplete: function () {
-              alert("✅ Ad finished! Unlock successful.");
-            },
-            onAdBlocked: function () {
-              alert("⚠️ Ad failed — maybe adblock or private DNS?");
-            }
-          });
-        } else {
-          alert("❌ API still not loaded.");
-        }
-      });
-    };
+    script.onload = () => console.log("✅ GameMonetize API loaded");
+    script.onerror = () => alert("❌ Failed to load GameMonetize API (check adblock, domain, or DNS settings)");
     document.head.appendChild(script);
+
+    function showInterstitial() {
+      if (typeof GameMonetizeAPI !== "undefined") {
+        GameMonetizeAPI.load({
+          adType: "interstitial",
+          onAdComplete: function () {
+            alert("✅ Interstitial Ad finished.");
+          },
+          onAdBlocked: function () {
+            alert("❌ Interstitial Ad blocked.");
+          }
+        });
+      } else {
+        alert("❌ Interstitial: API not loaded.");
+      }
+    }
+
+    function showRewarded() {
+      if (typeof GameMonetizeAPI !== "undefined") {
+        GameMonetizeAPI.load({
+          adType: "rewarded",
+          onAdComplete: function () {
+            alert("✅ Rewarded Ad completed. Unlock the content.");
+          },
+          onAdBlocked: function () {
+            alert("❌ Rewarded Ad blocked.");
+          }
+        });
+      } else {
+        alert("❌ Rewarded: API not loaded.");
+      }
+    }
+
+    function loadWalkthrough() {
+      // Insert walkthrough container with GameMonetize embed
+      document.getElementById("walkthrough-container").innerHTML = `
+        <div id="gamemonetize-video"></div>
+        <script type="text/javascript">
+          window.VIDEO_OPTIONS = {
+            gameid : "4kci7og3klgj0ivy2wz3gdvd9dth5e7n", // example game ID
+            width  : "100%",
+            height : "480px",
+            color  : "#3f007e",
+            getads : "true"
+          };
+          (function(a,b,c){
+            var d = a.getElementsByTagName(b)[0];
+            a.getElementById(c) || (
+              a = a.createElement(b),
+              a.id = c,
+              a.src = "https://api.gamemonetize.com/video.js",
+              d.parentNode.insertBefore(a,d)
+            );
+          })(document,"script","gamemonetize-video-api");
+        <\/script>
+      `;
+    }
   </script>
+
 </body>
 </html>
