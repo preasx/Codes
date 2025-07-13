@@ -1,108 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🎮 GameMonetize Ads Demo</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #f1f1f1;
-      padding: 20px;
-    }
-    h2 {
-      color: #3f007e;
-    }
-    button {
-      margin: 10px 0;
-      padding: 12px 20px;
-      font-size: 16px;
-      background: #3f007e;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #5d12b3;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameMonetize Ads Demo</title>
+    <script src="https://html5.api.gamemonetize.com/main.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .ad-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .ad-section h2 {
+            color: #3498db;
+            margin-top: 0;
+        }
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .ad-type {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .instructions {
+            background: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+        .instructions ul {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>GameMonetize Ad Implementation</h1>
+        
+        <!-- API Status Check -->
+        <div class="ad-section">
+            <h2>API Status Check</h2>
+            <div id="apiStatus">Checking GameMonetize API...</div>
+        </div>
+        
+        <!-- Interstitial Ad -->
+        <div class="ad-section">
+            <h2>Show Interstitial Ad</h2>
+            <p>Full-screen ads that appear at natural breaks in gameplay</p>
+            <button class="btn" id="interstitialBtn" onclick="showAd('interstitial')">▶ Show Interstitial</button>
+            <div id="interstitialStatus" class="status"></div>
+        </div>
+        
+        <!-- Rewarded Video Ad -->
+        <div class="ad-section">
+            <h2>Show Rewarded Video</h2>
+            <p>Voluntary ads where users earn rewards for watching</p>
+            <button class="btn" id="rewardedBtn" onclick="showAd('rewarded')">▶ Show Rewarded Video</button>
+            <div id="rewardedStatus" class="status"></div>
+        </div>
+        
+        <!-- Watchthrough Ad -->
+        <div class="ad-section">
+            <h2>Load Watchthrough</h2>
+            <p>Ads shown during natural viewing experiences (e.g., between levels)</p>
+            <button class="btn" id="watchthroughBtn" onclick="showAd('watchthrough')">▶ Load Watchthrough</button>
+            <div id="watchthroughStatus" class="status"></div>
+        </div>
+        
+        <!-- Implementation Notes -->
+        <div class="instructions">
+            <h3>Implementation Notes:</h3>
+            <ul>
+                <li>Ads may not show if domain is not whitelisted in GameMonetize dashboard</li>
+                <li>Ad blockers will prevent ads from loading (check console for errors)</li>
+                <li>Rewarded ads require explicit user action to initiate</li>
+                <li>Always handle both success and error cases</li>
+                <li>Test in different browsers (Chrome, Firefox, Edge)</li>
+                <li>Ensure proper user feedback during loading states</li>
+            </ul>
+        </div>
+    </div>
 
-  <h2>🎮 GameMonetize Ad Types</h2>
-  <p>Click a button to test each ad type:</p>
+    <script>
+        // Global state management
+        const adStates = {
+            interstitial: { btn: 'interstitialBtn', status: 'interstitialStatus' },
+            rewarded: { btn: 'rewardedBtn', status: 'rewardedStatus' },
+            watchthrough: { btn: 'watchthroughBtn', status: 'watchthroughStatus' }
+        };
 
-  <button onclick="showInterstitial()">🔁 Show Interstitial Ad</button><br>
-  <button onclick="showRewarded()">🎥 Show Rewarded Video Ad</button><br>
-  <button onclick="loadWalkthrough()">🧠 Load Walkthrough Video Ad</button>
-
-  <div id="walkthrough-container" style="margin-top: 30px;"></div>
-
-  <script>
-    // Load GameMonetize API script dynamically
-    const script = document.createElement("script");
-    script.src = "https://html5.api.gamemonetize.com/main.min.js";
-    script.onload = () => console.log("✅ GameMonetize API Loaded");
-    script.onerror = () => alert("❌ Failed to load GameMonetize API (check adblock, DNS, or domain setup)");
-    document.head.appendChild(script);
-
-    function showInterstitial() {
-      if (window.GameMonetizeAPI) {
-        GameMonetizeAPI.load({
-          adType: "interstitial",
-          onAdComplete: function () {
-            alert("✅ Interstitial Ad completed");
-          },
-          onAdBlocked: function () {
-            alert("⚠️ Interstitial Ad blocked");
-          }
-        });
-      } else {
-        alert("❌ Interstitial: API not loaded yet");
-      }
-    }
-
-    function showRewarded() {
-      if (window.GameMonetizeAPI) {
-        GameMonetizeAPI.load({
-          adType: "rewarded",
-          onAdComplete: function () {
-            alert("✅ Rewarded Ad complete! You can now unlock premium.");
-          },
-          onAdBlocked: function () {
-            alert("⚠️ Rewarded Ad blocked");
-          }
-        });
-      } else {
-        alert("❌ Rewarded: API not loaded yet");
-      }
-    }
-
-    function loadWalkthrough() {
-      document.getElementById("walkthrough-container").innerHTML = `
-        <div id="gamemonetize-video"></div>
-        <script>
-          window.VIDEO_OPTIONS = {
-            gameid : "4kci7og3klgj0ivy2wz3gdvd9dth5e7n", // Example Game ID
-            width  : "100%",
-            height : "480px",
-            color  : "#3f007e",
-            getads : "true"
-          };
-          (function(a,b,c){
-            var d = a.getElementsByTagName(b)[0];
-            if (!a.getElementById(c)) {
-              var s = a.createElement(b);
-              s.id = c;
-              s.src = "https://api.gamemonetize.com/video.js";
-              d.parentNode.insertBefore(s,d);
+        // Check API availability on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiStatus = document.getElementById('apiStatus');
+            
+            if (typeof GameMonetizeAPI === 'undefined') {
+                apiStatus.innerHTML = '❌ Failed to load GameMonetize API';
+                apiStatus.className = 'status error';
+                
+                // Disable all buttons
+                Object.values(adStates).forEach(state => {
+                    document.getElementById(state.btn).disabled = true;
+                });
+                
+                console.error('GameMonetize API failed to load. Possible causes:');
+                console.error('1. Ad blocker blocking the script');
+                console.error('2. Domain not whitelisted in GameMonetize dashboard');
+                console.error('3. Network issues or DNS problems');
+            } else {
+                apiStatus.innerHTML = '✅ GameMonetize API loaded successfully';
+                apiStatus.className = 'status success';
             }
-          })(document,"script","gamemonetize-video-api");
-        <\/script>
-      `;
-    }
-  </script>
+        });
 
+        function showAd(adType) {
+            const state = adStates[adType];
+            const btn = document.getElementById(state.btn);
+            const statusEl = document.getElementById(state.status);
+            
+            // Validate ad type
+            if (!['interstitial', 'rewarded', 'watchthrough'].includes(adType)) {
+                showStatus(statusEl, `Invalid ad type: ${adType}`, 'error');
+                return;
+            }
+            
+            // Validate API
+            if (typeof GameMonetizeAPI === 'undefined') {
+                showStatus(statusEl, 'GameMonetize API not loaded', 'error');
+                return;
+            }
+            
+            // Update UI
+            btn.disabled = true;
+            showStatus(statusEl, `⌛ Loading ${adType} ad...`, 'loading');
+            
+            // Ad configuration
+            const adConfig = {
+                adType: adType === 'watchthrough' ? 'rewarded' : adType,
+                onAdLoaded: function() {
+                    showStatus(statusEl, `✅ ${adType} ad loaded! Playing now...`, 'success');
+                },
+                onAdError: function(error) {
+                    showStatus(statusEl, `❌ ${adType} failed: ${error || 'Unknown error'}`, 'error');
+                    btn.disabled = false;
+                },
+                onAdComplete: function() {
+                    showStatus(statusEl, `🎉 ${adType} completed! Reward user here.`, 'success');
+                    btn.disabled = false;
+                    
+                    // Special handling for watchthrough
+                    if (adType === 'watchthrough') {
+                        setTimeout(() => {
+                            showStatus(statusEl, 'Content unlocked!', 'success');
+                        }, 1500);
+                    }
+                }
+            };
+            
+            // Watchthrough has special timing requirements
+            if (adType === 'watchthrough') {
+                adConfig.onAdLoaded = function() {
+                    showStatus(statusEl, '✅ Watchthrough loaded. Will play automatically...', 'success');
+                    
+                    // Auto-play after short delay to simulate natural break
+                    setTimeout(() => {
+                        GameMonetizeAPI.show();
+                    }, 1000);
+                };
+            }
+            
+            // Load the ad
+            try {
+                GameMonetizeAPI.load(adConfig);
+            } catch (e) {
+                showStatus(statusEl, `⛔ Exception: ${e.message}`, 'error');
+                btn.disabled = false;
+            }
+        }
+
+        function showStatus(element, message, type) {
+            element.innerHTML = message;
+            element.className = 'status ' + type;
+            element.style.display = 'block';
+        }
+    </script>
 </body>
 </html>
