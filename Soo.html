@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Video Ad Test</title>
+  <script src="https://html5.api.gamemonetize.com/main.min.js"></script>
+</head>
+<body>
+  <h1>Watch an Ad to Continue</h1>
+  <button onclick="showAd()">Watch Ad</button>
+
+  <script>
+    function showAd() {
+      GameMonetizeAPI.load({
+        adType: "rewarded",
+        onAdComplete: function () {
+          alert("Ad completed! Now showing hidden content...");
+          // show content or redirect here
+        }
+      });
+    }
+  </script>
+</body>
+</html>
