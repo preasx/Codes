@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Video Ad Test</title>
+  <title>Test Ad</title>
   <script src="https://html5.api.gamemonetize.com/main.min.js"></script>
 </head>
 <body>
-  <h1>Watch an Ad to Continue</h1>
-  <button onclick="showAd()">Watch Ad</button>
+  <h2>🎥 Watch an Ad to Unlock Content</h2>
+  <button onclick="showAd()">▶ Watch Video Ad</button>
 
   <script>
     function showAd() {
-      GameMonetizeAPI.load({
-        adType: "rewarded",
-        onAdComplete: function () {
-          alert("Ad completed! Now showing hidden content...");
-          // show content or redirect here
-        }
-      });
+      if (typeof GameMonetizeAPI !== "undefined") {
+        GameMonetizeAPI.load({
+          adType: "rewarded", // or "interstitial"
+          onAdComplete: function () {
+            alert("✅ Ad finished! You can now access the content.");
+          }
+        });
+      } else {
+        alert("❌ GameMonetizeAPI not loaded. Check if script is blocked.");
+      }
     }
   </script>
 </body>
