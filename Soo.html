@@ -1,30 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Rewarded Ad Test</title>
-  <script src="https://html5.api.gamemonetize.com/main.min.js"></script>
+  <title>GameMonetize Ad Test</title>
 </head>
 <body>
-  <h2>🎥 Watch Ad to Unlock</h2>
-  <button onclick="showAd()">▶ Watch Video Ad</button>
+  <h2>🎥 Watch an Ad to Unlock Content</h2>
+  <button id="adButton">▶ Watch Ad</button>
 
   <script>
-    function showAd() {
-      // Wait for API to fully load
-      if (typeof GameMonetizeAPI !== "undefined") {
-        GameMonetizeAPI.load({
-          adType: "rewarded", // interstitial also works
-          onAdComplete: function () {
-            alert("✅ Ad finished! You can now access the content.");
-          },
-          onAdBlocked: function () {
-            alert("⚠️ Ad could not be loaded — make sure adblock is off.");
-          }
-        });
-      } else {
-        alert("❌ GameMonetizeAPI not loaded. Check if the script is blocked or failed to load.");
-      }
-    }
+    // Dynamically load the GameMonetize script
+    const script = document.createElement("script");
+    script.src = "https://html5.api.gamemonetize.com/main.min.js";
+    script.onload = () => {
+      document.getElementById("adButton").addEventListener("click", () => {
+        if (typeof GameMonetizeAPI !== "undefined") {
+          GameMonetizeAPI.load({
+            adType: "rewarded",
+            onAdComplete: function () {
+              alert("✅ Ad finished! Unlock successful.");
+            },
+            onAdBlocked: function () {
+              alert("⚠️ Ad failed — maybe adblock or private DNS?");
+            }
+          });
+        } else {
+          alert("❌ API still not loaded.");
+        }
+      });
+    };
+    document.head.appendChild(script);
   </script>
 </body>
 </html>
