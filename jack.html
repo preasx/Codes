@@ -430,17 +430,6 @@
       margin-left: 5px;
     }
 
-    .error-message {
-      margin-top: 15px;
-      padding: 10px;
-      background: rgba(255, 107, 107, 0.1);
-      border-radius: var(--border-radius);
-      border-left: 3px solid var(--error);
-      color: var(--error);
-      text-align: center;
-      display: none;
-    }
-
     @media (max-width: 480px) {
       .container {
         padding: 20px;
@@ -493,10 +482,6 @@
       <button class="mode-btn" id="instantModeBtn">Instant Mode</button>
     </div>
 
-    <div class="error-message" id="errorMessage">
-      Please watch the full ad (at least 15 seconds) before proceeding. Try again.
-    </div>
-
     <div class="ad-container">
       <div class="ad-label">Ad Will Appear Here</div>
       <div id="adContent">Ready to show ad</div>
@@ -536,7 +521,7 @@
     // Constants
     const MAX_NORMAL_ACCOUNTS = 5;
     const BASE_COOLDOWN = 30 * 60 * 1000; // 30 minutes in milliseconds
-    const MIN_AD_VIEWING_TIME = 15 * 1000; // 15 seconds in milliseconds
+    const AD_VIEWING_TIME = 15 * 1000; // 15 seconds in milliseconds
     const COOLDOWN_INCREMENT = 10 * 60 * 1000; // 10 minutes
     const GIST_URL = 'https://gist.githubusercontent.com/preasx/53cccb980cdf37f5e40146bdee2d9544/raw/74f4f5000c2592123422f39fb5b99d2a8d15abe4/gistfile1.txt';
     
@@ -552,8 +537,7 @@
       adViewingTimer: null,
       adViewingProgress: 0,
       currentMode: 'normal', // 'normal' or 'instant'
-      isAdInProgress: false,
-      adViewingComplete: false
+      isAdInProgress: false
     };
     
     // DOM elements
@@ -572,7 +556,6 @@
     const nextAdCostElement = document.getElementById('nextAdCost');
     const normalModeBtn = document.getElementById('normalModeBtn');
     const instantModeBtn = document.getElementById('instantModeBtn');
-    const errorMessage = document.getElementById('errorMessage');
 
     // Initialize the application
     function init() {
@@ -788,10 +771,6 @@
       state.adsWatched = 0;
       state.adViewingProgress = 0;
       state.isAdInProgress = true;
-      state.adViewingComplete = false;
-      
-      // Hide error message if shown
-      errorMessage.style.display = 'none';
       
       // Update UI for ad viewing
       unlockBtn.disabled = true;
@@ -807,11 +786,13 @@
     function showNextAd() {
       state.adsWatched++;
       state.adViewingStart = Date.now();
-      state.adViewingComplete = false;
+      
+      // Reset timer UI
+      progressBar.style.width = '0%';
+      timerElement.textContent = '15s';
       
       // Update UI
       timerContainer.style.display = 'block';
-      updateTimerDisplay();
       
       // Randomly select ad type
       const adType = Math.random() > 0.5 ? 'interstitial' : 'pop';
@@ -820,20 +801,20 @@
       // Start the timer for ad viewing
       state.adViewingTimer = setInterval(() => {
         const timeElapsed = Date.now() - state.adViewingStart;
-        state.adViewingProgress = Math.min(timeElapsed / MIN_AD_VIEWING_TIME * 100, 100);
+        state.adViewingProgress = Math.min(timeElapsed / AD_VIEWING_TIME * 100, 100);
         
         updateTimerDisplay();
         
-        if (timeElapsed >= MIN_AD_VIEWING_TIME) {
-          state.adViewingComplete = true;
+        if (timeElapsed >= AD_VIEWING_TIME) {
+          clearInterval(state.adViewingTimer);
+          onAdViewingComplete();
         }
       }, 100);
       
       // Show the selected ad type
       adPromise.then(() => {
         // User watched the ad (but might have closed early)
-        clearInterval(state.adViewingTimer);
-        onAdViewingComplete();
+        console.log(`Ad ${state.adsWatched}/${state.adsRequired} watched`);
       }).catch(error => {
         // Handle ad error
         clearInterval(state.adViewingTimer);
@@ -843,7 +824,7 @@
     
     // Update the timer display
     function updateTimerDisplay() {
-      const timeRemaining = Math.max(0, MIN_AD_VIEWING_TIME - (Date.now() - state.adViewingStart));
+      const timeRemaining = Math.max(0, AD_VIEWING_TIME - (Date.now() - state.adViewingStart));
       timerElement.textContent = `${Math.ceil(timeRemaining / 1000)}s`;
       progressBar.style.width = `${state.adViewingProgress}%`;
       
@@ -859,18 +840,8 @@
     
     // Called when ad viewing is complete (either fully watched or closed early)
     function onAdViewingComplete() {
+      clearInterval(state.adViewingTimer);
       timerContainer.style.display = 'none';
-      
-      // Check if user watched the full ad
-      if (!state.adViewingComplete) {
-        errorMessage.style.display = 'block';
-        state.isAdInProgress = false;
-        
-        unlockBtn.disabled = false;
-        unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Try Again`;
-        unlockBtn.onclick = initiateAccountGeneration;
-        return;
-      }
       
       // Check if user watched enough ads
       if (state.adsWatched >= state.adsRequired) {
@@ -883,7 +854,7 @@
         
         // Reset button for next ad
         unlockBtn.disabled = false;
-        unlockBtn.innerHTML = `<i class="fas fa-ad"></i> Watch Next Ad (${state.adsRequired - state.adsWatched} left)`;
+        unlockBtn.innerHTML = `<i class="fas fa-ad"></i> Watch Next Ad`;
         unlockBtn.onclick = showNextAd;
       }
     }
