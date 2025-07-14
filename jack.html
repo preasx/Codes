@@ -430,6 +430,27 @@
       margin-left: 5px;
     }
 
+    .ad-progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .ad-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .ad-dot.active {
+      background: var(--accent);
+      transform: scale(1.2);
+    }
+
     @media (max-width: 480px) {
       .container {
         padding: 20px;
@@ -493,6 +514,7 @@
       <div class="progress-container">
         <div class="progress-bar" id="progressBar"></div>
       </div>
+      <div class="ad-progress" id="adProgress"></div>
     </div>
 
     <button onclick="initiateAccountGeneration()" id="unlockBtn">
@@ -556,6 +578,7 @@
     const nextAdCostElement = document.getElementById('nextAdCost');
     const normalModeBtn = document.getElementById('normalModeBtn');
     const instantModeBtn = document.getElementById('instantModeBtn');
+    const adProgress = document.getElementById('adProgress');
 
     // Initialize the application
     function init() {
@@ -778,14 +801,47 @@
       output.style.display = 'none';
       adRequirements.style.display = 'none';
       
+      // Create ad progress dots
+      createAdProgressDots();
+      
       // Show the first ad
       showNextAd();
+    }
+    
+    // Create progress dots for instant mode
+    function createAdProgressDots() {
+      if (state.currentMode === 'instant') {
+        adProgress.innerHTML = '';
+        for (let i = 0; i < state.adsRequired; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'ad-dot';
+          if (i === 0) dot.classList.add('active');
+          adProgress.appendChild(dot);
+        }
+      }
+    }
+    
+    // Update ad progress dots
+    function updateAdProgressDots() {
+      const dots = document.querySelectorAll('.ad-dot');
+      dots.forEach((dot, index) => {
+        if (index < state.adsWatched) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
     }
     
     // Show the next ad in sequence
     function showNextAd() {
       state.adsWatched++;
       state.adViewingStart = Date.now();
+      
+      // Update progress dots
+      if (state.currentMode === 'instant') {
+        updateAdProgressDots();
+      }
       
       // Reset timer UI
       progressBar.style.width = '0%';
@@ -841,21 +897,27 @@
     // Called when ad viewing is complete (either fully watched or closed early)
     function onAdViewingComplete() {
       clearInterval(state.adViewingTimer);
-      timerContainer.style.display = 'none';
       
       // Check if user watched enough ads
       if (state.adsWatched >= state.adsRequired) {
         // Proceed with account generation
         unlockAccount();
       } else {
-        // Show how many more ads are needed
-        requiredAdsElement.textContent = state.adsRequired - state.adsWatched;
-        adRequirements.style.display = 'block';
-        
-        // Reset button for next ad
-        unlockBtn.disabled = false;
-        unlockBtn.innerHTML = `<i class="fas fa-ad"></i> Watch Next Ad`;
-        unlockBtn.onclick = showNextAd;
+        // For instant mode, show the next ad automatically
+        if (state.currentMode === 'instant') {
+          showNextAd();
+        } 
+        // For normal mode, show how many more ads are needed
+        else {
+          timerContainer.style.display = 'none';
+          requiredAdsElement.textContent = state.adsRequired - state.adsWatched;
+          adRequirements.style.display = 'block';
+          
+          // Reset button for next ad
+          unlockBtn.disabled = false;
+          unlockBtn.innerHTML = `<i class="fas fa-ad"></i> Watch Next Ad`;
+          unlockBtn.onclick = showNextAd;
+        }
       }
     }
     
@@ -873,6 +935,12 @@
           <span class="label">Error</span>
           <span class="value">Ad couldn't load. Please try again.</span>
         </div>
+        ${state.currentMode === 'instant' && state.adsWatched > 0 ? `
+        <div class="account-item">
+          <span class="label">Progress</span>
+          <span class="value">${state.adsWatched} of ${state.adsRequired} ads completed</span>
+        </div>
+        ` : ''}
       `;
       output.style.display = 'block';
       console.error("Ad error:", error);
@@ -883,6 +951,7 @@
       try {
         state.isAdInProgress = false;
         unlockBtn.innerHTML = `<div class="loading"></div> Generating...`;
+        timerContainer.style.display = 'none';
         
         // Fetch account data from Gist
         const response = await fetch(GIST_URL);
@@ -987,7 +1056,7 @@
     
     // Update ad requirements display
     function updateAdRequirements() {
-      if (state.adsWatched > 0 && state.adsWatched < state.adsRequired) {
+      if (state.adsWatched > 0 && state.adsWatched < state.adsRequired && state.currentMode === 'normal') {
         requiredAdsElement.textContent = state.adsRequired - state.adsWatched;
         adRequirements.style.display = 'block';
       } else {
