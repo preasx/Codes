@@ -430,15 +430,25 @@
       margin-left: 5px;
     }
 
-    .error-message {
-      margin-top: 15px;
-      padding: 10px;
-      background: rgba(255, 107, 107, 0.1);
-      border-radius: var(--border-radius);
-      border-left: 3px solid var(--error);
-      color: var(--error);
-      text-align: center;
-      display: none;
+    .ad-progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .ad-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .ad-dot.active {
+      background: var(--accent);
+      transform: scale(1.2);
     }
 
     @media (max-width: 480px) {
@@ -493,10 +503,6 @@
       <button class="mode-btn" id="instantModeBtn">Instant Mode</button>
     </div>
 
-    <div class="error-message" id="errorMessage">
-      Please watch the full ad (at least 15 seconds) before proceeding. Try again.
-    </div>
-
     <div class="ad-container">
       <div class="ad-label">Ad Will Appear Here</div>
       <div id="adContent">Ready to show ad</div>
@@ -508,6 +514,7 @@
       <div class="progress-container">
         <div class="progress-bar" id="progressBar"></div>
       </div>
+      <div class="ad-progress" id="adProgress"></div>
     </div>
 
     <button onclick="initiateAccountGeneration()" id="unlockBtn">
@@ -536,7 +543,7 @@
     // Constants
     const MAX_NORMAL_ACCOUNTS = 5;
     const BASE_COOLDOWN = 30 * 60 * 1000; // 30 minutes in milliseconds
-    const MIN_AD_VIEWING_TIME = 15 * 1000; // 15 seconds in milliseconds
+    const AD_VIEWING_TIME = 15 * 1000; // 15 seconds in milliseconds
     const COOLDOWN_INCREMENT = 10 * 60 * 1000; // 10 minutes
     const GIST_URL = 'https://gist.githubusercontent.com/preasx/53cccb980cdf37f5e40146bdee2d9544/raw/74f4f5000c2592123422f39fb5b99d2a8d15abe4/gistfile1.txt';
     
@@ -551,9 +558,8 @@
       adViewingStart: 0,
       adViewingTimer: null,
       adViewingProgress: 0,
-      currentMode: 'normal',
-      isAdInProgress: false,
-      adViewingComplete: false
+      currentMode: 'normal', // 'normal' or 'instant'
+      isAdInProgress: false
     };
     
     // DOM elements
@@ -572,7 +578,7 @@
     const nextAdCostElement = document.getElementById('nextAdCost');
     const normalModeBtn = document.getElementById('normalModeBtn');
     const instantModeBtn = document.getElementById('instantModeBtn');
-    const errorMessage = document.getElementById('errorMessage');
+    const adProgress = document.getElementById('adProgress');
 
     // Initialize the application
     function init() {
@@ -580,8 +586,11 @@
       updateUI();
       loadCounter();
       setupEventListeners();
+      
+      // Set up mode buttons
       updateModeButtons();
       
+      // If Telegram WebApp is available
       if (window.Telegram?.WebApp) {
         Telegram.WebApp.expand();
         Telegram.WebApp.enableClosingConfirmation();
@@ -594,6 +603,7 @@
         unlockBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Get Premium`;
       }
       
+      // Check cooldown periodically
       setInterval(checkCooldown, 1000);
     }
     
@@ -678,6 +688,7 @@
       accountsTodayElement.textContent = `${state.normalAccountsToday}/${MAX_NORMAL_ACCOUNTS}`;
       nextAdCostElement.textContent = state.adsRequired;
       
+      // Color coding based on usage
       if (state.normalAccountsToday >= MAX_NORMAL_ACCOUNTS) {
         accountsTodayElement.style.color = 'var(--error)';
       } else if (state.normalAccountsToday >= MAX_NORMAL_ACCOUNTS - 2) {
@@ -722,6 +733,7 @@
       const remainingCooldown = state.currentCooldown - timeSinceLastGen;
       
       if (state.lastGenerationTime > 0 && remainingCooldown > 0) {
+        // Still in cooldown
         const minutes = Math.ceil(remainingCooldown / (60 * 1000));
         cooldownTimerElement.textContent = `${minutes}m`;
         cooldownTimerElement.style.color = 'var(--error)';
@@ -729,6 +741,7 @@
         cooldownTimeElement.textContent = formatTime(remainingCooldown);
         cooldownInfo.style.display = 'block';
       } else {
+        // Cooldown finished
         cooldownTimerElement.textContent = 'Ready';
         cooldownTimerElement.style.color = 'var(--success)';
         cooldownInfo.style.display = 'none';
@@ -752,80 +765,114 @@
     // Initiate account generation process
     function initiateAccountGeneration() {
       if (state.currentMode === 'normal') {
-        startNormalModeProcess();
-      } else {
-        startInstantModeProcess();
-      }
-    }
-    
-    // Handle normal mode process
-    function startNormalModeProcess() {
-      if (state.normalAccountsToday >= MAX_NORMAL_ACCOUNTS) {
-        setMode('instant');
-        return;
-      }
-      
-      const now = Date.now();
-      const timeSinceLastGen = now - state.lastGenerationTime;
-      if (state.lastGenerationTime > 0 && timeSinceLastGen < state.currentCooldown) {
-        const remainingTime = state.currentCooldown - timeSinceLastGen;
-        cooldownTimeElement.textContent = formatTime(remainingTime);
-        cooldownInfo.style.display = 'block';
-        return;
+        if (state.normalAccountsToday >= MAX_NORMAL_ACCOUNTS) {
+          setMode('instant');
+          return;
+        }
+        
+        // Check cooldown
+        const now = Date.now();
+        const timeSinceLastGen = now - state.lastGenerationTime;
+        if (state.lastGenerationTime > 0 && timeSinceLastGen < state.currentCooldown) {
+          const remainingTime = state.currentCooldown - timeSinceLastGen;
+          cooldownTimeElement.textContent = formatTime(remainingTime);
+          cooldownInfo.style.display = 'block';
+          return;
+        }
+        
+        // Normal mode requires 1 ad
+        state.adsRequired = 1;
       }
       
-      state.adsRequired = 1;
-      startAdViewing();
-    }
-    
-    // Handle instant mode process
-    function startInstantModeProcess() {
+      // Start ad viewing process
       startAdViewing();
     }
     
     // Start the ad viewing process
     function startAdViewing() {
+      // Reset ad viewing state
       state.adsWatched = 0;
       state.adViewingProgress = 0;
       state.isAdInProgress = true;
-      state.adViewingComplete = false;
       
-      errorMessage.style.display = 'none';
+      // Update UI for ad viewing
       unlockBtn.disabled = true;
       unlockBtn.innerHTML = `<div class="loading"></div> Preparing Ad...`;
       output.style.display = 'none';
       adRequirements.style.display = 'none';
       
+      // Create ad progress dots
+      createAdProgressDots();
+      
+      // Show the first ad
       showNextAd();
+    }
+    
+    // Create progress dots for instant mode
+    function createAdProgressDots() {
+      if (state.currentMode === 'instant') {
+        adProgress.innerHTML = '';
+        for (let i = 0; i < state.adsRequired; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'ad-dot';
+          if (i === 0) dot.classList.add('active');
+          adProgress.appendChild(dot);
+        }
+      }
+    }
+    
+    // Update ad progress dots
+    function updateAdProgressDots() {
+      const dots = document.querySelectorAll('.ad-dot');
+      dots.forEach((dot, index) => {
+        if (index < state.adsWatched) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
     }
     
     // Show the next ad in sequence
     function showNextAd() {
       state.adsWatched++;
       state.adViewingStart = Date.now();
-      state.adViewingComplete = false;
       
+      // Update progress dots
+      if (state.currentMode === 'instant') {
+        updateAdProgressDots();
+      }
+      
+      // Reset timer UI
+      progressBar.style.width = '0%';
+      timerElement.textContent = '15s';
+      
+      // Update UI
       timerContainer.style.display = 'block';
-      updateTimerDisplay();
       
+      // Randomly select ad type
       const adType = Math.random() > 0.5 ? 'interstitial' : 'pop';
       const adPromise = adType === 'pop' ? show_9558020('pop') : show_9558020();
       
+      // Start the timer for ad viewing
       state.adViewingTimer = setInterval(() => {
         const timeElapsed = Date.now() - state.adViewingStart;
-        state.adViewingProgress = Math.min(timeElapsed / MIN_AD_VIEWING_TIME * 100, 100);
+        state.adViewingProgress = Math.min(timeElapsed / AD_VIEWING_TIME * 100, 100);
         
         updateTimerDisplay();
         
-        if (timeElapsed >= MIN_AD_VIEWING_TIME) {
-          state.adViewingComplete = true;
+        if (timeElapsed >= AD_VIEWING_TIME) {
+          clearInterval(state.adViewingTimer);
+          onAdViewingComplete();
         }
       }, 100);
       
+      // Show the selected ad type
       adPromise.then(() => {
-        clearInterval(state.adViewingTimer);
-        onAdViewingComplete();
+        // User watched the ad (but might have closed early)
+        console.log(`Ad ${state.adsWatched}/${state.adsRequired} watched`);
       }).catch(error => {
+        // Handle ad error
         clearInterval(state.adViewingTimer);
         onAdViewingError(error);
       });
@@ -833,10 +880,11 @@
     
     // Update the timer display
     function updateTimerDisplay() {
-      const timeRemaining = Math.max(0, MIN_AD_VIEWING_TIME - (Date.now() - state.adViewingStart));
+      const timeRemaining = Math.max(0, AD_VIEWING_TIME - (Date.now() - state.adViewingStart));
       timerElement.textContent = `${Math.ceil(timeRemaining / 1000)}s`;
       progressBar.style.width = `${state.adViewingProgress}%`;
       
+      // Color coding based on progress
       if (state.adViewingProgress < 30) {
         progressBar.style.background = 'var(--error)';
       } else if (state.adViewingProgress < 70) {
@@ -846,31 +894,28 @@
       }
     }
     
-    // Called when ad viewing is complete
+    // Called when ad viewing is complete (either fully watched or closed early)
     function onAdViewingComplete() {
-      timerContainer.style.display = 'none';
+      clearInterval(state.adViewingTimer);
       
-      if (!state.adViewingComplete) {
-        errorMessage.style.display = 'block';
-        state.isAdInProgress = false;
-        
-        unlockBtn.disabled = false;
-        unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Try Again`;
-        unlockBtn.onclick = initiateAccountGeneration;
-        return;
-      }
-      
-      if (state.currentMode === 'normal') {
+      // Check if user watched enough ads
+      if (state.adsWatched >= state.adsRequired) {
+        // Proceed with account generation
         unlockAccount();
       } else {
-        if (state.adsWatched >= state.adsRequired) {
-          unlockAccount();
-        } else {
+        // For instant mode, show the next ad automatically
+        if (state.currentMode === 'instant') {
+          showNextAd();
+        } 
+        // For normal mode, show how many more ads are needed
+        else {
+          timerContainer.style.display = 'none';
           requiredAdsElement.textContent = state.adsRequired - state.adsWatched;
           adRequirements.style.display = 'block';
           
+          // Reset button for next ad
           unlockBtn.disabled = false;
-          unlockBtn.innerHTML = `<i class="fas fa-ad"></i> Watch Next Ad (${state.adsRequired - state.adsWatched} left)`;
+          unlockBtn.innerHTML = `<i class="fas fa-ad"></i> Watch Next Ad`;
           unlockBtn.onclick = showNextAd;
         }
       }
@@ -890,6 +935,12 @@
           <span class="label">Error</span>
           <span class="value">Ad couldn't load. Please try again.</span>
         </div>
+        ${state.currentMode === 'instant' && state.adsWatched > 0 ? `
+        <div class="account-item">
+          <span class="label">Progress</span>
+          <span class="value">${state.adsWatched} of ${state.adsRequired} ads completed</span>
+        </div>
+        ` : ''}
       `;
       output.style.display = 'block';
       console.error("Ad error:", error);
@@ -900,7 +951,9 @@
       try {
         state.isAdInProgress = false;
         unlockBtn.innerHTML = `<div class="loading"></div> Generating...`;
+        timerContainer.style.display = 'none';
         
+        // Fetch account data from Gist
         const response = await fetch(GIST_URL);
         if (!response.ok) throw new Error('Network response was not ok');
         
@@ -911,8 +964,10 @@
           throw new Error('No accounts available');
         }
         
+        // Select random account
         const account = validAccounts[Math.floor(Math.random() * validAccounts.length)];
         
+        // Display account information
         output.innerHTML = `
           <div class="account-item">
             <span class="label">Service</span>
@@ -947,6 +1002,7 @@
         `;
         output.style.display = 'block';
         
+        // Update state based on mode
         const now = Date.now();
         
         if (state.currentMode === 'normal') {
@@ -961,14 +1017,17 @@
         saveStateToStorage();
         updateUI();
         
+        // Log successful unlock
         console.log(`Account unlocked: ${account.email}`);
         
+        // Reset button for next generation
         unlockBtn.disabled = false;
         unlockBtn.innerHTML = state.currentMode === 'normal' ? 
           `<i class="fas fa-redo"></i> Generate Another` : 
           `<i class="fas fa-bolt"></i> Generate Now (${state.adsRequired} ads)`;
         unlockBtn.onclick = initiateAccountGeneration;
         
+        // If Telegram WebApp, close after successful unlock
         if (window.Telegram?.WebApp) {
           setTimeout(() => {
             Telegram.WebApp.close();
@@ -997,7 +1056,7 @@
     
     // Update ad requirements display
     function updateAdRequirements() {
-      if (state.adsWatched > 0 && state.adsWatched < state.adsRequired) {
+      if (state.adsWatched > 0 && state.adsWatched < state.adsRequired && state.currentMode === 'normal') {
         requiredAdsElement.textContent = state.adsRequired - state.adsWatched;
         adRequirements.style.display = 'block';
       } else {
