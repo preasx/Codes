@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✨ Crunchyroll Premium Generator</title>
+    <script src='//libtl.com/sdk.js' data-zone='9558020' data-sdk='show_9558020'></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -319,19 +320,6 @@
             border: 1px solid orange;
         }
 
-        .timer {
-            margin: 15px 0;
-            text-align: center;
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
-        .timer-value {
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 16px;
-        }
-
         .progress-container {
             height: 8px;
             background: rgba(255,255,255,0.1);
@@ -374,34 +362,6 @@
             box-shadow: 0 0 10px var(--primary);
         }
 
-        .ad-types {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .ad-type {
-            padding: 10px 15px;
-            background: rgba(123, 44, 191, 0.2);
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid var(--secondary);
-        }
-
-        .ad-type:hover {
-            background: rgba(123, 44, 191, 0.3);
-            transform: translateY(-3px);
-        }
-
-        .ad-type.active {
-            background: var(--secondary);
-            color: white;
-            box-shadow: 0 0 10px var(--secondary);
-        }
-
         @media (max-width: 480px) {
             .container {
                 padding: 20px;
@@ -417,10 +377,6 @@
             
             .label {
                 margin-bottom: 3px;
-            }
-            
-            .ad-types {
-                flex-direction: column;
             }
         }
 
@@ -447,6 +403,29 @@
             transform: rotate(5deg);
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
+        
+        .ad-status {
+            padding: 10px;
+            border-radius: 10px;
+            margin: 15px 0;
+            background: rgba(123, 44, 191, 0.2);
+            font-weight: 600;
+        }
+        
+        .ad-status.watching {
+            background: rgba(244, 117, 33, 0.3);
+            color: var(--primary);
+        }
+        
+        .ad-status.completed {
+            background: rgba(46, 213, 115, 0.2);
+            color: #2ED573;
+        }
+        
+        .ad-status.error {
+            background: rgba(255, 60, 110, 0.2);
+            color: var(--accent);
+        }
     </style>
 </head>
 <body>
@@ -471,24 +450,10 @@
         </div>
 
         <div class="ad-container">
-            <div class="ad-label">Select Ad Type</div>
-            <div class="ad-types">
-                <div class="ad-type active" data-type="pop" onclick="selectAdType('pop')">
-                    <i class="fas fa-window-restore"></i> Pop Ad
-                </div>
-                <div class="ad-type" data-type="interstitial" onclick="selectAdType('interstitial')">
-                    <i class="fas fa-expand"></i> Fullscreen Ad
-                </div>
-                <div class="ad-type" data-type="video" onclick="selectAdType('video')">
-                    <i class="fas fa-play-circle"></i> Video Ad
-                </div>
-            </div>
-            <div id="adContent">Please select an ad type to continue</div>
+            <div class="ad-label">Ad Status</div>
+            <div id="adStatus" class="ad-status">Ready to show ad</div>
             <div class="progress-container">
                 <div class="progress-bar" id="adProgress"></div>
-            </div>
-            <div class="timer">
-                Time Remaining: <span class="timer-value" id="adTimer">15s</span>
             </div>
             <div class="ad-count" id="adCountContainer">
                 <!-- Ad icons will be added dynamically -->
@@ -514,20 +479,15 @@
             cooldown: 0, // in minutes
             nextAdCost: 1,
             lastGeneration: 0, // timestamp
-            adTimerActive: false,
-            adTimerValue: 15,
             adProgress: 0,
-            selectedAdType: 'pop',
-            adHistory: [],
-            adViewCount: 0
+            currentAdCount: 0,
+            adType: 'pop' // Default to popup ads
         };
 
         // DOM elements
         const unlockBtn = document.getElementById('unlockBtn');
         const output = document.getElementById('output');
-        const counter = document.getElementById('counter');
-        const adContent = document.getElementById('adContent');
-        const adTimer = document.getElementById('adTimer');
+        const adStatus = document.getElementById('adStatus');
         const adProgress = document.getElementById('adProgress');
         const accountsTodayEl = document.getElementById('accountsToday');
         const cooldownTimerEl = document.getElementById('cooldownTimer');
@@ -578,45 +538,11 @@
             }
         ];
 
-        // Ad type descriptions
-        const adTypeInfo = {
-            pop: {
-                title: "Pop-up Ad",
-                description: "Quick pop-up advertisement - 15 seconds"
-            },
-            interstitial: {
-                title: "Fullscreen Ad",
-                description: "Immersive full-screen experience - 15 seconds"
-            },
-            video: {
-                title: "Video Ad",
-                description: "Short video advertisement - 15 seconds"
-            }
-        };
-
         // Initialize
         function init() {
             loadState();
             updateCounterDisplay();
             startCooldownChecker();
-            selectAdType('pop');
-        }
-
-        // Select ad type
-        function selectAdType(type) {
-            state.selectedAdType = type;
-            
-            // Update UI
-            document.querySelectorAll('.ad-type').forEach(el => {
-                el.classList.remove('active');
-            });
-            document.querySelector(`.ad-type[data-type="${type}"]`).classList.add('active');
-            
-            // Update ad content
-            adContent.innerHTML = `
-                <div style="font-weight:700;margin-bottom:8px;">${adTypeInfo[type].title}</div>
-                <div>${adTypeInfo[type].description}</div>
-            `;
         }
 
         // Load state from localStorage
@@ -633,7 +559,6 @@
                 state.accountsToday = 0;
                 state.nextAdCost = 1;
                 state.cooldown = 0;
-                state.adViewCount = 0;
             }
         }
 
@@ -678,8 +603,80 @@
             }
         }
 
+        // Update ad progress
+        function updateAdProgress(completed, total) {
+            state.adProgress = (completed / total) * 100;
+            adProgress.style.width = `${state.adProgress}%`;
+            
+            // Update ad icons
+            const icons = adCountContainer.querySelectorAll('.ad-icon');
+            icons.forEach((icon, index) => {
+                if (index < completed) {
+                    icon.classList.add('active');
+                } else {
+                    icon.classList.remove('active');
+                }
+            });
+            
+            adStatus.textContent = `Watched ${completed} of ${total} ads`;
+            adStatus.className = 'ad-status watching';
+        }
+
+        // Show a single ad
+        function showAd(type) {
+            return new Promise((resolve, reject) => {
+                try {
+                    if (type === 'pop') {
+                        show_9558020('pop').then(() => {
+                            resolve();
+                        }).catch(e => {
+                            reject(e);
+                        });
+                    } else {
+                        show_9558020().then(() => {
+                            resolve();
+                        }).catch(e => {
+                            reject(e);
+                        });
+                    }
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+
+        // Show multiple ads
+        async function showMultipleAds(count) {
+            let completed = 0;
+            createAdIcons(count);
+            
+            for (let i = 0; i < count; i++) {
+                try {
+                    // Alternate between ad types for variety
+                    const adType = (i % 2 === 0) ? 'pop' : 'interstitial';
+                    
+                    adStatus.textContent = `Showing ${adType === 'pop' ? 'popup' : 'fullscreen'} ad ${i+1} of ${count}...`;
+                    adStatus.className = 'ad-status watching';
+                    
+                    await showAd(adType);
+                    
+                    completed++;
+                    updateAdProgress(completed, count);
+                } catch (error) {
+                    console.error("Ad error:", error);
+                    adStatus.textContent = `Ad ${i+1} failed, but continuing...`;
+                    adStatus.className = 'ad-status error';
+                    
+                    // Wait a bit before continuing
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+            }
+            
+            return completed;
+        }
+
         // Start ad process
-        function startAdProcess() {
+        async function startAdProcess() {
             // Check if user has exceeded daily limit
             if (state.accountsToday >= state.maxDaily) {
                 output.innerHTML = `
@@ -711,57 +708,38 @@
                 return;
             }
             
-            // Reset ad state
-            state.adTimerActive = true;
-            state.adTimerValue = 15;
-            state.adProgress = 0;
-            
-            // Update UI
+            // Disable button during ad process
             unlockBtn.disabled = true;
-            unlockBtn.innerHTML = `<i class="fas fa-hourglass-half"></i> Watching Ad...`;
-            adContent.innerHTML = `
-                <div style="font-weight:700;margin-bottom:8px;">${adTypeInfo[state.selectedAdType].title}</div>
-                <div>Please watch the ad for <span class="timer-value">${state.adTimerValue}s</span></div>
-            `;
-            adTimer.textContent = `${state.adTimerValue}s`;
-            adProgress.style.width = '0%';
+            unlockBtn.innerHTML = `<div class="loading"></div> Preparing Ads...`;
+            output.style.display = 'none';
             
-            // Create ad icons
-            createAdIcons(state.nextAdCost);
-            
-            // Start ad timer
-            const adInterval = setInterval(() => {
-                if (!state.adTimerActive) {
-                    clearInterval(adInterval);
-                    return;
-                }
+            try {
+                // Show the required number of ads
+                adStatus.textContent = `Starting ad sequence...`;
+                adStatus.className = 'ad-status watching';
                 
-                state.adTimerValue--;
-                state.adProgress = ((15 - state.adTimerValue) / 15) * 100;
+                const adsCompleted = await showMultipleAds(state.nextAdCost);
                 
-                adTimer.textContent = `${state.adTimerValue}s`;
-                adProgress.style.width = `${state.adProgress}%`;
-                
-                // Update ad icons
-                const watchedAds = Math.floor((15 - state.adTimerValue) / (15 / state.nextAdCost));
-                const icons = adCountContainer.querySelectorAll('.ad-icon');
-                icons.forEach((icon, index) => {
-                    if (index < watchedAds) {
-                        icon.classList.add('active');
-                    } else {
-                        icon.classList.remove('active');
-                    }
-                });
-                
-                if (state.adTimerValue <= 0) {
-                    clearInterval(adInterval);
-                    state.adTimerActive = false;
+                if (adsCompleted >= state.nextAdCost) {
+                    adStatus.textContent = `Successfully watched ${adsCompleted} ads!`;
+                    adStatus.className = 'ad-status completed';
                     unlockAccount();
+                } else {
+                    adStatus.textContent = `Only ${adsCompleted}/${state.nextAdCost} ads completed`;
+                    adStatus.className = 'ad-status error';
+                    unlockBtn.disabled = false;
+                    unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Try Again`;
                 }
-            }, 1000);
+            } catch (error) {
+                console.error("Ad process failed:", error);
+                adStatus.textContent = "Ad process failed. Please try again.";
+                adStatus.className = 'ad-status error';
+                unlockBtn.disabled = false;
+                unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Try Again`;
+            }
         }
 
-        // Unlock account after ad
+        // Unlock account after ads
         function unlockAccount() {
             // Simulate account generation
             const account = accountData[Math.floor(Math.random() * accountData.length)];
@@ -769,11 +747,10 @@
             // Update state
             state.accountsToday++;
             state.lastGeneration = Date.now();
-            state.adViewCount += state.nextAdCost;
             
             // Set cooldown based on number of accounts today
             if (state.accountsToday <= 4) {
-                state.cooldown = 30 + (state.accountsToday * 10); // 40, 50, 60, 70 min
+                state.cooldown = 30 + (state.accountsToday * 10); // 30, 40, 50, 60 min
             } else {
                 state.cooldown = 0; // No cooldown for extra accounts
             }
@@ -829,11 +806,6 @@
             // Update UI
             unlockBtn.disabled = false;
             unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Generate Another`;
-            adContent.innerHTML = `
-                <div style="color:#2ED573;font-weight:700;">
-                    <i class="fas fa-check-circle"></i> Ad completed! Your account is ready.
-                </div>
-            `;
             updateCounterDisplay();
         }
 
