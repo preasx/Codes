@@ -1,862 +1,959 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✨ Crunchyroll Premium Generator</title>
-    <script src='//libtl.com/sdk.js' data-zone='9558020' data-sdk='show_9558020'></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #F47521; /* Crunchyroll orange */
-            --primary-light: #FF9E00;
-            --secondary: #7B2CBF;
-            --accent: #FF3C6E;
-            --text: #FFFFFF;
-            --text-light: #C0C0C0;
-            --background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            --card-bg: rgba(25, 20, 60, 0.85);
-            --border-radius: 20px;
-            --box-shadow: 0 0 30px rgba(244, 117, 33, 0.4);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --glow: 0 0 15px var(--accent);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ Premium Account Generator</title>
+  <script src='//libtl.com/sdk.js' data-zone='9558020' data-sdk='show_9558020'></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #7B2CBF;
+      --primary-light: #9D4EDD;
+      --secondary: #C77DFF;
+      --accent: #FF9E00;
+      --text: #FFFFFF;
+      --text-light: #C0C0C0;
+      --background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      --card-bg: rgba(25, 20, 60, 0.8);
+      --border-radius: 20px;
+      --box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --glow: 0 0 15px var(--accent);
+      --error: #FF6B6B;
+      --success: #2ED573;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: var(--text);
-            background: var(--background);
-            padding: 20px;
-            overflow-x: hidden;
-            position: relative;
-        }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--text);
+      background: var(--background);
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
 
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 10% 20%, rgba(244, 117, 33, 0.15) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(123, 44, 191, 0.15) 0%, transparent 20%),
-                radial-gradient(circle at 50% 50%, rgba(255, 60, 110, 0.1) 0%, transparent 30%);
-            z-index: -1;
-        }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.05) 0%, transparent 30%);
+      z-index: -1;
+    }
 
-        .container {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 40px 30px;
-            box-shadow: var(--box-shadow);
-            max-width: 500px;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(244, 117, 33, 0.4);
-            backdrop-filter: blur(10px);
-            animation: container-enter 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-        }
+    .container {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 40px 30px;
+      box-shadow: var(--box-shadow);
+      max-width: 500px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(138, 43, 226, 0.3);
+      backdrop-filter: blur(10px);
+    }
 
-        @keyframes container-enter {
-            from { opacity: 0; transform: translateY(30px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+      animation: border-glow 3s infinite alternate;
+    }
 
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 6px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
-            animation: border-glow 3s infinite alternate;
-        }
+    @keyframes border-glow {
+      0% { box-shadow: 0 0 10px var(--primary); }
+      50% { box-shadow: 0 0 20px var(--secondary); }
+      100% { box-shadow: 0 0 15px var(--accent); }
+    }
 
-        @keyframes border-glow {
-            0% { box-shadow: 0 0 10px var(--primary); }
-            50% { box-shadow: 0 0 20px var(--secondary); }
-            100% { box-shadow: 0 0 15px var(--accent); }
-        }
+    h2 {
+      color: var(--secondary);
+      margin-bottom: 20px;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      font-weight: 700;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+    }
 
-        h2 {
-            color: var(--primary);
-            margin-bottom: 20px;
-            font-size: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            font-weight: 700;
-            text-shadow: 0 0 10px rgba(244, 117, 33, 0.7);
-        }
+    p.subtitle {
+      color: var(--text-light);
+      margin-bottom: 25px;
+      font-size: 16px;
+      text-align: center;
+    }
 
-        p.subtitle {
-            color: var(--text-light);
-            margin-bottom: 25px;
-            font-size: 16px;
-            text-align: center;
-        }
+    button {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      padding: 16px 32px;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 5px 15px rgba(123, 44, 191, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
 
-        button {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            padding: 16px 32px;
-            border: none;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 5px 15px rgba(244, 117, 33, 0.4);
-            position: relative;
-            overflow: hidden;
-        }
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
 
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
-        }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(123, 44, 191, 0.6);
+    }
 
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(244, 117, 33, 0.6);
-        }
+    button:hover::before {
+      left: 100%;
+    }
 
-        button:hover::before {
-            left: 100%;
-        }
+    button:active {
+      transform: translateY(0);
+    }
 
-        button:active {
-            transform: translateY(0);
-        }
+    button:disabled {
+      background: linear-gradient(135deg, #2a0845, #2a0845);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      color: #555;
+    }
 
-        button:disabled {
-            background: linear-gradient(135deg, #5a2c0f, #5a2c0f);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-            color: #777;
-        }
+    button:disabled:hover::before {
+      display: none;
+    }
 
-        button:disabled:hover::before {
-            display: none;
-        }
+    .account {
+      margin-top: 25px;
+      text-align: left;
+      font-size: 15px;
+      word-wrap: break-word;
+      background: rgba(123, 44, 191, 0.15);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      border-left: 4px solid var(--accent);
+      animation: fadeIn 0.5s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
 
-        .account {
-            margin-top: 25px;
-            text-align: left;
-            font-size: 15px;
-            word-wrap: break-word;
-            background: rgba(244, 117, 33, 0.15);
-            padding: 20px;
-            border-radius: var(--border-radius);
-            border-left: 4px solid var(--accent);
-            animation: fadeIn 0.5s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .account-item {
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+    }
 
-        .account-item {
-            margin-bottom: 12px;
-            display: flex;
-            flex-wrap: wrap;
-        }
+    .label {
+      font-weight: 600;
+      color: var(--accent);
+      min-width: 100px;
+      margin-right: 10px;
+    }
 
-        .label {
-            font-weight: 600;
-            color: var(--accent);
-            min-width: 100px;
-            margin-right: 10px;
-        }
+    .value {
+      flex: 1;
+      color: var(--text);
+      word-break: break-all;
+    }
 
-        .value {
-            flex: 1;
-            color: var(--text);
-            word-break: break-all;
-        }
+    .note {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 25px;
+      text-align: center;
+      line-height: 1.5;
+    }
 
-        .note {
-            font-size: 13px;
-            color: var(--text-light);
-            margin-top: 25px;
-            text-align: center;
-            line-height: 1.5;
-        }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-left: 8px;
-        }
+    .badge-premium {
+      background: rgba(123, 44, 191, 0.2);
+      color: var(--primary-light);
+      border: 1px solid var(--primary);
+    }
 
-        .badge-premium {
-            background: rgba(244, 117, 33, 0.2);
-            color: var(--primary-light);
-            border: 1px solid var(--primary);
-        }
+    .badge-vip {
+      background: rgba(255, 0, 255, 0.2);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
 
-        .badge-vip {
-            background: rgba(255, 60, 110, 0.2);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
+    .badge-new {
+      background: rgba(0, 255, 255, 0.2);
+      color: var(--secondary);
+      border: 1px solid var(--secondary);
+    }
 
-        .badge-new {
-            background: rgba(123, 44, 191, 0.2);
-            color: var(--secondary);
-            border: 1px solid var(--secondary);
-        }
+    .badge-error {
+      background: rgba(255, 107, 107, 0.2);
+      color: var(--error);
+      border: 1px solid var(--error);
+    }
 
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: var(--secondary);
-            animation: spin 1s ease-in-out infinite;
-        }
+    .badge-success {
+      background: rgba(46, 213, 115, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: var(--secondary);
+      animation: spin 1s ease-in-out infinite;
+    }
 
-        .counter {
-            margin-top: 15px;
-            font-size: 14px;
-            color: var(--text-light);
-            text-align: center;
-            padding: 15px;
-            background: rgba(10, 5, 30, 0.6);
-            border-radius: var(--border-radius);
-            border: 1px dashed rgba(244, 117, 33, 0.4);
-        }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-        .counter-item {
-            margin: 8px 0;
-            display: flex;
-            justify-content: space-between;
-        }
+    .counter {
+      margin-top: 15px;
+      font-size: 14px;
+      color: var(--text-light);
+      text-align: center;
+    }
 
-        .counter-label {
-            font-weight: 600;
-            color: var(--text-light);
-        }
+    .ad-container {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(10, 5, 30, 0.6);
+      border-radius: var(--border-radius);
+      border: 1px dashed rgba(138, 43, 226, 0.4);
+      text-align: center;
+    }
 
-        .counter-value {
-            color: var(--primary);
-            font-weight: 700;
-        }
+    .ad-label {
+      font-size: 12px;
+      color: var(--secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
 
-        .ad-container {
-            margin: 20px 0;
-            padding: 15px;
-            background: rgba(10, 5, 30, 0.6);
-            border-radius: var(--border-radius);
-            border: 1px dashed rgba(244, 117, 33, 0.4);
-            text-align: center;
-        }
+    .verification {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
 
-        .ad-label {
-            font-size: 12px;
-            color: var(--secondary);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
+    .verified {
+      background: rgba(46, 213, 115, 0.15);
+      color: #2ED573;
+      border: 1px solid #2ED573;
+    }
 
-        .verification {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 13px;
-        }
+    .unverified {
+      background: rgba(255, 165, 0, 0.15);
+      color: orange;
+      border: 1px solid orange;
+    }
 
-        .verified {
-            background: rgba(46, 213, 115, 0.15);
-            color: #2ED573;
-            border: 1px solid #2ED573;
-        }
+    .timer-container {
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(10, 5, 30, 0.6);
+      border-radius: var(--border-radius);
+      text-align: center;
+      display: none;
+    }
 
-        .unverified {
-            background: rgba(255, 165, 0, 0.15);
-            color: orange;
-            border: 1px solid orange;
-        }
+    .timer-label {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 5px;
+    }
 
-        .progress-container {
-            height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 4px;
-            margin: 15px 0;
-            overflow: hidden;
-        }
+    .timer {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--accent);
+    }
 
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 4px;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
+    .progress-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(123, 44, 191, 0.2);
+      border-radius: 3px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
 
-        .ad-count {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 15px 0;
-        }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
 
-        .ad-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(244, 117, 33, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
+    .stats-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      font-size: 13px;
+    }
 
-        .ad-icon.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 0 10px var(--primary);
-        }
+    .stat-box {
+      flex: 1;
+      padding: 8px;
+      background: rgba(123, 44, 191, 0.1);
+      border-radius: 8px;
+      margin: 0 5px;
+      text-align: center;
+    }
 
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px;
-            }
-            
-            h2 {
-                font-size: 24px;
-            }
-            
-            .account-item {
-                flex-direction: column;
-            }
-            
-            .label {
-                margin-bottom: 3px;
-            }
-        }
+    .stat-value {
+      font-weight: bold;
+      color: var(--accent);
+      font-size: 14px;
+    }
 
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(244, 117, 33, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(244, 117, 33, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(244, 117, 33, 0); }
-        }
-        
-        .premium-badge {
-            position: absolute;
-            top: -10px;
-            right: 20px;
-            background: var(--accent);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 12px;
-            transform: rotate(5deg);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        
-        .ad-status {
-            padding: 10px;
-            border-radius: 10px;
-            margin: 15px 0;
-            background: rgba(123, 44, 191, 0.2);
-            font-weight: 600;
-        }
-        
-        .ad-status.watching {
-            background: rgba(244, 117, 33, 0.3);
-            color: var(--primary);
-        }
-        
-        .ad-status.completed {
-            background: rgba(46, 213, 115, 0.2);
-            color: #2ED573;
-        }
-        
-        .ad-status.error {
-            background: rgba(255, 60, 110, 0.2);
-            color: var(--accent);
-        }
-    </style>
+    .stat-label {
+      color: var(--text-light);
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .cooldown-info {
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(255, 165, 0, 0.1);
+      border-radius: var(--border-radius);
+      border-left: 3px solid var(--accent);
+      display: none;
+    }
+
+    .ad-requirements {
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(123, 44, 191, 0.1);
+      border-radius: var(--border-radius);
+      border-left: 3px solid var(--primary);
+      display: none;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+      }
+      
+      h2 {
+        font-size: 24px;
+      }
+      
+      .account-item {
+        flex-direction: column;
+      }
+      
+      .label {
+        margin-bottom: 3px;
+      }
+      
+      .stats-container {
+        flex-direction: column;
+      }
+      
+      .stat-box {
+        margin: 5px 0;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="premium-badge">PREMIUM GENERATOR</div>
-        <h2><i class="fas fa-crown"></i> Crunchyroll Premium</h2>
-        <p class="subtitle">Watch ads to unlock premium accounts</p>
+  <div class="container">
+    <h2><i class="fas fa-gem"></i> Premium Generator</h2>
+    <p class="subtitle">Watch ads to unlock premium accounts</p>
 
-        <div class="counter" id="counter">
-            <div class="counter-item">
-                <span class="counter-label">Accounts Today:</span>
-                <span class="counter-value" id="accountsToday">0/5</span>
-            </div>
-            <div class="counter-item">
-                <span class="counter-label">Cooldown:</span>
-                <span class="counter-value" id="cooldownTimer">Ready</span>
-            </div>
-            <div class="counter-item">
-                <span class="counter-label">Next Account Cost:</span>
-                <span class="counter-value" id="adCost">1 Ad</span>
-            </div>
-        </div>
-
-        <div class="ad-container">
-            <div class="ad-label">Ad Status</div>
-            <div id="adStatus" class="ad-status">Ready to show ad</div>
-            <div class="progress-container">
-                <div class="progress-bar" id="adProgress"></div>
-            </div>
-            <div class="ad-count" id="adCountContainer">
-                <!-- Ad icons will be added dynamically -->
-            </div>
-        </div>
-
-        <button onclick="startAdProcess()" id="unlockBtn" class="pulse">
-            <i class="fas fa-gem"></i> Generate Account
-        </button>
-
-        <div id="output" class="account" style="display: none;"></div>
-
-        <p class="note">
-            <i class="fas fa-sync-alt"></i> Accounts refresh daily at midnight UTC
-        </p>
+    <div class="stats-container">
+      <div class="stat-box">
+        <div class="stat-value" id="accountsToday">0</div>
+        <div class="stat-label">Today</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="cooldownTimer">Ready</div>
+        <div class="stat-label">Cooldown</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="nextAdCost">1</div>
+        <div class="stat-label">Ads Needed</div>
+      </div>
     </div>
 
-    <script>
-        // State management
-        const state = {
-            accountsToday: 0,
-            maxDaily: 5,
-            cooldown: 0, // in minutes
-            nextAdCost: 1,
-            lastGeneration: 0, // timestamp
-            adProgress: 0,
-            currentAdCount: 0,
-            adType: 'pop' // Default to popup ads
-        };
+    <div class="ad-container">
+      <div class="ad-label">Ad Will Appear Here</div>
+      <div id="adContent">Ready to show ad</div>
+    </div>
 
-        // DOM elements
-        const unlockBtn = document.getElementById('unlockBtn');
-        const output = document.getElementById('output');
-        const adStatus = document.getElementById('adStatus');
-        const adProgress = document.getElementById('adProgress');
-        const accountsTodayEl = document.getElementById('accountsToday');
-        const cooldownTimerEl = document.getElementById('cooldownTimer');
-        const adCostEl = document.getElementById('adCost');
-        const adCountContainer = document.getElementById('adCountContainer');
+    <div class="timer-container" id="timerContainer">
+      <div class="timer-label">Please watch the full ad</div>
+      <div class="timer" id="timer">15s</div>
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
 
-        // Sample account data (in a real app, this would come from your Gist)
-        const accountData = [
-            {
-                service: "Crunchyroll",
-                plan_name: "Mega Fan",
-                email: "premiumuser1@crunchyroll.com",
-                password: "An!m3L0v3r!",
-                expiry: "2024-12-31",
-                remaining_days: 210,
-                email_verified: true,
-                country: "USA"
-            },
-            {
-                service: "Crunchyroll",
-                plan_name: "Mega Fan",
-                email: "animefan2024@example.com",
-                password: "S@kuraBl0ss0m",
-                expiry: "2024-11-15",
-                remaining_days: 170,
-                email_verified: true,
-                country: "Japan"
-            },
-            {
-                service: "Crunchyroll",
-                plan_name: "Fan",
-                email: "otaku_gamer@mail.com",
-                password: "N@rut0R0cks!",
-                expiry: "2024-10-01",
-                remaining_days: 130,
-                email_verified: false,
-                country: "Brazil"
-            },
-            {
-                service: "Crunchyroll",
-                plan_name: "Mega Fan",
-                email: "premiumviewer@crunchy.com",
-                password: "DragonB@llZ",
-                expiry: "2025-01-20",
-                remaining_days: 250,
-                email_verified: true,
-                country: "Canada"
-            }
-        ];
+    <button onclick="initiateAccountGeneration()" id="unlockBtn">
+      <i class="fas fa-key"></i> Generate Account
+    </button>
 
-        // Initialize
-        function init() {
-            loadState();
-            updateCounterDisplay();
-            startCooldownChecker();
-        }
+    <div class="cooldown-info" id="cooldownInfo">
+      <i class="fas fa-clock"></i> Please wait <span id="cooldownTime">30 minutes</span> before generating another account.
+    </div>
 
-        // Load state from localStorage
-        function loadState() {
-            const savedState = localStorage.getItem('crunchyrollState');
-            if (savedState) {
-                Object.assign(state, JSON.parse(savedState));
-            }
-            
-            // Reset daily counts if it's a new day
-            const now = new Date();
-            const lastGenDate = new Date(state.lastGeneration);
-            if (lastGenDate.toDateString() !== now.toDateString()) {
-                state.accountsToday = 0;
-                state.nextAdCost = 1;
-                state.cooldown = 0;
-            }
-        }
+    <div class="ad-requirements" id="adRequirements">
+      <i class="fas fa-ad"></i> Watch <span id="requiredAds">1</span> more ad(s) to unlock this account.
+    </div>
 
-        // Save state to localStorage
-        function saveState() {
-            localStorage.setItem('crunchyrollState', JSON.stringify(state));
-        }
+    <div class="counter" id="counter">Accounts available: Loading...</div>
 
-        // Update counter display
-        function updateCounterDisplay() {
-            accountsTodayEl.textContent = `${state.accountsToday}/${state.maxDaily}`;
-            adCostEl.textContent = `${state.nextAdCost} Ad${state.nextAdCost > 1 ? 's' : ''}`;
-            
-            if (state.cooldown > 0) {
-                cooldownTimerEl.textContent = `${state.cooldown} min`;
-                cooldownTimerEl.style.color = '#FF9E00';
-            } else {
-                cooldownTimerEl.textContent = 'Ready';
-                cooldownTimerEl.style.color = '#2ED573';
-            }
-        }
+    <div id="output" class="account" style="display: none;"></div>
 
-        // Start cooldown checker
-        function startCooldownChecker() {
-            setInterval(() => {
-                if (state.cooldown > 0) {
-                    state.cooldown--;
-                    updateCounterDisplay();
-                    saveState();
-                }
-            }, 60000); // Check every minute
-        }
+    <p class="note">
+      <i class="fas fa-sync-alt"></i> Refresh daily for new accounts<br>
+      <i class="fas fa-info-circle"></i> Each day you can unlock up to 5 accounts
+    </p>
+  </div>
 
-        // Create ad icons
-        function createAdIcons(count) {
-            adCountContainer.innerHTML = '';
-            for (let i = 0; i < count; i++) {
-                const adIcon = document.createElement('div');
-                adIcon.className = 'ad-icon';
-                adIcon.innerHTML = '<i class="fas fa-ad"></i>';
-                adCountContainer.appendChild(adIcon);
-            }
-        }
-
-        // Update ad progress
-        function updateAdProgress(completed, total) {
-            state.adProgress = (completed / total) * 100;
-            adProgress.style.width = `${state.adProgress}%`;
-            
-            // Update ad icons
-            const icons = adCountContainer.querySelectorAll('.ad-icon');
-            icons.forEach((icon, index) => {
-                if (index < completed) {
-                    icon.classList.add('active');
-                } else {
-                    icon.classList.remove('active');
-                }
-            });
-            
-            adStatus.textContent = `Watched ${completed} of ${total} ads`;
-            adStatus.className = 'ad-status watching';
-        }
-
-        // Show a single ad
-        function showAd(type) {
-            return new Promise((resolve, reject) => {
-                try {
-                    if (type === 'pop') {
-                        show_9558020('pop').then(() => {
-                            resolve();
-                        }).catch(e => {
-                            reject(e);
-                        });
-                    } else {
-                        show_9558020().then(() => {
-                            resolve();
-                        }).catch(e => {
-                            reject(e);
-                        });
-                    }
-                } catch (error) {
-                    reject(error);
-                }
-            });
-        }
-
-        // Show multiple ads
-        async function showMultipleAds(count) {
-            let completed = 0;
-            createAdIcons(count);
-            
-            for (let i = 0; i < count; i++) {
-                try {
-                    // Alternate between ad types for variety
-                    const adType = (i % 2 === 0) ? 'pop' : 'interstitial';
-                    
-                    adStatus.textContent = `Showing ${adType === 'pop' ? 'popup' : 'fullscreen'} ad ${i+1} of ${count}...`;
-                    adStatus.className = 'ad-status watching';
-                    
-                    await showAd(adType);
-                    
-                    completed++;
-                    updateAdProgress(completed, count);
-                } catch (error) {
-                    console.error("Ad error:", error);
-                    adStatus.textContent = `Ad ${i+1} failed, but continuing...`;
-                    adStatus.className = 'ad-status error';
-                    
-                    // Wait a bit before continuing
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                }
-            }
-            
-            return completed;
-        }
-
-        // Start ad process
-        async function startAdProcess() {
-            // Check if user has exceeded daily limit
-            if (state.accountsToday >= state.maxDaily) {
-                output.innerHTML = `
-                    <div class="account-item">
-                        <span class="label">Status</span>
-                        <span class="value">Daily limit reached (${state.maxDaily} accounts)</span>
-                    </div>
-                    <div class="account-item">
-                        <span class="label">Option</span>
-                        <span class="value">Watch ${state.nextAdCost} ads for an extra account</span>
-                    </div>
-                `;
-                output.style.display = 'block';
-            }
-            
-            // Check if in cooldown
-            if (state.cooldown > 0 && state.accountsToday < state.maxDaily) {
-                output.innerHTML = `
-                    <div class="account-item">
-                        <span class="label">Status</span>
-                        <span class="value">Cooldown active (${state.cooldown} min remaining)</span>
-                    </div>
-                    <div class="account-item">
-                        <span class="label">Bypass Option</span>
-                        <span class="value">Watch ${state.nextAdCost} ads to bypass cooldown</span>
-                    </div>
-                `;
-                output.style.display = 'block';
-                return;
-            }
-            
-            // Disable button during ad process
-            unlockBtn.disabled = true;
-            unlockBtn.innerHTML = `<div class="loading"></div> Preparing Ads...`;
-            output.style.display = 'none';
-            
-            try {
-                // Show the required number of ads
-                adStatus.textContent = `Starting ad sequence...`;
-                adStatus.className = 'ad-status watching';
-                
-                const adsCompleted = await showMultipleAds(state.nextAdCost);
-                
-                if (adsCompleted >= state.nextAdCost) {
-                    adStatus.textContent = `Successfully watched ${adsCompleted} ads!`;
-                    adStatus.className = 'ad-status completed';
-                    unlockAccount();
-                } else {
-                    adStatus.textContent = `Only ${adsCompleted}/${state.nextAdCost} ads completed`;
-                    adStatus.className = 'ad-status error';
-                    unlockBtn.disabled = false;
-                    unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Try Again`;
-                }
-            } catch (error) {
-                console.error("Ad process failed:", error);
-                adStatus.textContent = "Ad process failed. Please try again.";
-                adStatus.className = 'ad-status error';
-                unlockBtn.disabled = false;
-                unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Try Again`;
-            }
-        }
-
-        // Unlock account after ads
-        function unlockAccount() {
-            // Simulate account generation
-            const account = accountData[Math.floor(Math.random() * accountData.length)];
-            
-            // Update state
-            state.accountsToday++;
-            state.lastGeneration = Date.now();
-            
-            // Set cooldown based on number of accounts today
-            if (state.accountsToday <= 4) {
-                state.cooldown = 30 + (state.accountsToday * 10); // 30, 40, 50, 60 min
-            } else {
-                state.cooldown = 0; // No cooldown for extra accounts
-            }
-            
-            // Increase ad cost for next account
-            if (state.accountsToday >= state.maxDaily) {
-                state.nextAdCost = state.accountsToday - state.maxDaily + 4;
-            } else {
-                state.nextAdCost = state.accountsToday + 1;
-            }
-            
-            // Save state
-            saveState();
-            
-            // Display account
-            output.innerHTML = `
-                <div class="account-item">
-                    <span class="label">Service</span>
-                    <span class="value">${account.service || 'Crunchyroll'} 
-                        <span class="badge ${getPlanBadgeClass(account.plan_name)}">${account.plan_name}</span>
-                    </span>
-                </div>
-                <div class="account-item">
-                    <span class="label">Email</span>
-                    <span class="value">${account.email}</span>
-                </div>
-                <div class="account-item">
-                    <span class="label">Password</span>
-                    <span class="value">${account.password}</span>
-                </div>
-                <div class="account-item">
-                    <span class="label">Expires</span>
-                    <span class="value">${formatDate(account.expiry)} 
-                        <span class="badge ${getDaysBadgeClass(account.remaining_days)}">${account.remaining_days} days</span>
-                    </span>
-                </div>
-                <div class="account-item">
-                    <span class="label">Status</span>
-                    <span class="value">
-                        <span class="verification ${account.email_verified ? 'verified' : 'unverified'}">
-                            <i class="fas ${account.email_verified ? 'fa-check-circle' : 'fa-info-circle'}"></i>
-                            ${account.email_verified ? 'Verified' : 'Not Verified'}
-                        </span>
-                        ${account.country ? `• ${getCountryFlag(account.country)} ${account.country}` : ''}
-                    </span>
-                </div>
-                <div class="note">
-                    <i class="fas fa-shield-alt"></i> Change password immediately after login!
-                </div>
-            `;
-            output.style.display = 'block';
-            
-            // Update UI
-            unlockBtn.disabled = false;
-            unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Generate Another`;
-            updateCounterDisplay();
-        }
-
-        // Helper functions
-        function getPlanBadgeClass(plan) {
-            if (/mega|premium|ultimate/i.test(plan)) return 'badge-premium';
-            if (/fan|deluxe/i.test(plan)) return 'badge-vip';
-            return 'badge-new';
+  <script>
+    // Initialize variables
+    const MAX_ACCOUNTS_PER_DAY = 5;
+    const BASE_COOLDOWN = 30 * 60 * 1000; // 30 minutes in milliseconds
+    const AD_VIEWING_TIME = 15 * 1000; // 15 seconds in milliseconds
+    const GIST_URL = 'https://gist.githubusercontent.com/preasx/53cccb980cdf37f5e40146bdee2d9544/raw/74f4f5000c2592123422f39fb5b99d2a8d15abe4/gistfile1.txt';
+    
+    // State management
+    let state = {
+      accountsUsedToday: 0,
+      lastGenerationTime: 0,
+      currentCooldown: BASE_COOLDOWN,
+      adsRequired: 1,
+      adsWatched: 0,
+      adViewingStart: 0,
+      adViewingTimer: null,
+      adViewingProgress: 0
+    };
+    
+    // DOM elements
+    const unlockBtn = document.getElementById('unlockBtn');
+    const output = document.getElementById('output');
+    const counter = document.getElementById('counter');
+    const timerContainer = document.getElementById('timerContainer');
+    const timerElement = document.getElementById('timer');
+    const progressBar = document.getElementById('progressBar');
+    const cooldownInfo = document.getElementById('cooldownInfo');
+    const cooldownTimeElement = document.getElementById('cooldownTime');
+    const adRequirements = document.getElementById('adRequirements');
+    const requiredAdsElement = document.getElementById('requiredAds');
+    const accountsTodayElement = document.getElementById('accountsToday');
+    const cooldownTimerElement = document.getElementById('cooldownTimer');
+    const nextAdCostElement = document.getElementById('nextAdCost');
+    
+    // Initialize the application
+    function init() {
+      loadStateFromStorage();
+      updateUI();
+      loadCounter();
+      
+      // If Telegram WebApp is available
+      if (window.Telegram?.WebApp) {
+        Telegram.WebApp.expand();
+        Telegram.WebApp.enableClosingConfirmation();
+        Telegram.WebApp.MainButton.setText("Get Premium");
+        Telegram.WebApp.MainButton.show();
+        Telegram.WebApp.MainButton.onClick(initiateAccountGeneration);
+        
+        document.querySelector('h2').innerHTML = `<i class="fas fa-gem"></i> Telegram Premium`;
+        document.querySelector('.subtitle').textContent = "Tap to get instant premium access";
+        unlockBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Get Premium`;
+      }
+      
+      // Check cooldown periodically
+      setInterval(checkCooldown, 1000);
+    }
+    
+    // Load state from localStorage
+    function loadStateFromStorage() {
+      const savedState = localStorage.getItem('premiumGeneratorState');
+      if (savedState) {
+        const parsedState = JSON.parse(savedState);
+        
+        // Check if it's a new day
+        const lastUsedDate = new Date(parsedState.lastGenerationTime);
+        const today = new Date();
+        if (lastUsedDate.getDate() !== today.getDate() || 
+            lastUsedDate.getMonth() !== today.getMonth() || 
+            lastUsedDate.getFullYear() !== today.getFullYear()) {
+          // Reset daily counters if it's a new day
+          state.accountsUsedToday = 0;
+          state.adsRequired = 1;
+        } else {
+          state.accountsUsedToday = parsedState.accountsUsedToday || 0;
+          state.adsRequired = parsedState.adsRequired || 1;
         }
         
-        function getDaysBadgeClass(days) {
-            if (days > 180) return 'badge-premium';
-            if (days > 90) return 'badge-vip';
-            return 'badge-new';
+        state.lastGenerationTime = parsedState.lastGenerationTime || 0;
+        state.currentCooldown = parsedState.currentCooldown || BASE_COOLDOWN;
+      }
+      
+      updateStatsDisplay();
+    }
+    
+    // Save state to localStorage
+    function saveStateToStorage() {
+      localStorage.setItem('premiumGeneratorState', JSON.stringify({
+        accountsUsedToday: state.accountsUsedToday,
+        lastGenerationTime: state.lastGenerationTime,
+        currentCooldown: state.currentCooldown,
+        adsRequired: state.adsRequired
+      }));
+    }
+    
+    // Update all UI elements
+    function updateUI() {
+      updateStatsDisplay();
+      checkCooldown();
+      updateAdRequirements();
+    }
+    
+    // Update statistics display
+    function updateStatsDisplay() {
+      accountsTodayElement.textContent = `${state.accountsUsedToday}/${MAX_ACCOUNTS_PER_DAY}`;
+      nextAdCostElement.textContent = state.adsRequired;
+      
+      // Color coding based on usage
+      if (state.accountsUsedToday >= MAX_ACCOUNTS_PER_DAY) {
+        accountsTodayElement.style.color = 'var(--error)';
+      } else if (state.accountsUsedToday >= MAX_ACCOUNTS_PER_DAY - 2) {
+        accountsTodayElement.style.color = 'var(--accent)';
+      } else {
+        accountsTodayElement.style.color = 'var(--success)';
+      }
+    }
+    
+    // Check and update cooldown status
+    function checkCooldown() {
+      const now = Date.now();
+      const timeSinceLastGen = now - state.lastGenerationTime;
+      const remainingCooldown = state.currentCooldown - timeSinceLastGen;
+      
+      if (state.lastGenerationTime > 0 && remainingCooldown > 0) {
+        // Still in cooldown
+        const minutes = Math.ceil(remainingCooldown / (60 * 1000));
+        cooldownTimerElement.textContent = `${minutes}m`;
+        cooldownTimerElement.style.color = 'var(--error)';
+        
+        cooldownTimeElement.textContent = formatTime(remainingCooldown);
+        cooldownInfo.style.display = 'block';
+        unlockBtn.disabled = true;
+      } else {
+        // Cooldown finished
+        cooldownTimerElement.textContent = 'Ready';
+        cooldownTimerElement.style.color = 'var(--success)';
+        cooldownInfo.style.display = 'none';
+        
+        // Only enable if not reached daily limit
+        unlockBtn.disabled = state.accountsUsedToday >= MAX_ACCOUNTS_PER_DAY;
+      }
+    }
+    
+    // Load account counter from Gist
+    async function loadCounter() {
+      try {
+        const response = await fetch(GIST_URL);
+        const data = await response.json();
+        counter.textContent = `✨ ${data.length} premium accounts available`;
+      } catch (error) {
+        counter.textContent = `✨ ${MAX_ACCOUNTS_PER_DAY - state.accountsUsedToday} accounts available for you`;
+        console.error("Error fetching account count:", error);
+      }
+    }
+    
+    // Initiate account generation process
+    function initiateAccountGeneration() {
+      // Check daily limit
+      if (state.accountsUsedToday >= MAX_ACCOUNTS_PER_DAY) {
+        showDailyLimitReached();
+        return;
+      }
+      
+      // Check cooldown
+      const now = Date.now();
+      const timeSinceLastGen = now - state.lastGenerationTime;
+      if (state.lastGenerationTime > 0 && timeSinceLastGen < state.currentCooldown) {
+        const remainingTime = state.currentCooldown - timeSinceLastGen;
+        cooldownTimeElement.textContent = formatTime(remainingTime);
+        cooldownInfo.style.display = 'block';
+        return;
+      }
+      
+      // Start ad viewing process
+      startAdViewing();
+    }
+    
+    // Start the ad viewing process
+    function startAdViewing() {
+      // Reset ad viewing state
+      state.adsWatched = 0;
+      state.adViewingProgress = 0;
+      
+      // Update UI for ad viewing
+      unlockBtn.disabled = true;
+      unlockBtn.innerHTML = `<div class="loading"></div> Preparing Ad...`;
+      output.style.display = 'none';
+      adRequirements.style.display = 'none';
+      
+      // Show the first ad
+      showNextAd();
+    }
+    
+    // Show the next ad in sequence
+    function showNextAd() {
+      state.adsWatched++;
+      state.adViewingStart = Date.now();
+      
+      // Update UI
+      timerContainer.style.display = 'block';
+      updateTimerDisplay();
+      
+      // Randomly select ad type
+      const adType = Math.random() > 0.5 ? 'interstitial' : 'pop';
+      const adPromise = adType === 'pop' ? show_9558020('pop') : show_9558020();
+      
+      // Start the timer for ad viewing
+      state.adViewingTimer = setInterval(() => {
+        const timeElapsed = Date.now() - state.adViewingStart;
+        state.adViewingProgress = Math.min(timeElapsed / AD_VIEWING_TIME * 100, 100);
+        
+        updateTimerDisplay();
+        
+        if (timeElapsed >= AD_VIEWING_TIME) {
+          clearInterval(state.adViewingTimer);
+          onAdViewingComplete();
+        }
+      }, 100);
+      
+      // Show the selected ad type
+      adPromise.then(() => {
+        // User watched the ad (but might have closed early)
+        console.log(`Ad ${state.adsWatched}/${state.adsRequired} watched`);
+      }).catch(error => {
+        // Handle ad error
+        clearInterval(state.adViewingTimer);
+        onAdViewingError(error);
+      });
+    }
+    
+    // Update the timer display
+    function updateTimerDisplay() {
+      const timeRemaining = Math.max(0, AD_VIEWING_TIME - (Date.now() - state.adViewingStart));
+      timerElement.textContent = `${Math.ceil(timeRemaining / 1000)}s`;
+      progressBar.style.width = `${state.adViewingProgress}%`;
+      
+      // Color coding based on progress
+      if (state.adViewingProgress < 30) {
+        progressBar.style.background = 'var(--error)';
+      } else if (state.adViewingProgress < 70) {
+        progressBar.style.background = 'var(--accent)';
+      } else {
+        progressBar.style.background = 'var(--success)';
+      }
+    }
+    
+    // Called when ad viewing is complete (either fully watched or closed early)
+    function onAdViewingComplete() {
+      clearInterval(state.adViewingTimer);
+      timerContainer.style.display = 'none';
+      
+      // Check if user watched enough ads
+      if (state.adsWatched >= state.adsRequired) {
+        // Proceed with account generation
+        unlockAccount();
+      } else {
+        // Show how many more ads are needed
+        requiredAdsElement.textContent = state.adsRequired - state.adsWatched;
+        adRequirements.style.display = 'block';
+        
+        // Reset button for next ad
+        unlockBtn.disabled = false;
+        unlockBtn.innerHTML = `<i class="fas fa-ad"></i> Watch Next Ad`;
+        unlockBtn.onclick = showNextAd;
+      }
+    }
+    
+    // Handle ad viewing errors
+    function onAdViewingError(error) {
+      timerContainer.style.display = 'none';
+      
+      unlockBtn.disabled = false;
+      unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Try Again`;
+      unlockBtn.onclick = initiateAccountGeneration;
+      
+      output.innerHTML = `
+        <div class="account-item">
+          <span class="label">Error</span>
+          <span class="value">Ad couldn't load. Please try again.</span>
+        </div>
+      `;
+      output.style.display = 'block';
+      console.error("Ad error:", error);
+    }
+    
+    // Actually unlock the account after successful ad viewing
+    async function unlockAccount() {
+      try {
+        unlockBtn.innerHTML = `<div class="loading"></div> Generating...`;
+        
+        // Fetch account data from Gist
+        const response = await fetch(GIST_URL);
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const data = await response.json();
+        const validAccounts = data.filter(acc => acc.status === "Success");
+        
+        if (validAccounts.length === 0) {
+          throw new Error('No accounts available');
         }
         
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
-            });
-        }
+        // Select random account
+        const account = validAccounts[Math.floor(Math.random() * validAccounts.length)];
         
-        function getCountryFlag(country) {
-            const flags = {
-                'usa': '🇺🇸',
-                'us': '🇺🇸',
-                'uk': '🇬🇧',
-                'japan': '🇯🇵',
-                'jp': '🇯🇵',
-                'brazil': '🇧🇷',
-                'br': '🇧🇷',
-                'germany': '🇩🇪',
-                'de': '🇩🇪',
-                'france': '🇫🇷',
-                'fr': '🇫🇷',
-                'canada': '🇨🇦',
-                'ca': '🇨🇦',
-                'india': '🇮🇳',
-                'in': '🇮🇳'
-            };
-            
-            const lowerCountry = country.toLowerCase();
-            return flags[lowerCountry] || '🌐';
-        }
+        // Display account information
+        output.innerHTML = `
+          <div class="account-item">
+            <span class="label">Service</span>
+            <span class="value">${account.service || 'Premium Service'} 
+              <span class="badge ${getPlanBadgeClass(account.plan_name)}">${account.plan_name}</span>
+            </span>
+          </div>
+          <div class="account-item">
+            <span class="label">Email</span>
+            <span class="value">${account.email}</span>
+          </div>
+          <div class="account-item">
+            <span class="label">Password</span>
+            <span class="value">${account.password}</span>
+          </div>
+          <div class="account-item">
+            <span class="label">Expires</span>
+            <span class="value">${formatDate(account.expiry)} 
+              <span class="badge ${getDaysBadgeClass(account.remaining_days)}">${account.remaining_days} days</span>
+            </span>
+          </div>
+          <div class="account-item">
+            <span class="label">Status</span>
+            <span class="value">
+              <span class="verification ${account.email_verified ? 'verified' : 'unverified'}">
+                <i class="fas ${account.email_verified ? 'fa-check-circle' : 'fa-info-circle'}"></i>
+                ${account.email_verified ? 'Verified' : 'Not Verified'}
+              </span>
+              ${account.country ? `• ${getCountryFlag(account.country)} ${account.country}` : ''}
+            </span>
+          </div>
+        `;
+        output.style.display = 'block';
         
-        // Initialize
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+        // Update state
+        state.accountsUsedToday++;
+        state.lastGenerationTime = Date.now();
+        state.currentCooldown = BASE_COOLDOWN + (state.accountsUsedToday * 10 * 60 * 1000); // Increase by 10 mins each time
+        state.adsRequired = Math.min(state.accountsUsedToday + 1, 4); // Increase ads required up to 4
+        
+        saveStateToStorage();
+        updateUI();
+        
+        // Log successful unlock
+        console.log(`Account unlocked: ${account.email}`);
+        
+        // Reset button for next generation
+        unlockBtn.disabled = false;
+        unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Generate Another`;
+        unlockBtn.onclick = initiateAccountGeneration;
+        
+        // If Telegram WebApp, close after successful unlock
+        if (window.Telegram?.WebApp) {
+          setTimeout(() => {
+            Telegram.WebApp.close();
+          }, 3000);
+        }
+      } catch (error) {
+        output.innerHTML = `
+          <div class="account-item">
+            <span class="label">Oops!</span>
+            <span class="value">${error.message || 'Something went wrong'}</span>
+          </div>
+          <div class="account-item">
+            <span class="label">Try</span>
+            <span class="value">Please check back later</span>
+          </div>
+        `;
+        output.style.display = 'block';
+        
+        unlockBtn.disabled = false;
+        unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Try Again`;
+        unlockBtn.onclick = initiateAccountGeneration;
+        
+        console.error("Account unlock error:", error);
+      }
+    }
+    
+    // Show daily limit reached message
+    function showDailyLimitReached() {
+      output.innerHTML = `
+        <div class="account-item">
+          <span class="label">Status</span>
+          <span class="value">Daily limit reached (${MAX_ACCOUNTS_PER_DAY} accounts)</span>
+        </div>
+        <div class="account-item">
+          <span class="label">Next unlock</span>
+          <span class="value">Available in ${formatTimeUntilTomorrow()}</span>
+        </div>
+        <div class="account-item">
+          <span class="label">Option</span>
+          <span class="value">Watch 4 ads to unlock one more account</span>
+        </div>
+      `;
+      output.style.display = 'block';
+      
+      // Change button to allow unlocking more with additional ads
+      unlockBtn.disabled = false;
+      unlockBtn.innerHTML = `<i class="fas fa-ad"></i> Unlock Extra Account (4 ads)`;
+      unlockBtn.onclick = function() {
+        state.adsRequired = 4;
+        initiateAccountGeneration();
+      };
+    }
+    
+    // Update ad requirements display
+    function updateAdRequirements() {
+      if (state.adsWatched > 0 && state.adsWatched < state.adsRequired) {
+        requiredAdsElement.textContent = state.adsRequired - state.adsWatched;
+        adRequirements.style.display = 'block';
+      } else {
+        adRequirements.style.display = 'none';
+      }
+    }
+    
+    // Helper functions
+    function getPlanBadgeClass(plan) {
+      if (/pro|premium|ultimate/i.test(plan)) return 'badge-premium';
+      if (/vip|deluxe/i.test(plan)) return 'badge-vip';
+      return 'badge-new';
+    }
+    
+    function getDaysBadgeClass(days) {
+      if (days > 30) return 'badge-premium';
+      if (days > 7) return 'badge-vip';
+      return 'badge-new';
+    }
+    
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    }
+    
+    function formatTimeUntilTomorrow() {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      
+      const diff = tomorrow - now;
+      return formatTime(diff);
+    }
+    
+    function formatTime(milliseconds) {
+      const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+      const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+      
+      if (hours > 0) {
+        return `${hours}h ${minutes}m`;
+      }
+      return `${minutes}m`;
+    }
+    
+    function getCountryFlag(country) {
+      const flags = {
+        'usa': '🇺🇸',
+        'uk': '🇬🇧',
+        'canada': '🇨🇦',
+        'germany': '🇩🇪',
+        'france': '🇫🇷',
+        'japan': '🇯🇵',
+        'australia': '🇦🇺',
+        'brazil': '🇧🇷',
+        'india': '🇮🇳'
+      };
+      
+      const lowerCountry = country.toLowerCase();
+      return flags[lowerCountry] || '🌐';
+    }
+    
+    // Initialize the app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
 </html>
