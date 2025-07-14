@@ -3,21 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>✨ Premium Account Generator</title>
-  <script src='//libtl.com/sdk.js' data-zone='9558020' data-sdk='show_9558020'></script>
+  <title>✨ Crunchyroll Premium Generator</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary: #7B2CBF;
-      --primary-light: #9D4EDD;
-      --secondary: #C77DFF;
-      --accent: #FF9E00;
+      --primary: #F47521; /* Crunchyroll orange */
+      --primary-light: #FF9E00;
+      --secondary: #7B2CBF;
+      --accent: #FF3C6E;
       --text: #FFFFFF;
       --text-light: #C0C0C0;
       --background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      --card-bg: rgba(25, 20, 60, 0.8);
+      --card-bg: rgba(25, 20, 60, 0.85);
       --border-radius: 20px;
-      --box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+      --box-shadow: 0 0 30px rgba(244, 117, 33, 0.4);
       --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       --glow: 0 0 15px var(--accent);
     }
@@ -50,9 +49,9 @@
       width: 100%;
       height: 100%;
       background: 
-        radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 20%),
-        radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.05) 0%, transparent 30%);
+        radial-gradient(circle at 10% 20%, rgba(244, 117, 33, 0.15) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(123, 44, 191, 0.15) 0%, transparent 20%),
+        radial-gradient(circle at 50% 50%, rgba(255, 60, 110, 0.1) 0%, transparent 30%);
       z-index: -1;
     }
 
@@ -65,8 +64,14 @@
       width: 100%;
       position: relative;
       overflow: hidden;
-      border: 1px solid rgba(138, 43, 226, 0.3);
+      border: 1px solid rgba(244, 117, 33, 0.4);
       backdrop-filter: blur(10px);
+      animation: container-enter 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    }
+
+    @keyframes container-enter {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .container::before {
@@ -87,7 +92,7 @@
     }
 
     h2 {
-      color: var(--secondary);
+      color: var(--primary);
       margin-bottom: 20px;
       font-size: 28px;
       display: flex;
@@ -95,7 +100,7 @@
       justify-content: center;
       gap: 15px;
       font-weight: 700;
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+      text-shadow: 0 0 10px rgba(244, 117, 33, 0.7);
     }
 
     p.subtitle {
@@ -121,7 +126,7 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      box-shadow: 0 5px 15px rgba(123, 44, 191, 0.4);
+      box-shadow: 0 5px 15px rgba(244, 117, 33, 0.4);
       position: relative;
       overflow: hidden;
     }
@@ -139,7 +144,7 @@
 
     button:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(123, 44, 191, 0.6);
+      box-shadow: 0 8px 20px rgba(244, 117, 33, 0.6);
     }
 
     button:hover::before {
@@ -151,11 +156,11 @@
     }
 
     button:disabled {
-      background: linear-gradient(135deg, #2a0845, #2a0845);
+      background: linear-gradient(135deg, #5a2c0f, #5a2c0f);
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
-      color: #555;
+      color: #777;
     }
 
     button:disabled:hover::before {
@@ -167,7 +172,7 @@
       text-align: left;
       font-size: 15px;
       word-wrap: break-word;
-      background: rgba(123, 44, 191, 0.15);
+      background: rgba(244, 117, 33, 0.15);
       padding: 20px;
       border-radius: var(--border-radius);
       border-left: 4px solid var(--accent);
@@ -217,19 +222,19 @@
     }
 
     .badge-premium {
-      background: rgba(123, 44, 191, 0.2);
+      background: rgba(244, 117, 33, 0.2);
       color: var(--primary-light);
       border: 1px solid var(--primary);
     }
 
     .badge-vip {
-      background: rgba(255, 0, 255, 0.2);
+      background: rgba(255, 60, 110, 0.2);
       color: var(--accent);
       border: 1px solid var(--accent);
     }
 
     .badge-new {
-      background: rgba(0, 255, 255, 0.2);
+      background: rgba(123, 44, 191, 0.2);
       color: var(--secondary);
       border: 1px solid var(--secondary);
     }
@@ -253,6 +258,26 @@
       font-size: 14px;
       color: var(--text-light);
       text-align: center;
+      padding: 15px;
+      background: rgba(10, 5, 30, 0.6);
+      border-radius: var(--border-radius);
+      border: 1px dashed rgba(244, 117, 33, 0.4);
+    }
+
+    .counter-item {
+      margin: 8px 0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .counter-label {
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    .counter-value {
+      color: var(--primary);
+      font-weight: 700;
     }
 
     .ad-container {
@@ -260,7 +285,7 @@
       padding: 15px;
       background: rgba(10, 5, 30, 0.6);
       border-radius: var(--border-radius);
-      border: 1px dashed rgba(138, 43, 226, 0.4);
+      border: 1px dashed rgba(244, 117, 33, 0.4);
       text-align: center;
     }
 
@@ -294,6 +319,61 @@
       border: 1px solid orange;
     }
 
+    .timer {
+      margin: 15px 0;
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    .timer-value {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 16px;
+    }
+
+    .progress-container {
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      margin: 15px 0;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .ad-count {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .ad-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(244, 117, 33, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .ad-icon.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 0 10px var(--primary);
+    }
+
     @media (max-width: 480px) {
       .container {
         padding: 20px;
@@ -311,210 +391,346 @@
         margin-bottom: 3px;
       }
     }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(244, 117, 33, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(244, 117, 33, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(244, 117, 33, 0); }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2><i class="fas fa-gem"></i> Premium Generator</h2>
-    <p class="subtitle">Watch an ad to unlock premium accounts</p>
+    <h2><i class="fas fa-crown"></i> Crunchyroll Premium</h2>
+    <p class="subtitle">Watch ads to unlock premium accounts</p>
 
-    <div class="ad-container">
-      <div class="ad-label">Ad Will Appear Here</div>
-      <div id="adContent">Ready to show ad</div>
+    <div class="counter" id="counter">
+      <div class="counter-item">
+        <span class="counter-label">Accounts Today:</span>
+        <span class="counter-value" id="accountsToday">0/5</span>
+      </div>
+      <div class="counter-item">
+        <span class="counter-label">Cooldown:</span>
+        <span class="counter-value" id="cooldownTimer">Ready</span>
+      </div>
+      <div class="counter-item">
+        <span class="counter-label">Next Account Cost:</span>
+        <span class="counter-value" id="adCost">1 Ad</span>
+      </div>
     </div>
 
-    <button onclick="showAdAndUnlock()" id="unlockBtn">
-      <i class="fas fa-key"></i> Generate Account
-    </button>
+    <div class="ad-container">
+      <div class="ad-label">Ad Simulation</div>
+      <div id="adContent">Watch the ad to unlock your premium account</div>
+      <div class="progress-container">
+        <div class="progress-bar" id="adProgress"></div>
+      </div>
+      <div class="timer">
+        Time Remaining: <span class="timer-value" id="adTimer">15s</span>
+      </div>
+      <div class="ad-count" id="adCountContainer">
+        <!-- Ad icons will be added dynamically -->
+      </div>
+    </div>
 
-    <div class="counter" id="counter">Accounts available: Loading...</div>
+    <button onclick="startAdProcess()" id="unlockBtn" class="pulse">
+      <i class="fas fa-gem"></i> Generate Account
+    </button>
 
     <div id="output" class="account" style="display: none;"></div>
 
     <p class="note">
-      <i class="fas fa-sync-alt"></i> Refresh daily for new accounts
+      <i class="fas fa-sync-alt"></i> Accounts refresh daily at midnight UTC
     </p>
   </div>
 
   <script>
-    // Initialize variables
-    let accountsUsed = 0;
-    const maxAccountsPerDay = 5;
+    // State management
+    const state = {
+      accountsToday: 0,
+      maxDaily: 5,
+      cooldown: 0, // in minutes
+      nextAdCost: 1,
+      lastGeneration: 0, // timestamp
+      adTimerActive: false,
+      adTimerValue: 15,
+      adProgress: 0
+    };
+
+    // DOM elements
     const unlockBtn = document.getElementById('unlockBtn');
     const output = document.getElementById('output');
     const counter = document.getElementById('counter');
-    const GIST_URL = 'https://gist.githubusercontent.com/preasx/53cccb980cdf37f5e40146bdee2d9544/raw/74f4f5000c2592123422f39fb5b99d2a8d15abe4/gistfile1.txt';
-    
-    // Check if Telegram WebApp is available
-    if (window.Telegram?.WebApp) {
-      Telegram.WebApp.expand();
-      Telegram.WebApp.enableClosingConfirmation();
-      Telegram.WebApp.MainButton.setText("Get Premium");
-      Telegram.WebApp.MainButton.show();
-      Telegram.WebApp.MainButton.onClick(showAdAndUnlock);
+    const adContent = document.getElementById('adContent');
+    const adTimer = document.getElementById('adTimer');
+    const adProgress = document.getElementById('adProgress');
+    const accountsTodayEl = document.getElementById('accountsToday');
+    const cooldownTimerEl = document.getElementById('cooldownTimer');
+    const adCostEl = document.getElementById('adCost');
+    const adCountContainer = document.getElementById('adCountContainer');
+
+    // Sample account data (in a real app, this would come from your Gist)
+    const accountData = [
+      {
+        service: "Crunchyroll",
+        plan_name: "Mega Fan",
+        email: "premiumuser1@crunchyroll.com",
+        password: "An!m3L0v3r!",
+        expiry: "2024-12-31",
+        remaining_days: 210,
+        email_verified: true,
+        country: "USA"
+      },
+      {
+        service: "Crunchyroll",
+        plan_name: "Mega Fan",
+        email: "animefan2024@example.com",
+        password: "S@kuraBl0ss0m",
+        expiry: "2024-11-15",
+        remaining_days: 170,
+        email_verified: true,
+        country: "Japan"
+      },
+      {
+        service: "Crunchyroll",
+        plan_name: "Fan",
+        email: "otaku_gamer@mail.com",
+        password: "N@rut0R0cks!",
+        expiry: "2024-10-01",
+        remaining_days: 130,
+        email_verified: false,
+        country: "Brazil"
+      }
+    ];
+
+    // Initialize
+    function init() {
+      loadState();
+      updateCounterDisplay();
+      startCooldownChecker();
     }
 
-    // Load account counter
-    async function loadCounter() {
-      try {
-        const response = await fetch(GIST_URL);
-        const data = await response.json();
-        counter.textContent = `✨ ${data.length} premium accounts available`;
-      } catch (error) {
-        counter.textContent = `✨ ${maxAccountsPerDay - accountsUsed} accounts available for you`;
-        console.error("Error fetching account count:", error);
+    // Load state from localStorage
+    function loadState() {
+      const savedState = localStorage.getItem('crunchyrollState');
+      if (savedState) {
+        Object.assign(state, JSON.parse(savedState));
+      }
+      
+      // Reset daily counts if it's a new day
+      const now = new Date();
+      const lastGenDate = new Date(state.lastGeneration);
+      if (lastGenDate.toDateString() !== now.toDateString()) {
+        state.accountsToday = 0;
+        state.nextAdCost = 1;
+        state.cooldown = 0;
       }
     }
-    
-    // Function to randomly select ad type
-    function getRandomAdType() {
-      return Math.random() > 0.5 ? 'interstitial' : 'pop';
+
+    // Save state to localStorage
+    function saveState() {
+      localStorage.setItem('crunchyrollState', JSON.stringify(state));
     }
 
-    // Main function to show ad and unlock account
-    function showAdAndUnlock() {
-      // Check if already used max accounts
-      if (accountsUsed >= maxAccountsPerDay) {
+    // Update counter display
+    function updateCounterDisplay() {
+      accountsTodayEl.textContent = `${state.accountsToday}/${state.maxDaily}`;
+      adCostEl.textContent = `${state.nextAdCost} Ad${state.nextAdCost > 1 ? 's' : ''}`;
+      
+      if (state.cooldown > 0) {
+        cooldownTimerEl.textContent = `${state.cooldown} min`;
+        cooldownTimerEl.style.color = '#FF9E00';
+      } else {
+        cooldownTimerEl.textContent = 'Ready';
+        cooldownTimerEl.style.color = '#2ED573';
+      }
+    }
+
+    // Start cooldown checker
+    function startCooldownChecker() {
+      setInterval(() => {
+        if (state.cooldown > 0) {
+          state.cooldown--;
+          updateCounterDisplay();
+          saveState();
+        }
+      }, 60000); // Check every minute
+    }
+
+    // Create ad icons
+    function createAdIcons(count) {
+      adCountContainer.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const adIcon = document.createElement('div');
+        adIcon.className = 'ad-icon';
+        adIcon.innerHTML = '<i class="fas fa-ad"></i>';
+        adCountContainer.appendChild(adIcon);
+      }
+    }
+
+    // Start ad process
+    function startAdProcess() {
+      // Check if user has exceeded daily limit
+      if (state.accountsToday >= state.maxDaily) {
         output.innerHTML = `
           <div class="account-item">
             <span class="label">Status</span>
-            <span class="value">Daily limit reached (${maxAccountsPerDay} accounts)</span>
+            <span class="value">Daily limit reached (${state.maxDaily} accounts)</span>
           </div>
           <div class="account-item">
-            <span class="label">Next unlock</span>
-            <span class="value">Available in ${formatTimeUntilTomorrow()}</span>
+            <span class="label">Option</span>
+            <span class="value">Watch ${state.nextAdCost} ads for an extra account</span>
+          </div>
+        `;
+        output.style.display = 'block';
+      }
+      
+      // Check if in cooldown
+      if (state.cooldown > 0) {
+        output.innerHTML = `
+          <div class="account-item">
+            <span class="label">Status</span>
+            <span class="value">Cooldown active (${state.cooldown} min remaining)</span>
+          </div>
+          <div class="account-item">
+            <span class="label">Next Account</span>
+            <span class="value">Available in ${state.cooldown} minutes</span>
           </div>
         `;
         output.style.display = 'block';
         return;
       }
       
-      // Disable button and show loading
+      // Reset ad state
+      state.adTimerActive = true;
+      state.adTimerValue = 15;
+      state.adProgress = 0;
+      
+      // Update UI
       unlockBtn.disabled = true;
-      unlockBtn.innerHTML = `<div class="loading"></div> Preparing...`;
-      output.style.display = 'none';
+      unlockBtn.innerHTML = `<i class="fas fa-hourglass-half"></i> Watching Ad...`;
+      adContent.innerHTML = `Please watch the ad for <span class="timer-value">${state.adTimerValue}s</span>`;
+      adTimer.textContent = `${state.adTimerValue}s`;
+      adProgress.style.width = '0%';
       
-      // Randomly select ad type
-      const adType = getRandomAdType();
-      const adPromise = adType === 'pop' 
-        ? show_9558020('pop') 
-        : show_9558020();
+      // Create ad icons
+      createAdIcons(state.nextAdCost);
       
-      // Show the selected ad type
-      adPromise.then(() => {
-        // This executes after user watches the ad
-        unlockAccount();
-      }).catch(error => {
-        // Handle ad error
-        unlockBtn.disabled = false;
-        unlockBtn.innerHTML = `<i class="fas fa-key"></i> Try Again`;
-        output.innerHTML = `
-          <div class="account-item">
-            <span class="label">Error</span>
-            <span class="value">Ad couldn't load. Please try again.</span>
-          </div>
-        `;
-        output.style.display = 'block';
-        console.error("Ad error:", error);
-      });
+      // Start ad timer
+      const adInterval = setInterval(() => {
+        if (!state.adTimerActive) {
+          clearInterval(adInterval);
+          return;
+        }
+        
+        state.adTimerValue--;
+        state.adProgress = ((15 - state.adTimerValue) / 15) * 100;
+        
+        adTimer.textContent = `${state.adTimerValue}s`;
+        adProgress.style.width = `${state.adProgress}%`;
+        
+        // Update ad icons
+        const watchedAds = Math.floor((15 - state.adTimerValue) / (15 / state.nextAdCost));
+        const icons = adCountContainer.querySelectorAll('.ad-icon');
+        icons.forEach((icon, index) => {
+          if (index < watchedAds) {
+            icon.classList.add('active');
+          } else {
+            icon.classList.remove('active');
+          }
+        });
+        
+        if (state.adTimerValue <= 0) {
+          clearInterval(adInterval);
+          state.adTimerActive = false;
+          unlockAccount();
+        }
+      }, 1000);
     }
 
-    // Function to actually unlock the account after ad view
-    async function unlockAccount() {
-      try {
-        unlockBtn.innerHTML = `<div class="loading"></div> Generating...`;
-        
-        // Fetch account data from Gist
-        const response = await fetch(GIST_URL);
-        if (!response.ok) throw new Error('Network response was not ok');
-        
-        const data = await response.json();
-        const validAccounts = data.filter(acc => acc.status === "Success");
-        
-        if (validAccounts.length === 0) {
-          throw new Error('No accounts available');
-        }
-        
-        // Select random account
-        const account = validAccounts[Math.floor(Math.random() * validAccounts.length)];
-        
-        // Display account information
-        output.innerHTML = `
-          <div class="account-item">
-            <span class="label">Service</span>
-            <span class="value">${account.service || 'Premium Service'} 
-              <span class="badge ${getPlanBadgeClass(account.plan_name)}">${account.plan_name}</span>
-            </span>
-          </div>
-          <div class="account-item">
-            <span class="label">Email</span>
-            <span class="value">${account.email}</span>
-          </div>
-          <div class="account-item">
-            <span class="label">Password</span>
-            <span class="value">${account.password}</span>
-          </div>
-          <div class="account-item">
-            <span class="label">Expires</span>
-            <span class="value">${formatDate(account.expiry)} 
-              <span class="badge ${getDaysBadgeClass(account.remaining_days)}">${account.remaining_days} days</span>
-            </span>
-          </div>
-          <div class="account-item">
-            <span class="label">Status</span>
-            <span class="value">
-              <span class="verification ${account.email_verified ? 'verified' : 'unverified'}">
-                <i class="fas ${account.email_verified ? 'fa-check-circle' : 'fa-info-circle'}"></i>
-                ${account.email_verified ? 'Verified' : 'Not Verified'}
-              </span>
-              ${account.country ? `• ${getCountryFlag(account.country)} ${account.country}` : ''}
-            </span>
-          </div>
-        `;
-        output.style.display = 'block';
-        
-        // Increment counter and update UI
-        accountsUsed++;
-        counter.textContent = `✨ ${maxAccountsPerDay - accountsUsed} accounts left today`;
-        
-        // Log successful unlock
-        console.log(`Account unlocked: ${account.email}`);
-        
-        // If Telegram WebApp, close after successful unlock
-        if (window.Telegram?.WebApp) {
-          setTimeout(() => {
-            Telegram.WebApp.close();
-          }, 3000);
-        }
-      } catch (error) {
-        output.innerHTML = `
-          <div class="account-item">
-            <span class="label">Oops!</span>
-            <span class="value">${error.message || 'Something went wrong'}</span>
-          </div>
-          <div class="account-item">
-            <span class="label">Try</span>
-            <span class="value">Please check back later</span>
-          </div>
-        `;
-        output.style.display = 'block';
-        console.error("Account unlock error:", error);
-      } finally {
-        unlockBtn.disabled = false;
-        unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Generate Another`;
+    // Unlock account after ad
+    function unlockAccount() {
+      // Simulate account generation
+      const account = accountData[Math.floor(Math.random() * accountData.length)];
+      
+      // Update state
+      state.accountsToday++;
+      state.lastGeneration = Date.now();
+      
+      // Set cooldown based on number of accounts today
+      if (state.accountsToday <= 4) {
+        state.cooldown = 30 + (state.accountsToday * 10); // 30, 40, 50, 60 min
+      } else {
+        state.cooldown = 0; // No cooldown for extra accounts
       }
+      
+      // Increase ad cost for next account
+      if (state.accountsToday >= state.maxDaily) {
+        state.nextAdCost = state.accountsToday - state.maxDaily + 1;
+      }
+      
+      // Save state
+      saveState();
+      
+      // Display account
+      output.innerHTML = `
+        <div class="account-item">
+          <span class="label">Service</span>
+          <span class="value">${account.service || 'Crunchyroll'} 
+            <span class="badge ${getPlanBadgeClass(account.plan_name)}">${account.plan_name}</span>
+          </span>
+        </div>
+        <div class="account-item">
+          <span class="label">Email</span>
+          <span class="value">${account.email}</span>
+        </div>
+        <div class="account-item">
+          <span class="label">Password</span>
+          <span class="value">${account.password}</span>
+        </div>
+        <div class="account-item">
+          <span class="label">Expires</span>
+          <span class="value">${formatDate(account.expiry)} 
+            <span class="badge ${getDaysBadgeClass(account.remaining_days)}">${account.remaining_days} days</span>
+          </span>
+        </div>
+        <div class="account-item">
+          <span class="label">Status</span>
+          <span class="value">
+            <span class="verification ${account.email_verified ? 'verified' : 'unverified'}">
+              <i class="fas ${account.email_verified ? 'fa-check-circle' : 'fa-info-circle'}"></i>
+              ${account.email_verified ? 'Verified' : 'Not Verified'}
+            </span>
+            ${account.country ? `• ${getCountryFlag(account.country)} ${account.country}` : ''}
+          </span>
+        </div>
+        <div class="note">
+          <i class="fas fa-shield-alt"></i> Change password immediately after login!
+        </div>
+      `;
+      output.style.display = 'block';
+      
+      // Update UI
+      unlockBtn.disabled = false;
+      unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Generate Another`;
+      adContent.textContent = "Ad completed! Your account is ready.";
+      updateCounterDisplay();
     }
-    
+
     // Helper functions
     function getPlanBadgeClass(plan) {
-      if (/pro|premium|ultimate/i.test(plan)) return 'badge-premium';
-      if (/vip|deluxe/i.test(plan)) return 'badge-vip';
+      if (/mega|premium|ultimate/i.test(plan)) return 'badge-premium';
+      if (/fan|deluxe/i.test(plan)) return 'badge-vip';
       return 'badge-new';
     }
     
     function getDaysBadgeClass(days) {
-      if (days > 30) return 'badge-premium';
-      if (days > 7) return 'badge-vip';
+      if (days > 180) return 'badge-premium';
+      if (days > 90) return 'badge-vip';
       return 'badge-new';
     }
     
@@ -528,30 +744,23 @@
       });
     }
     
-    function formatTimeUntilTomorrow() {
-      const now = new Date();
-      const tomorrow = new Date(now);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(0, 0, 0, 0);
-      
-      const diff = tomorrow - now;
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      
-      return `${hours}h ${minutes}m`;
-    }
-    
     function getCountryFlag(country) {
       const flags = {
         'usa': '🇺🇸',
+        'us': '🇺🇸',
         'uk': '🇬🇧',
-        'canada': '🇨🇦',
-        'germany': '🇩🇪',
-        'france': '🇫🇷',
         'japan': '🇯🇵',
-        'australia': '🇦🇺',
+        'jp': '🇯🇵',
         'brazil': '🇧🇷',
-        'india': '🇮🇳'
+        'br': '🇧🇷',
+        'germany': '🇩🇪',
+        'de': '🇩🇪',
+        'france': '🇫🇷',
+        'fr': '🇫🇷',
+        'canada': '🇨🇦',
+        'ca': '🇨🇦',
+        'india': '🇮🇳',
+        'in': '🇮🇳'
       };
       
       const lowerCountry = country.toLowerCase();
@@ -559,16 +768,7 @@
     }
     
     // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      loadCounter();
-      
-      // If Telegram WebApp, change the button text
-      if (window.Telegram?.WebApp) {
-        document.querySelector('h2').innerHTML = `<i class="fas fa-gem"></i> Telegram Premium`;
-        document.querySelector('.subtitle').textContent = "Tap to get instant premium access";
-        unlockBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Get Premium`;
-      }
-    });
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
