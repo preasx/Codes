@@ -390,6 +390,45 @@
       border-left: 3px solid var(--primary);
       display: none;
     }
+    
+    .mode-selector {
+      display: flex;
+      margin: 15px 0;
+      background: rgba(10, 5, 30, 0.6);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+    
+    .mode-btn {
+      flex: 1;
+      padding: 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+    
+    .mode-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .account-counter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: var(--accent);
+      color: black;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 5px;
+    }
 
     @media (max-width: 480px) {
       .container {
@@ -425,8 +464,8 @@
 
     <div class="stats-container">
       <div class="stat-box">
-        <div class="stat-value" id="accountsToday">0</div>
-        <div class="stat-label">Today</div>
+        <div class="stat-value" id="accountsToday">0/5</div>
+        <div class="stat-label">Daily Accounts</div>
       </div>
       <div class="stat-box">
         <div class="stat-value" id="cooldownTimer">Ready</div>
@@ -434,8 +473,13 @@
       </div>
       <div class="stat-box">
         <div class="stat-value" id="nextAdCost">1</div>
-        <div class="stat-label">Ads Needed</div>
+        <div class="stat-label">Ads Required</div>
       </div>
+    </div>
+
+    <div class="mode-selector">
+      <button class="mode-btn active" id="normalModeBtn">Normal Mode</button>
+      <button class="mode-btn" id="instantModeBtn">Instant Mode</button>
     </div>
 
     <div class="ad-container">
@@ -469,27 +513,31 @@
 
     <p class="note">
       <i class="fas fa-sync-alt"></i> Refresh daily for new accounts<br>
-      <i class="fas fa-info-circle"></i> Each day you can unlock up to 5 accounts
+      <i class="fas fa-info-circle"></i> Each day you can unlock up to 5 accounts normally
     </p>
   </div>
 
   <script>
-    // Initialize variables
-    const MAX_ACCOUNTS_PER_DAY = 5;
+    // Constants
+    const MAX_NORMAL_ACCOUNTS = 5;
     const BASE_COOLDOWN = 30 * 60 * 1000; // 30 minutes in milliseconds
     const AD_VIEWING_TIME = 15 * 1000; // 15 seconds in milliseconds
+    const COOLDOWN_INCREMENT = 10 * 60 * 1000; // 10 minutes
     const GIST_URL = 'https://gist.githubusercontent.com/preasx/53cccb980cdf37f5e40146bdee2d9544/raw/74f4f5000c2592123422f39fb5b99d2a8d15abe4/gistfile1.txt';
     
     // State management
     let state = {
-      accountsUsedToday: 0,
+      normalAccountsToday: 0,
+      instantAccountsToday: 0,
       lastGenerationTime: 0,
       currentCooldown: BASE_COOLDOWN,
       adsRequired: 1,
       adsWatched: 0,
       adViewingStart: 0,
       adViewingTimer: null,
-      adViewingProgress: 0
+      adViewingProgress: 0,
+      currentMode: 'normal', // 'normal' or 'instant'
+      isAdInProgress: false
     };
     
     // DOM elements
@@ -506,12 +554,18 @@
     const accountsTodayElement = document.getElementById('accountsToday');
     const cooldownTimerElement = document.getElementById('cooldownTimer');
     const nextAdCostElement = document.getElementById('nextAdCost');
-    
+    const normalModeBtn = document.getElementById('normalModeBtn');
+    const instantModeBtn = document.getElementById('instantModeBtn');
+
     // Initialize the application
     function init() {
       loadStateFromStorage();
       updateUI();
       loadCounter();
+      setupEventListeners();
+      
+      // Set up mode buttons
+      updateModeButtons();
       
       // If Telegram WebApp is available
       if (window.Telegram?.WebApp) {
@@ -530,6 +584,33 @@
       setInterval(checkCooldown, 1000);
     }
     
+    // Set up event listeners
+    function setupEventListeners() {
+      normalModeBtn.addEventListener('click', () => setMode('normal'));
+      instantModeBtn.addEventListener('click', () => setMode('instant'));
+    }
+    
+    // Set the current mode
+    function setMode(mode) {
+      state.currentMode = mode;
+      updateModeButtons();
+      updateUI();
+    }
+    
+    // Update mode buttons UI
+    function updateModeButtons() {
+      normalModeBtn.classList.toggle('active', state.currentMode === 'normal');
+      instantModeBtn.classList.toggle('active', state.currentMode === 'instant');
+      
+      if (state.currentMode === 'normal') {
+        normalModeBtn.innerHTML = `Normal Mode <span class="account-counter">${state.normalAccountsToday}</span>`;
+        instantModeBtn.textContent = 'Instant Mode';
+      } else {
+        normalModeBtn.textContent = 'Normal Mode';
+        instantModeBtn.innerHTML = `Instant Mode <span class="account-counter">${state.instantAccountsToday}</span>`;
+      }
+    }
+    
     // Load state from localStorage
     function loadStateFromStorage() {
       const savedState = localStorage.getItem('premiumGeneratorState');
@@ -543,15 +624,18 @@
             lastUsedDate.getMonth() !== today.getMonth() || 
             lastUsedDate.getFullYear() !== today.getFullYear()) {
           // Reset daily counters if it's a new day
-          state.accountsUsedToday = 0;
+          state.normalAccountsToday = 0;
+          state.instantAccountsToday = 0;
           state.adsRequired = 1;
+          state.currentCooldown = BASE_COOLDOWN;
         } else {
-          state.accountsUsedToday = parsedState.accountsUsedToday || 0;
+          state.normalAccountsToday = parsedState.normalAccountsToday || 0;
+          state.instantAccountsToday = parsedState.instantAccountsToday || 0;
           state.adsRequired = parsedState.adsRequired || 1;
+          state.currentCooldown = parsedState.currentCooldown || BASE_COOLDOWN;
         }
         
         state.lastGenerationTime = parsedState.lastGenerationTime || 0;
-        state.currentCooldown = parsedState.currentCooldown || BASE_COOLDOWN;
       }
       
       updateStatsDisplay();
@@ -560,7 +644,8 @@
     // Save state to localStorage
     function saveStateToStorage() {
       localStorage.setItem('premiumGeneratorState', JSON.stringify({
-        accountsUsedToday: state.accountsUsedToday,
+        normalAccountsToday: state.normalAccountsToday,
+        instantAccountsToday: state.instantAccountsToday,
         lastGenerationTime: state.lastGenerationTime,
         currentCooldown: state.currentCooldown,
         adsRequired: state.adsRequired
@@ -572,20 +657,49 @@
       updateStatsDisplay();
       checkCooldown();
       updateAdRequirements();
+      updateButtonState();
     }
     
     // Update statistics display
     function updateStatsDisplay() {
-      accountsTodayElement.textContent = `${state.accountsUsedToday}/${MAX_ACCOUNTS_PER_DAY}`;
+      accountsTodayElement.textContent = `${state.normalAccountsToday}/${MAX_NORMAL_ACCOUNTS}`;
       nextAdCostElement.textContent = state.adsRequired;
       
       // Color coding based on usage
-      if (state.accountsUsedToday >= MAX_ACCOUNTS_PER_DAY) {
+      if (state.normalAccountsToday >= MAX_NORMAL_ACCOUNTS) {
         accountsTodayElement.style.color = 'var(--error)';
-      } else if (state.accountsUsedToday >= MAX_ACCOUNTS_PER_DAY - 2) {
+      } else if (state.normalAccountsToday >= MAX_NORMAL_ACCOUNTS - 2) {
         accountsTodayElement.style.color = 'var(--accent)';
       } else {
         accountsTodayElement.style.color = 'var(--success)';
+      }
+    }
+    
+    // Update button state and text
+    function updateButtonState() {
+      const now = Date.now();
+      const timeSinceLastGen = now - state.lastGenerationTime;
+      const remainingCooldown = state.currentCooldown - timeSinceLastGen;
+      
+      if (state.isAdInProgress) {
+        unlockBtn.disabled = true;
+        return;
+      }
+      
+      if (state.currentMode === 'normal') {
+        if (state.normalAccountsToday >= MAX_NORMAL_ACCOUNTS) {
+          unlockBtn.innerHTML = `<i class="fas fa-ad"></i> Use Instant Mode for More`;
+          unlockBtn.disabled = false;
+        } else if (remainingCooldown > 0) {
+          unlockBtn.innerHTML = `<i class="fas fa-clock"></i> In Cooldown`;
+          unlockBtn.disabled = true;
+        } else {
+          unlockBtn.innerHTML = `<i class="fas fa-key"></i> Generate Account (1 ad)`;
+          unlockBtn.disabled = false;
+        }
+      } else {
+        unlockBtn.innerHTML = `<i class="fas fa-bolt"></i> Generate Now (${state.adsRequired} ads)`;
+        unlockBtn.disabled = false;
       }
     }
     
@@ -603,16 +717,14 @@
         
         cooldownTimeElement.textContent = formatTime(remainingCooldown);
         cooldownInfo.style.display = 'block';
-        unlockBtn.disabled = true;
       } else {
         // Cooldown finished
         cooldownTimerElement.textContent = 'Ready';
         cooldownTimerElement.style.color = 'var(--success)';
         cooldownInfo.style.display = 'none';
-        
-        // Only enable if not reached daily limit
-        unlockBtn.disabled = state.accountsUsedToday >= MAX_ACCOUNTS_PER_DAY;
       }
+      
+      updateButtonState();
     }
     
     // Load account counter from Gist
@@ -622,27 +734,31 @@
         const data = await response.json();
         counter.textContent = `✨ ${data.length} premium accounts available`;
       } catch (error) {
-        counter.textContent = `✨ ${MAX_ACCOUNTS_PER_DAY - state.accountsUsedToday} accounts available for you`;
+        counter.textContent = `✨ ${MAX_NORMAL_ACCOUNTS - state.normalAccountsToday} accounts available in normal mode`;
         console.error("Error fetching account count:", error);
       }
     }
     
     // Initiate account generation process
     function initiateAccountGeneration() {
-      // Check daily limit
-      if (state.accountsUsedToday >= MAX_ACCOUNTS_PER_DAY) {
-        showDailyLimitReached();
-        return;
-      }
-      
-      // Check cooldown
-      const now = Date.now();
-      const timeSinceLastGen = now - state.lastGenerationTime;
-      if (state.lastGenerationTime > 0 && timeSinceLastGen < state.currentCooldown) {
-        const remainingTime = state.currentCooldown - timeSinceLastGen;
-        cooldownTimeElement.textContent = formatTime(remainingTime);
-        cooldownInfo.style.display = 'block';
-        return;
+      if (state.currentMode === 'normal') {
+        if (state.normalAccountsToday >= MAX_NORMAL_ACCOUNTS) {
+          setMode('instant');
+          return;
+        }
+        
+        // Check cooldown
+        const now = Date.now();
+        const timeSinceLastGen = now - state.lastGenerationTime;
+        if (state.lastGenerationTime > 0 && timeSinceLastGen < state.currentCooldown) {
+          const remainingTime = state.currentCooldown - timeSinceLastGen;
+          cooldownTimeElement.textContent = formatTime(remainingTime);
+          cooldownInfo.style.display = 'block';
+          return;
+        }
+        
+        // Normal mode requires 1 ad
+        state.adsRequired = 1;
       }
       
       // Start ad viewing process
@@ -654,6 +770,7 @@
       // Reset ad viewing state
       state.adsWatched = 0;
       state.adViewingProgress = 0;
+      state.isAdInProgress = true;
       
       // Update UI for ad viewing
       unlockBtn.disabled = true;
@@ -741,6 +858,7 @@
     
     // Handle ad viewing errors
     function onAdViewingError(error) {
+      state.isAdInProgress = false;
       timerContainer.style.display = 'none';
       
       unlockBtn.disabled = false;
@@ -760,6 +878,7 @@
     // Actually unlock the account after successful ad viewing
     async function unlockAccount() {
       try {
+        state.isAdInProgress = false;
         unlockBtn.innerHTML = `<div class="loading"></div> Generating...`;
         
         // Fetch account data from Gist
@@ -811,11 +930,17 @@
         `;
         output.style.display = 'block';
         
-        // Update state
-        state.accountsUsedToday++;
-        state.lastGenerationTime = Date.now();
-        state.currentCooldown = BASE_COOLDOWN + (state.accountsUsedToday * 10 * 60 * 1000); // Increase by 10 mins each time
-        state.adsRequired = Math.min(state.accountsUsedToday + 1, 4); // Increase ads required up to 4
+        // Update state based on mode
+        const now = Date.now();
+        
+        if (state.currentMode === 'normal') {
+          state.normalAccountsToday++;
+          state.lastGenerationTime = now;
+          state.currentCooldown = BASE_COOLDOWN + (state.normalAccountsToday * COOLDOWN_INCREMENT);
+        } else {
+          state.instantAccountsToday++;
+          state.adsRequired = state.instantAccountsToday + 1;
+        }
         
         saveStateToStorage();
         updateUI();
@@ -825,7 +950,9 @@
         
         // Reset button for next generation
         unlockBtn.disabled = false;
-        unlockBtn.innerHTML = `<i class="fas fa-redo"></i> Generate Another`;
+        unlockBtn.innerHTML = state.currentMode === 'normal' ? 
+          `<i class="fas fa-redo"></i> Generate Another` : 
+          `<i class="fas fa-bolt"></i> Generate Now (${state.adsRequired} ads)`;
         unlockBtn.onclick = initiateAccountGeneration;
         
         // If Telegram WebApp, close after successful unlock
@@ -853,33 +980,6 @@
         
         console.error("Account unlock error:", error);
       }
-    }
-    
-    // Show daily limit reached message
-    function showDailyLimitReached() {
-      output.innerHTML = `
-        <div class="account-item">
-          <span class="label">Status</span>
-          <span class="value">Daily limit reached (${MAX_ACCOUNTS_PER_DAY} accounts)</span>
-        </div>
-        <div class="account-item">
-          <span class="label">Next unlock</span>
-          <span class="value">Available in ${formatTimeUntilTomorrow()}</span>
-        </div>
-        <div class="account-item">
-          <span class="label">Option</span>
-          <span class="value">Watch 4 ads to unlock one more account</span>
-        </div>
-      `;
-      output.style.display = 'block';
-      
-      // Change button to allow unlocking more with additional ads
-      unlockBtn.disabled = false;
-      unlockBtn.innerHTML = `<i class="fas fa-ad"></i> Unlock Extra Account (4 ads)`;
-      unlockBtn.onclick = function() {
-        state.adsRequired = 4;
-        initiateAccountGeneration();
-      };
     }
     
     // Update ad requirements display
@@ -913,16 +1013,6 @@
         month: 'short', 
         day: 'numeric' 
       });
-    }
-    
-    function formatTimeUntilTomorrow() {
-      const now = new Date();
-      const tomorrow = new Date(now);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(0, 0, 0, 0);
-      
-      const diff = tomorrow - now;
-      return formatTime(diff);
     }
     
     function formatTime(milliseconds) {
