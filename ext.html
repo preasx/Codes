@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* Add all your style rules here */
         :root {
             --primary-color: #2481cc;
             --primary-hover: #1a6cb3;
@@ -20,527 +20,240 @@
             --error: #f44336;
             --border-radius: 8px;
             --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
+        }body.dark {
+        --primary-color: #4a9ce9;
+        --primary-hover: #3d8bd6;
+        --background: #121212;
+        --surface: #1e1e1e;
+        --text-primary: #f5f5f5;
+        --text-secondary: #b0b0b0;
+        --border: #333333;
+        --success: #66bb6a;
+        --error: #ef5350;
+        --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
 
-        body.dark {
-            --primary-color: #4a9ce9;
-            --primary-hover: #3d8bd6;
-            --background: #121212;
-            --surface: #1e1e1e;
-            --text-primary: #f5f5f5;
-            --text-secondary: #b0b0b0;
-            --border: #333333;
-            --success: #66bb6a;
-            --error: #ef5350;
-            --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
+    /* Reset and layout */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--background);
+        color: var(--text-primary);
+        padding: 16px;
+    }
+    .container { max-width: 600px; margin: auto; }
+    header { text-align: center; margin-bottom: 24px; }
+    h1 { font-size: 1.5rem; color: var(--primary-color); }
+    .subtitle { color: var(--text-secondary); }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    .card {
+        background-color: var(--surface);
+        border-radius: var(--border-radius);
+        padding: 20px;
+        box-shadow: var(--box-shadow);
+        margin-bottom: 24px;
+    }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--background);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 16px;
-            transition: background-color 0.3s, color 0.3s;
-        }
+    .file-input-container { margin-top: 16px; }
+    .file-input-label {
+        display: block;
+        padding: 12px;
+        text-align: center;
+        background-color: var(--surface);
+        border: 1px dashed var(--border);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+    }
 
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 0 12px;
-        }
+    #fileInput { display: none; }
+    .selected-file { margin-top: 10px; color: var(--text-secondary); }
 
-        header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
+    .button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+    }
 
-        h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--primary-color);
-        }
+    .button-secondary {
+        background-color: var(--surface);
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+    }
 
-        .subtitle {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 16px;
-        }
+    .output-container { margin-top: 20px; }
+    pre {
+        background-color: var(--background);
+        padding: 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--border-radius);
+        overflow-x: auto;
+    }
 
-        .card {
-            background-color: var(--surface);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--box-shadow);
-            transition: background-color 0.3s;
-        }
+    #fileName {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--border-radius);
+    }
 
-        .section-title {
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .status-message {
+        padding: 12px;
+        border-radius: var(--border-radius);
+        margin-top: 10px;
+        text-align: center;
+    }
+    .success { color: var(--success); border: 1px solid var(--success); }
+    .error { color: var(--error); border: 1px solid var(--error); }
+    .hidden { display: none; }
+</style>
 
-        .section-title svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .file-input-container {
-            position: relative;
-            margin: 20px 0;
-        }
-
-        .file-input-label {
-            display: block;
-            padding: 14px 16px;
-            background-color: var(--surface);
-            color: var(--text-primary);
-            border: 1px dashed var(--border);
-            border-radius: var(--border-radius);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-
-        .file-input-label:hover {
-            border-color: var(--primary-color);
-            background-color: rgba(36, 129, 204, 0.05);
-        }
-
-        body.dark .file-input-label:hover {
-            background-color: rgba(74, 156, 233, 0.1);
-        }
-
-        #fileInput {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .selected-file {
-            margin-top: 8px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .selected-file svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 12px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            margin: 8px 0;
-            width: 100%;
-            transition: all 0.2s;
-        }
-
-        .button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-        }
-
-        .button:active {
-            transform: translateY(0);
-        }
-
-        .button-secondary {
-            background-color: var(--surface);
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-        }
-
-        .button-secondary:hover {
-            background-color: rgba(36, 129, 204, 0.1);
-        }
-
-        body.dark .button-secondary:hover {
-            background-color: rgba(74, 156, 233, 0.2);
-        }
-
-        .output-container {
-            margin-top: 20px;
-        }
-
-        #output {
-            background-color: var(--background);
-            border: 1px solid var(--border);
-            padding: 16px;
-            border-radius: var(--border-radius);
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: 'Courier New', monospace;
-            max-height: 300px;
-            overflow-y: auto;
-            color: var(--text-primary);
-            line-height: 1.5;
-        }
-
-        #accountCount {
-            font-weight: 500;
-            margin: 12px 0;
-            color: var(--primary-color);
-            text-align: center;
-        }
-
-        #fileName {
-            width: 100%;
-            padding: 12px 16px;
-            margin: 12px 0;
-            border: 1px solid var(--border);
-            border-radius: var(--border-radius);
-            background-color: var(--surface);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            transition: border-color 0.2s;
-        }
-
-        #fileName:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        .status-message {
-            padding: 12px 16px;
-            border-radius: var(--border-radius);
-            margin: 12px 0;
-            text-align: center;
-            font-weight: 500;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .success {
-            background-color: rgba(76, 175, 80, 0.1);
-            color: var(--success);
-            border: 1px solid var(--success);
-        }
-
-        .error {
-            background-color: rgba(244, 67, 54, 0.1);
-            color: var(--error);
-            border: 1px solid var(--error);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .loader {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 8px;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @media (min-width: 600px) {
-            .container {
-                max-width: 500px;
-            }
-            
-            .button-group {
-                flex-direction: row;
-            }
-            
-            .button {
-                width: auto;
-                flex: 1;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Account Extractor</h1>
-            <p class="subtitle">Extract email:password pairs from your files</p>
-        </header>
-        
-        <div class="card">
-            <h2 class="section-title">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                </svg>
-                File Input
-            </h2>
-            
-            <div class="file-input-container">
-                <label for="fileInput" class="file-input-label">Choose File</label>
-                <input type="file" id="fileInput" accept=".txt,.csv,.json,.log">
-                <div id="selectedFile" class="selected-file hidden">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/>
-                    </svg>
-                    <span id="selectedFileName"></span>
-                </div>
-            </div>
-            
-            <button id="extractBtn" class="button" onclick="processFile()">
-                <span id="extractBtnText">Extract Accounts</span>
-                <span id="extractBtnLoader" class="loader hidden"></span>
-            </button>
-            
-            <div id="statusMessage" class="status-message hidden"></div>
-        </div>
-        
-        <div id="resultsSection" class="card hidden">
-            <h2 class="section-title">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1h-15V5h15v14.1zm0-16.1h-15c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
-                </svg>
-                Results
-            </h2>
-            
-            <div class="output-container">
-                <pre id="output">No accounts extracted yet.</pre>
-            </div>
-            <p id="accountCount"></p>
-            
-            <div class="button-group">
-                <button id="copyBtn" class="button" onclick="copyToClipboard()">Copy to Clipboard</button>
-                <button id="downloadBtn" class="button button-secondary" onclick="downloadFile()">Download File</button>
-            </div>
-            
-            <input type="text" id="fileName" placeholder="Enter file name (e.g., accounts.txt)">
-        </div>
+<div class="container">
+    <header>
+        <h1>Account Extractor</h1>
+        <p class="subtitle">Extract email:password pairs from uploaded files</p>
+    </header><div class="card">
+    <label class="file-input-label" for="fileInput">Choose File</label>
+    <input type="file" id="fileInput" accept=".txt,.csv,.json,.log">
+    <div id="selectedFile" class="selected-file hidden">Selected: <span id="selectedFileName"></span></div>
+    <button class="button" onclick="processFile()">Extract Accounts</button>
+    <div id="statusMessage" class="status-message hidden"></div>
+</div>
+
+<div class="card hidden" id="resultsSection">
+    <div class="output-container">
+        <pre id="output">No accounts extracted yet.</pre>
     </div>
+    <p id="accountCount"></p>
+    <button class="button" onclick="copyToClipboard()">Copy to Clipboard</button>
+    <input type="text" id="fileName" placeholder="Enter file name (e.g., accounts.txt)">
+    <button class="button button-secondary" onclick="downloadFile()">Download File</button>
+</div>
 
-    <script>
-        const TelegramWebApp = window.Telegram.WebApp;
-        let extractedData = "";
-        let accountCount = 0;
+</div><script>
+    const TelegramWebApp = window.Telegram.WebApp;
+    let extractedData = "";
 
-        // Initialize Telegram WebApp
-        TelegramWebApp.ready();
-        TelegramWebApp.expand();
+    TelegramWebApp.ready();
+    TelegramWebApp.expand();
+    document.body.classList.toggle('dark', TelegramWebApp.colorScheme === 'dark');
 
-        // Set initial theme
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const selectedFileDiv = document.getElementById('selectedFile');
+        const fileNameSpan = document.getElementById('selectedFileName');
+        if (file) {
+            fileNameSpan.textContent = file.name;
+            selectedFileDiv.classList.remove('hidden');
+        } else {
+            selectedFileDiv.classList.add('hidden');
+        }
+    });
+
+    function showStatus(message, isSuccess) {
+        const status = document.getElementById('statusMessage');
+        status.textContent = message;
+        status.className = `status-message ${isSuccess ? 'success' : 'error'}`;
+        status.classList.remove('hidden');
+        setTimeout(() => status.classList.add('hidden'), 3000);
+    }
+
+    function processFile() {
+        const fileInput = document.getElementById('fileInput');
+        const output = document.getElementById('output');
+        const resultsSection = document.getElementById('resultsSection');
+        const accountCountElement = document.getElementById('accountCount');
+
+        if (!fileInput.files.length) {
+            showStatus("Please select a file first", false);
+            return;
+        }
+
+        const file = fileInput.files[0];
+        if (file.size > 5 * 1024 * 1024) {
+            showStatus("File is too large (max 5MB)", false);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const content = event.target.result;
+            const pattern = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\s*[:;|]\s*([^\s]+)/g;
+            let match;
+            extractedData = "";
+            let count = 0;
+
+            while ((match = pattern.exec(content)) !== null) {
+                extractedData += `${match[1]}:${match[2]}\n`;
+                count++;
+            }
+
+            if (count > 0) {
+                output.textContent = extractedData;
+                accountCountElement.textContent = `${count} accounts extracted`;
+                resultsSection.classList.remove('hidden');
+                showStatus("Accounts extracted successfully", true);
+            } else {
+                output.textContent = "No valid email:password pairs found";
+                resultsSection.classList.add('hidden');
+                showStatus("No valid accounts found", false);
+            }
+        };
+
+        reader.onerror = function() {
+            showStatus("Error reading file", false);
+        };
+
+        reader.readAsText(file);
+    }
+
+    function copyToClipboard() {
+        if (!extractedData) {
+            showStatus("No data to copy", false);
+            return;
+        }
+
+        navigator.clipboard.writeText(extractedData).then(() => {
+            showStatus("Copied to clipboard", true);
+            show_9574412('pop');
+        }).catch(() => {
+            showStatus("Failed to copy", false);
+        });
+    }
+
+    function downloadFile() {
+        if (!extractedData) {
+            showStatus("No data to download", false);
+            return;
+        }
+
+        const fileNameInput = document.getElementById('fileName');
+        const fileName = fileNameInput.value.trim() || `accounts_${new Date().toISOString().slice(0,10)}.txt`;
+        const blob = new Blob([extractedData], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+        showStatus("Download started", true);
+
+        show_9574412('pop');
+    }
+
+    TelegramWebApp.onEvent('themeChanged', () => {
         document.body.classList.toggle('dark', TelegramWebApp.colorScheme === 'dark');
-
-        // File input change handler
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const selectedFileDiv = document.getElementById('selectedFile');
-            const fileNameSpan = document.getElementById('selectedFileName');
-            
-            if (file) {
-                fileNameSpan.textContent = file.name;
-                selectedFileDiv.classList.remove('hidden');
-            } else {
-                selectedFileDiv.classList.add('hidden');
-            }
-        });
-
-        function showStatus(message, isSuccess) {
-            const statusElement = document.getElementById('statusMessage');
-            statusElement.textContent = message;
-            statusElement.className = `status-message ${isSuccess ? 'success' : 'error'}`;
-            statusElement.classList.remove('hidden');
-            
-            setTimeout(() => {
-                statusElement.classList.add('hidden');
-            }, 3000);
-        }
-
-        function toggleLoader(show) {
-            const btnText = document.getElementById('extractBtnText');
-            const loader = document.getElementById('extractBtnLoader');
-            
-            if (show) {
-                btnText.textContent = 'Processing...';
-                loader.classList.remove('hidden');
-            } else {
-                btnText.textContent = 'Extract Accounts';
-                loader.classList.add('hidden');
-            }
-        }
-
-        function processFile() {
-            const fileInput = document.getElementById('fileInput');
-            const output = document.getElementById('output');
-            const resultsSection = document.getElementById('resultsSection');
-            const accountCountElement = document.getElementById('accountCount');
-            
-            output.textContent = "Processing file...";
-            accountCountElement.textContent = "";
-            toggleLoader(true);
-
-            if (!fileInput.files.length) {
-                showStatus("Please select a file first", false);
-                toggleLoader(false);
-                return;
-            }
-
-            const file = fileInput.files[0];
-            
-            // Check file size (limit to 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                showStatus("File is too large (max 5MB)", false);
-                toggleLoader(false);
-                return;
-            }
-
-            const reader = new FileReader();
-
-            reader.onload = function(event) {
-                const content = event.target.result;
-                // Enhanced pattern to catch more variations
-                const pattern = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\s*[:;|]\s*([^\s]+)/g;
-                let match;
-                extractedData = "";
-                accountCount = 0;
-
-                while ((match = pattern.exec(content)) !== null) {
-                    extractedData += `${match[1]}:${match[2]}\n`;
-                    accountCount++;
-                }
-
-                if (extractedData) {
-                    output.textContent = extractedData;
-                    accountCountElement.textContent = `${accountCount} accounts extracted`;
-                    resultsSection.classList.remove('hidden');
-                    
-                    // Scroll to results
-                    setTimeout(() => {
-                        resultsSection.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                    
-                    showStatus("Accounts extracted successfully", true);
-                } else {
-                    output.textContent = "No valid email:password pairs found";
-                    resultsSection.classList.add('hidden');
-                    showStatus("No valid accounts found", false);
-                }
-                
-                toggleLoader(false);
-            };
-
-            reader.onerror = function() {
-                showStatus("Error reading file", false);
-                toggleLoader(false);
-            };
-
-            reader.readAsText(file);
-        }
-
-        function copyToClipboard() {
-            if (!extractedData) {
-                showStatus("No data to copy", false);
-                return;
-            }
-
-            navigator.clipboard.writeText(extractedData).then(() => {
-                showStatus("Copied to clipboard", true);
-                
-                // Show rewarded ad after copy
-                show_9574412('pop').then(() => {
-                    showStatus("Thank you for your support", true);
-                }).catch(e => {
-                    console.log("Ad error:", e);
-                });
-            }).catch(() => {
-                showStatus("Failed to copy", false);
-            });
-        }
-
-        function downloadFile() {
-            if (!extractedData) {
-                showStatus("No data to download", false);
-                return;
-            }
-
-            const fileNameInput = document.getElementById('fileName');
-            const fileName = fileNameInput.value.trim() || `accounts_${new Date().toISOString().slice(0,10)}.txt`;
-            const blob = new Blob([extractedData], { type: "text/plain" });
-            
-            // Create temporary download link
-            const url = URL.createObjectURL(blob);
-            
-            // For Telegram WebApp, we use their download method
-            if (TelegramWebApp.platform !== 'unknown') {
-                TelegramWebApp.downloadFile(url, fileName)
-                    .then(() => {
-                        showStatus("Download started", true);
-                    })
-                    .catch(err => {
-                        console.error("Download error:", err);
-                        showStatus("Download failed", false);
-                    });
-            } else {
-                // Fallback for regular browser
-                const link = document.createElement("a");
-                link.href = url;
-                link.download = fileName;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                showStatus("Download started", true);
-            }
-            
-            // Clean up
-            setTimeout(() => {
-                URL.revokeObjectURL(url);
-            }, 100);
-            
-            // Show rewarded ad after download
-            show_9574412('pop').then(() => {
-                showStatus("Thank you for your support", true);
-            }).catch(e => {
-                console.log("Ad error:", e);
-            });
-        }
-
-        // Handle Telegram theme changes
-        TelegramWebApp.onEvent('themeChanged', () => {
-            document.body.classList.toggle('dark', TelegramWebApp.colorScheme === 'dark');
-        });
-    </script>
-</body>
+    });
+</script></body>
 </html>
