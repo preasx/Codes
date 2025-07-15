@@ -1,229 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Account Extractor</title>
-<script src="//libtl.com/sdk.js" data-zone="9574412" data-sdk="show_9574412"></script>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    --primary-color: #2481cc;
-    --primary-hover: #1a6cb3;
-    --background: #ffffff;
-    --surface: #f5f5f5;
-    --text-primary: #333333;
-    --text-secondary: #666666;
-    --border: #e0e0e0;
-    --success: #4caf50;
-    --error: #f44336;
-    --border-radius: 8px;
-    --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  body.dark {
-    --primary-color: #4a9ce9;
-    --primary-hover: #3d8bd6;
-    --background: #121212;
-    --surface: #1e1e1e;
-    --text-primary: #f5f5f5;
-    --text-secondary: #b0b0b0;
-    --border: #333333;
-    --success: #66bb6a;
-    --error: #ef5350;
-    --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--background);
-    color: var(--text-primary);
-    padding: 16px;
-    min-height: 100vh;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  .container {
-    max-width: 600px;
-    margin: auto;
-  }
-  header {
-    text-align: center;
-    margin-bottom: 24px;
-  }
-  h1 {
-    font-size: 1.5rem;
-    color: var(--primary-color);
-  }
-  .subtitle {
-    color: var(--text-secondary);
-    margin-bottom: 16px;
-  }
-  .card {
-    background-color: var(--surface);
-    border-radius: var(--border-radius);
-    padding: 20px;
-    box-shadow: var(--box-shadow);
-    margin-bottom: 24px;
-  }
-  .file-input-label {
-    display: block;
-    padding: 12px;
-    text-align: center;
-    background-color: var(--surface);
-    border: 1px dashed var(--border);
-    border-radius: var(--border-radius);
-    cursor: pointer;
-  }
-  #fileInput {
-    display: none;
-  }
-  .selected-file {
-    margin-top: 10px;
-    color: var(--text-secondary);
-  }
-  .button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1rem;
-  }
-  .button-secondary {
-    background-color: var(--surface);
-    color: var(--primary-color);
-    border: 1px solid var(--primary-color);
-    margin-top: 8px;
-  }
-  .output-container {
-    margin-top: 20px;
-  }
-  pre {
-    background-color: var(--background);
-    padding: 16px;
-    border: 1px solid var(--border);
-    border-radius: var(--border-radius);
-    overflow-x: auto;
-    white-space: pre-wrap;
-    word-break: break-word;
-    max-height: 300px;
-  }
-  #fileName {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border: 1px solid var(--border);
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-  }
-  .status-message {
-    padding: 12px;
-    border-radius: var(--border-radius);
-    margin-top: 10px;
-    text-align: center;
-    font-weight: 600;
-  }
-  .success {
-    color: var(--success);
-    border: 1px solid var(--success);
-    background-color: rgba(76, 175, 80, 0.1);
-  }
-  .error {
-    color: var(--error);
-    border: 1px solid var(--error);
-    background-color: rgba(244, 67, 54, 0.1);
-  }
-  .hidden {
-    display: none;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Extractor</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
+    }
+    .file-label {
+      display: block;
+      text-align: center;
+      padding: 10px;
+      background: #eee;
+      border: 2px dashed #aaa;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #2481cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .button.secondary {
+      background: white;
+      color: #2481cc;
+      border: 1px solid #2481cc;
+    }
+    .output {
+      background: #f9f9f9;
+      padding: 10px;
+      font-family: monospace;
+      border-radius: 6px;
+      margin-top: 10px;
+      max-height: 200px;
+      overflow: auto;
+    }
+    #statusMessage {
+      margin-top: 10px;
+      padding: 10px;
+      text-align: center;
+      border-radius: 6px;
+    }
+    .success {
+      background: #e0f4e5;
+      color: #2e7d32;
+    }
+    .error {
+      background: #fdecea;
+      color: #c62828;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>Account Extractor</h1>
-      <p class="subtitle">Extract email:password pairs from uploaded files</p>
-    </header>
-
     <div class="card">
-      <label for="fileInput" class="file-input-label">Choose File</label>
-      <input type="file" id="fileInput" accept=".txt,.csv,.json,.log" />
-      <div id="selectedFile" class="selected-file hidden">Selected: <span id="selectedFileName"></span></div>
+      <label class="file-label" for="fileInput">Choose a file (.txt, .csv, etc.)</label>
+      <input type="file" id="fileInput" accept=".txt,.csv,.json,.log" style="display:none;" />
+      <div id="selectedFile" style="text-align:center; margin: 5px 0; color: #777;"></div>
       <button class="button" onclick="processFile()">Extract Accounts</button>
-      <div id="statusMessage" class="status-message hidden"></div>
+      <div id="statusMessage" class="hidden"></div>
     </div>
 
-    <div class="card hidden" id="resultsSection">
-      <div class="output-container">
-        <pre id="output">No accounts extracted yet.</pre>
-      </div>
-      <p id="accountCount"></p>
-      <input type="text" id="fileName" placeholder="Enter file name (e.g., accounts.txt)" />
-      <button class="button button-secondary" onclick="uploadToFileIO()">Upload & Get Link</button>
+    <div class="card" id="resultsCard" style="display: none;">
+      <div id="output" class="output">No results yet.</div>
+      <input type="text" id="fileName" placeholder="File name (e.g. accounts.txt)" style="width: 100%; margin-top: 10px; padding: 10px;" />
+      <button class="button secondary" onclick="uploadToTransfer()">Upload & Download</button>
     </div>
   </div>
 
   <script>
     const TelegramWebApp = window.Telegram.WebApp;
-    let extractedData = "";
-
     TelegramWebApp.ready();
     TelegramWebApp.expand();
-    document.body.classList.toggle("dark", TelegramWebApp.colorScheme === "dark");
 
-    // File input change handler
+    let extractedData = "";
+
     document.getElementById("fileInput").addEventListener("change", (e) => {
       const file = e.target.files[0];
-      const selectedFileDiv = document.getElementById("selectedFile");
-      const fileNameSpan = document.getElementById("selectedFileName");
-      if (file) {
-        fileNameSpan.textContent = file.name;
-        selectedFileDiv.classList.remove("hidden");
-      } else {
-        selectedFileDiv.classList.add("hidden");
-      }
+      document.getElementById("selectedFile").textContent = file ? `Selected: ${file.name}` : "";
     });
 
-    function showStatus(message, isSuccess) {
-      const status = document.getElementById("statusMessage");
-      status.textContent = message;
-      status.className = `status-message ${isSuccess ? "success" : "error"}`;
-      status.classList.remove("hidden");
-      setTimeout(() => status.classList.add("hidden"), 3000);
+    function showStatus(message, success = true) {
+      const msgBox = document.getElementById("statusMessage");
+      msgBox.textContent = message;
+      msgBox.className = success ? "success" : "error";
+      msgBox.style.display = "block";
+      setTimeout(() => {
+        msgBox.style.display = "none";
+      }, 3000);
     }
 
     function processFile() {
       const fileInput = document.getElementById("fileInput");
-      const output = document.getElementById("output");
-      const resultsSection = document.getElementById("resultsSection");
-      const accountCountElement = document.getElementById("accountCount");
-
       if (!fileInput.files.length) {
         showStatus("Please select a file first", false);
         return;
       }
 
       const file = fileInput.files[0];
-      if (file.size > 5 * 1024 * 1024) {
-        showStatus("File is too large (max 5MB)", false);
-        return;
-      }
-
       const reader = new FileReader();
-      reader.onload = (event) => {
-        const content = event.target.result;
+
+      reader.onload = function (e) {
+        const content = e.target.result;
         const pattern = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\s*[:;|]\s*([^\s]+)/g;
-        let match;
+        let match, count = 0;
         extractedData = "";
-        let count = 0;
 
         while ((match = pattern.exec(content)) !== null) {
           extractedData += `${match[1]}:${match[2]}\n`;
@@ -231,52 +138,42 @@
         }
 
         if (count > 0) {
-          output.textContent = extractedData;
-          accountCountElement.textContent = `${count} accounts extracted`;
-          resultsSection.classList.remove("hidden");
-          showStatus("Accounts extracted successfully", true);
+          document.getElementById("output").textContent = extractedData;
+          document.getElementById("resultsCard").style.display = "block";
+          showStatus(`✅ Extracted ${count} accounts`, true);
         } else {
-          output.textContent = "No valid email:password pairs found";
-          resultsSection.classList.add("hidden");
           showStatus("No valid accounts found", false);
+          document.getElementById("resultsCard").style.display = "none";
         }
-      };
-
-      reader.onerror = () => {
-        showStatus("Error reading file", false);
       };
 
       reader.readAsText(file);
     }
 
-    function uploadToFileIO() {
+    function uploadToTransfer() {
       if (!extractedData) {
         showStatus("No data to upload", false);
         return;
       }
 
-      const fileName =
-        document.getElementById("fileName").value.trim() ||
-        `accounts_${new Date().toISOString().slice(0, 10)}.txt`;
+      const fileNameInput = document.getElementById("fileName").value.trim();
+      const fileName = fileNameInput || `accounts_${Date.now()}.txt`;
       const blob = new Blob([extractedData], { type: "text/plain" });
-
-      const formData = new FormData();
-      formData.append("file", blob, fileName);
 
       showStatus("Uploading...", true);
 
-      fetch("https://file.io", {
-        method: "POST",
-        body: formData,
+      fetch("https://transfer.sh/" + encodeURIComponent(fileName), {
+        method: "PUT",
+        body: blob,
       })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            showStatus("Upload successful! Opening download link...", true);
-            TelegramWebApp.openLink(data.link);
+        .then((res) => res.text())
+        .then((link) => {
+          if (link.startsWith("https://")) {
+            showStatus("Upload complete! Opening download link...", true);
+            TelegramWebApp.openLink(link);
           } else {
-            showStatus("Upload failed", false);
-            console.error(data);
+            showStatus("Upload failed. Try again.", false);
+            console.error(link);
           }
         })
         .catch((err) => {
@@ -284,11 +181,6 @@
           console.error(err);
         });
     }
-
-    // Theme change handler
-    TelegramWebApp.onEvent("themeChanged", () => {
-      document.body.classList.toggle("dark", TelegramWebApp.colorScheme === "dark");
-    });
   </script>
 </body>
 </html>
