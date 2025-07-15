@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>D-TECh P2P Cam</title>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <style>
+        body { font-family: monospace; text-align: center; }
+        video { width: 90%; max-width: 400px; border: 2px solid lime; }
+        button { background: black; color: lime; padding: 10px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>📱 D-TECh Phone-to-Phone Cam</h1>
+    <video id="localVideo" autoplay muted playsinline></video>
+    <video id="remoteVideo" autoplay playsinline></video><br>
+    <input id="roomId" placeholder="Enter Room ID (e.g., 123)">
+    <button id="start">START CAMERA</button>
+    <button id="call">JOIN ROOM</button>
+
+    <script>
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+        const roomIdInput = document.getElementById('roomId');
+        let localStream;
+        let peer;
+
+        // Initialize PeerJS
+        peer = new Peer();
+
+        peer.on('open', (id) => {
+            console.log("Your Peer ID:", id);
+        });
+
+        // Start camera
+        document.getElementById('start').addEventListener('click', async () => {
+            localStream = await navigator.mediaDevices.getUserMedia({ video: true });
+            localVideo.srcObject = localStream;
+        });
+
+        // Join room
+        document.getElementById('call').addEventListener('click', () => {
+            const roomId = roomIdInput.value;
+            const call = peer.call(roomId, localStream);
+            
+            call.on('stream', (remoteStream) => {
+                remoteVideo.srcObject = remoteStream;
+            });
+        });
+
+        // Answer calls
+        peer.on('call', (call) => {
+            call.answer(localStream);
+            call.on('stream', (remoteStream) => {
+                remoteVideo.srcObject = remoteStream;
+            });
+        });
+    </script>
+</body>
+</html>
