@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="google-site-verification" content="OpMUi8ebuzFZJyDHFw3Tsk303pel-c1OMQ3aacq39dA" /> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-TECH Account Extractor</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #00ff00;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        input[type="file"], input[type="text"] {
+            margin: 20px 0;
+            padding: 10px;
+            width: 80%;
+        }
+        button {
+            background-color: #00ff00;
+            color: #121212;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #00cc00;
+        }
+        pre {
+            text-align: left;
+            background-color: #1e1e1e;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>D-TECH Account Extractor</h1>
+    <p>Select a file to extract <strong>email:password</strong> pairs.</p>
+    <input type="file" id="fileInput" accept=".txt">
+    <br>
+    <button onclick="processFile()">Extract Accounts</button>
+    <br><br>
+    <h3>Extracted Accounts:</h3>
+    <pre id="output"></pre>
+    <p id="accountCount" style="font-weight: bold;"></p>
+    <br>
+    <button id="copyBtn" style="display:none;" onclick="copyToClipboard()">Copy to Clipboard</button>
+    <br><br>
+    <input type="text" id="fileName" placeholder="Enter file name (e.g., accounts.txt)" style="display:none;">
+    <br>
+    <button id="downloadBtn" style="display:none;" onclick="downloadFile()">Download Extracted File</button>
+
+    <script>
+        let extractedData = "";
+
+        function processFile() {
+            const fileInput = document.getElementById('fileInput');
+            const output = document.getElementById('output');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const fileNameInput = document.getElementById('fileName');
+            const accountCount = document.getElementById('accountCount');
+            output.textContent = "";
+            accountCount.textContent = "";
+
+            if (!fileInput.files.length) {
+                alert("Please select a file first!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const content = event.target.result;
+                const pattern = /(\S+@\S+)\s*:\s*(\S+)/g;
+                let match;
+                extractedData = "";
+                let count = 0;
+
+                while ((match = pattern.exec(content)) !== null) {
+                    extractedData += `${match[1]}:${match[2]}\n`;
+                    count++;
+                }
+
+                if (extractedData) {
+                    output.textContent = extractedData;
+                    accountCount.textContent = `Total Accounts Extracted: ${count}`;
+                    downloadBtn.style.display = "inline-block";
+                    copyBtn.style.display = "inline-block";
+                    fileNameInput.style.display = "inline-block";
+                } else {
+                    output.textContent = "No valid email:password pairs found.";
+                    downloadBtn.style.display = "none";
+                    copyBtn.style.display = "none";
+                    fileNameInput.style.display = "none";
+                }
+            };
+
+            reader.onerror = function() {
+                alert("Error reading file!");
+            };
+
+            reader.readAsText(file);
+        }
+
+        function copyToClipboard() {
+            navigator.clipboard.writeText(extractedData).then(() => {
+                alert("Copied to clipboard!");
+            }).catch(() => {
+                alert("Failed to copy!");
+            });
+        }
+
+        function downloadFile() {
+            const fileNameInput = document.getElementById('fileName');
+            const fileName = fileNameInput.value || "extracted_accounts.txt";
+            const blob = new Blob([extractedData], { type: "text/plain" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.click();
+        }
+    </script>
+</body>
+</html>
