@@ -3,70 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Extractor Mini App</title>
+    <title>⚡ CYBER EXTRACTOR ⚡</title>
     <script src='//libtl.com/sdk.js' data-zone='9574412' data-sdk='show_9574412'></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #17212b;
-            --primary-color: #2b5278;
-            --secondary-color: #5288c1;
-            --text-color: #e1e1e1;
-            --accent-color: #5ac8fa;
-            --success-color: #34c759;
-            --error-color: #ff3b30;
-            --border-radius: 10px;
-            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --neon-blue: #0ff0fc;
+            --neon-purple: #9600ff;
+            --neon-pink: #ff00ff;
+            --dark-bg: #0a0a12;
+            --darker-bg: #050508;
+            --panel-bg: rgba(15, 15, 25, 0.8);
+            --text-primary: #e0e0ff;
+            --text-secondary: #b0b0d0;
+            --success: #00ff88;
+            --error: #ff3860;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 16px;
-            line-height: 1.5;
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(150, 0, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 255, 252, 0.15) 0%, transparent 50%);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
         }
 
         .container {
             max-width: 100%;
             margin: 0 auto;
-            padding: 16px;
+            padding: 0 15px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
         }
 
         h1 {
-            color: var(--accent-color);
-            text-align: center;
-            margin-bottom: 24px;
-            font-size: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 255, 252, 0.5);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
         }
 
-        .card {
-            background-color: var(--primary-color);
-            border-radius: var(--border-radius);
-            padding: 20px;
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
             margin-bottom: 20px;
-            box-shadow: var(--box-shadow);
+        }
+
+        .cyber-panel {
+            background: var(--panel-bg);
+            border: 1px solid rgba(0, 255, 252, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 20px rgba(0, 255, 252, 0.1);
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cyber-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 255, 252, 0.05) 0%, transparent 50%, rgba(150, 0, 255, 0.05) 100%);
+            pointer-events: none;
+        }
+
+        .cyber-panel h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-purple);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .cyber-panel h2::before {
+            content: '⬢';
+            color: var(--neon-blue);
+            margin-right: 10px;
+            font-size: 1.2rem;
         }
 
         .file-input-container {
             position: relative;
-            margin: 20px 0;
+            margin: 25px 0;
         }
 
         .file-input-label {
             display: block;
-            padding: 12px 16px;
-            background-color: var(--secondary-color);
-            color: white;
-            border-radius: var(--border-radius);
+            padding: 15px 20px;
+            background: linear-gradient(90deg, var(--darker-bg), var(--dark-bg));
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+            border-radius: 8px;
             text-align: center;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(0, 255, 252, 0.1);
+            position: relative;
+            overflow: hidden;
         }
 
         .file-input-label:hover {
-            background-color: var(--accent-color);
+            background: linear-gradient(90deg, var(--dark-bg), rgba(15, 15, 25, 0.8));
+            box-shadow: 0 0 20px rgba(0, 255, 252, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .file-input-label::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 45%,
+                rgba(0, 255, 252, 0.1) 50%,
+                transparent 55%
+            );
+            transform: rotate(30deg);
+            transition: all 0.5s ease;
+        }
+
+        .file-input-label:hover::after {
+            left: 100%;
         }
 
         #fileInput {
@@ -78,92 +176,213 @@
 
         .button {
             display: inline-block;
-            padding: 12px 24px;
-            background-color: var(--secondary-color);
+            padding: 15px 25px;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
             color: white;
             border: none;
-            border-radius: var(--border-radius);
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
             font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            margin: 8px 0;
+            margin: 10px 0;
             width: 100%;
-            transition: background-color 0.2s;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 5px 15px rgba(150, 0, 255, 0.4);
+            position: relative;
+            overflow: hidden;
         }
 
         .button:hover {
-            background-color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(150, 0, 255, 0.6);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: all 0.5s ease;
+        }
+
+        .button:hover::before {
+            left: 100%;
         }
 
         .button-success {
-            background-color: var(--success-color);
+            background: linear-gradient(135deg, var(--success), #00cc70);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
         }
 
         .button-success:hover {
-            background-color: #30a74e;
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.6);
         }
 
         .output-container {
-            margin-top: 20px;
+            margin-top: 25px;
+            position: relative;
         }
 
         #output {
-            background-color: #1e1e1e;
-            padding: 16px;
-            border-radius: var(--border-radius);
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid rgba(0, 255, 252, 0.2);
+            padding: 15px;
+            border-radius: 8px;
             overflow-x: auto;
             white-space: pre-wrap;
             word-wrap: break-word;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             max-height: 300px;
             overflow-y: auto;
+            color: var(--text-primary);
+            line-height: 1.5;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
         #accountCount {
-            font-weight: bold;
-            margin: 10px 0;
-            color: var(--accent-color);
+            font-weight: 600;
+            margin: 15px 0;
+            color: var(--neon-blue);
+            font-size: 1.1rem;
+            text-align: center;
         }
 
         #fileName {
             width: 100%;
-            padding: 12px 16px;
-            margin: 10px 0;
-            border: 1px solid var(--secondary-color);
-            border-radius: var(--border-radius);
-            background-color: var(--primary-color);
-            color: var(--text-color);
-            box-sizing: border-box;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid var(--neon-purple);
+            border-radius: 8px;
+            background-color: rgba(10, 10, 20, 0.7);
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            box-shadow: 0 0 15px rgba(150, 0, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        #fileName:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 255, 252, 0.2);
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 600;
+            animation: fadeIn 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .success {
+            background-color: rgba(0, 255, 136, 0.1);
+            color: var(--success);
+            border-color: var(--success);
+            text-shadow: 0 0 5px rgba(0, 255, 136, 0.3);
+        }
+
+        .error {
+            background-color: rgba(255, 56, 96, 0.1);
+            color: var(--error);
+            border-color: var(--error);
+            text-shadow: 0 0 5px rgba(255, 56, 96, 0.3);
         }
 
         .hidden {
             display: none !important;
         }
 
-        .status-message {
-            padding: 12px;
-            border-radius: var(--border-radius);
-            margin: 10px 0;
-            text-align: center;
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
         }
 
-        .success {
-            background-color: rgba(52, 199, 89, 0.2);
-            color: var(--success-color);
+        .cyber-loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--neon-blue);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
         }
 
-        .error {
-            background-color: rgba(255, 59, 48, 0.2);
-            color: var(--error-color);
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
         }
 
-        @media (min-width: 600px) {
+        .corner-decoration {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-style: solid;
+            border-color: var(--neon-blue);
+            border-width: 0;
+        }
+
+        .corner-tl {
+            top: 10px;
+            left: 10px;
+            border-top-width: 2px;
+            border-left-width: 2px;
+        }
+
+        .corner-tr {
+            top: 10px;
+            right: 10px;
+            border-top-width: 2px;
+            border-right-width: 2px;
+        }
+
+        .corner-bl {
+            bottom: 10px;
+            left: 10px;
+            border-bottom-width: 2px;
+            border-left-width: 2px;
+        }
+
+        .corner-br {
+            bottom: 10px;
+            right: 10px;
+            border-bottom-width: 2px;
+            border-right-width: 2px;
+        }
+
+        @media (min-width: 768px) {
             .container {
-                max-width: 500px;
+                max-width: 600px;
             }
             
             .button-group {
-                display: flex;
-                gap: 10px;
+                flex-direction: row;
             }
             
             .button {
@@ -171,40 +390,96 @@
                 flex: 1;
             }
         }
+
+        /* Cyber grid overlay */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 252, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 252, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Animated cyber lines */
+        .cyber-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            box-shadow: 0 0 5px var(--neon-blue);
+            animation: scanline 8s linear infinite;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        @keyframes scanline {
+            0% { top: 0%; opacity: 0.1; }
+            5% { opacity: 0.5; }
+            100% { top: 100%; opacity: 0.1; }
+        }
     </style>
 </head>
 <body>
+    <div class="cyber-grid"></div>
+    <div class="cyber-line" style="top: 20%; width: 100%;"></div>
+    <div class="cyber-line" style="top: 50%; width: 100%; animation-delay: 2s;"></div>
+    <div class="cyber-line" style="top: 80%; width: 100%; animation-delay: 4s;"></div>
+
     <div class="container">
-        <h1>Account Extractor</h1>
+        <header>
+            <h1>⚡ CYBER EXTRACTOR ⚡</h1>
+            <p class="tagline">Advanced account pattern extraction technology</p>
+        </header>
         
-        <div class="card">
-            <p>Select a file to extract <strong>email:password</strong> pairs.</p>
+        <div class="cyber-panel">
+            <div class="corner-decoration corner-tl"></div>
+            <div class="corner-decoration corner-tr"></div>
+            <div class="corner-decoration corner-bl"></div>
+            <div class="corner-decoration corner-br"></div>
+            
+            <h2>DATA INPUT</h2>
+            <p>Select a file to extract <strong>email:password</strong> combinations</p>
             
             <div class="file-input-container">
-                <label for="fileInput" class="file-input-label">Choose File</label>
-                <input type="file" id="fileInput" accept=".txt,.csv,.json,.log">
+                <label for="fileInput" class="file-input-label">SELECT FILE</label>
+                <input type="file" id="fileInput" accept=".txt,.csv,.json,.log,.dat">
             </div>
             
-            <button id="extractBtn" class="button" onclick="processFile()">Extract Accounts</button>
+            <button id="extractBtn" class="button" onclick="processFile()">
+                <span id="extractBtnText">EXTRACT ACCOUNTS</span>
+                <span id="extractBtnLoader" class="cyber-loader hidden"></span>
+            </button>
             
             <div id="statusMessage" class="status-message hidden"></div>
         </div>
         
-        <div id="resultsSection" class="hidden">
-            <div class="card">
-                <h3>Extracted Accounts:</h3>
-                <div class="output-container">
-                    <pre id="output">No accounts extracted yet.</pre>
-                </div>
-                <p id="accountCount"></p>
-                
-                <div class="button-group">
-                    <button id="copyBtn" class="button button-success" onclick="copyToClipboard()">Copy to Clipboard</button>
-                    <button id="downloadBtn" class="button" onclick="downloadFile()">Download File</button>
-                </div>
-                
-                <input type="text" id="fileName" placeholder="Enter file name (e.g., accounts.txt)">
+        <div id="resultsSection" class="cyber-panel hidden">
+            <div class="corner-decoration corner-tl"></div>
+            <div class="corner-decoration corner-tr"></div>
+            <div class="corner-decoration corner-bl"></div>
+            <div class="corner-decoration corner-br"></div>
+            
+            <h2>EXTRACTION RESULTS</h2>
+            <div class="output-container">
+                <pre id="output">Awaiting data processing...</pre>
             </div>
+            <p id="accountCount"></p>
+            
+            <div class="button-group">
+                <button id="copyBtn" class="button button-success" onclick="copyToClipboard()">
+                    COPY TO CLIPBOARD
+                </button>
+                <button id="downloadBtn" class="button" onclick="downloadFile()">
+                    DOWNLOAD FILE
+                </button>
+            </div>
+            
+            <input type="text" id="fileName" placeholder="Enter output filename (e.g., accounts.txt)">
         </div>
     </div>
 
@@ -217,6 +492,12 @@
         TelegramWebApp.ready();
         TelegramWebApp.expand();
 
+        // Set Telegram theme colors
+        if (TelegramWebApp.colorScheme === 'dark') {
+            document.documentElement.style.setProperty('--dark-bg', '#050508');
+            document.documentElement.style.setProperty('--panel-bg', 'rgba(10, 10, 20, 0.9)');
+        }
+
         function showStatus(message, isSuccess) {
             const statusElement = document.getElementById('statusMessage');
             statusElement.textContent = message;
@@ -228,17 +509,32 @@
             }, 3000);
         }
 
+        function toggleLoader(show) {
+            const btnText = document.getElementById('extractBtnText');
+            const loader = document.getElementById('extractBtnLoader');
+            
+            if (show) {
+                btnText.textContent = 'PROCESSING';
+                loader.classList.remove('hidden');
+            } else {
+                btnText.textContent = 'EXTRACT ACCOUNTS';
+                loader.classList.add('hidden');
+            }
+        }
+
         function processFile() {
             const fileInput = document.getElementById('fileInput');
             const output = document.getElementById('output');
             const resultsSection = document.getElementById('resultsSection');
             const accountCountElement = document.getElementById('accountCount');
             
-            output.textContent = "Processing...";
+            output.textContent = "Initializing extraction protocol...";
             accountCountElement.textContent = "";
+            toggleLoader(true);
 
             if (!fileInput.files.length) {
-                showStatus("Please select a file first!", false);
+                showStatus("ERROR: No file selected!", false);
+                toggleLoader(false);
                 return;
             }
 
@@ -246,7 +542,8 @@
             
             // Check file size (limit to 5MB)
             if (file.size > 5 * 1024 * 1024) {
-                showStatus("File is too large (max 5MB)", false);
+                showStatus("ERROR: File exceeds 5MB limit", false);
+                toggleLoader(false);
                 return;
             }
 
@@ -254,7 +551,8 @@
 
             reader.onload = function(event) {
                 const content = event.target.result;
-                const pattern = /(\S+@\S+)\s*[:|;]\s*(\S+)/g;
+                // Enhanced pattern to catch more variations
+                const pattern = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\s*[:;|]\s*([^\s]+)/g;
                 let match;
                 extractedData = "";
                 accountCount = 0;
@@ -266,22 +564,27 @@
 
                 if (extractedData) {
                     output.textContent = extractedData;
-                    accountCountElement.textContent = `Total Accounts Extracted: ${accountCount}`;
+                    accountCountElement.textContent = `🔍 EXTRACTED: ${accountCount} VALID CREDENTIALS`;
                     resultsSection.classList.remove('hidden');
                     
                     // Scroll to results
-                    resultsSection.scrollIntoView({ behavior: 'smooth' });
+                    setTimeout(() => {
+                        resultsSection.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
                     
-                    showStatus("Accounts extracted successfully!", true);
+                    showStatus("SUCCESS: Extraction complete!", true);
                 } else {
-                    output.textContent = "No valid email:password pairs found.";
+                    output.textContent = "No valid email:password patterns detected.";
                     resultsSection.classList.add('hidden');
-                    showStatus("No valid accounts found in the file.", false);
+                    showStatus("WARNING: No valid accounts found", false);
                 }
+                
+                toggleLoader(false);
             };
 
             reader.onerror = function() {
-                showStatus("Error reading file!", false);
+                showStatus("ERROR: File read failure", false);
+                toggleLoader(false);
             };
 
             reader.readAsText(file);
@@ -289,43 +592,60 @@
 
         function copyToClipboard() {
             if (!extractedData) {
-                showStatus("No data to copy!", false);
+                showStatus("ERROR: No data to copy", false);
                 return;
             }
 
             navigator.clipboard.writeText(extractedData).then(() => {
-                showStatus("Copied to clipboard!", true);
+                showStatus("SUCCESS: Copied to clipboard!", true);
                 
                 // Show rewarded ad after copy
                 show_9574412('pop').then(() => {
-                    // User watched ad
-                    showStatus("Thank you for supporting us!", true);
+                    showStatus("Thank you for your support!", true);
                 }).catch(e => {
                     console.log("Ad error:", e);
                 });
             }).catch(() => {
-                showStatus("Failed to copy!", false);
+                showStatus("ERROR: Copy failed", false);
             });
         }
 
         function downloadFile() {
             if (!extractedData) {
-                showStatus("No data to download!", false);
+                showStatus("ERROR: No data to download", false);
                 return;
             }
 
             const fileNameInput = document.getElementById('fileName');
-            const fileName = fileNameInput.value.trim() || `accounts_${new Date().toISOString().slice(0,10)}.txt`;
+            const fileName = fileNameInput.value.trim() || `extracted_${new Date().toISOString().slice(0,10)}.txt`;
             const blob = new Blob([extractedData], { type: "text/plain" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = fileName;
-            link.click();
+            
+            // Create temporary download link
+            const url = URL.createObjectURL(blob);
+            
+            // For Telegram WebApp, we need to open the URL directly
+            if (TelegramWebApp.platform !== 'unknown') {
+                TelegramWebApp.openLink(url);
+            } else {
+                // Fallback for regular browser
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            
+            // Clean up
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            showStatus("SUCCESS: Download initiated!", true);
             
             // Show rewarded ad after download
             show_9574412('pop').then(() => {
-                // User watched ad
-                showStatus("Thank you for supporting us!", true);
+                showStatus("Thank you for your support!", true);
             }).catch(e => {
                 console.log("Ad error:", e);
             });
@@ -333,9 +653,14 @@
 
         // Handle Telegram theme changes
         TelegramWebApp.onEvent('themeChanged', () => {
-            document.body.className = TelegramWebApp.colorScheme;
+            if (TelegramWebApp.colorScheme === 'dark') {
+                document.documentElement.style.setProperty('--dark-bg', '#050508');
+                document.documentElement.style.setProperty('--panel-bg', 'rgba(10, 10, 20, 0.9)');
+            } else {
+                document.documentElement.style.setProperty('--dark-bg', '#f0f0f5');
+                document.documentElement.style.setProperty('--panel-bg', 'rgba(255, 255, 255, 0.9)');
+            }
         });
-        document.body.className = TelegramWebApp.colorScheme;
     </script>
 </body>
 </html>
