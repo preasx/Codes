@@ -7,7 +7,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Add all your style rules here */
         :root {
             --primary-color: #2481cc;
             --primary-hover: #1a6cb3;
@@ -33,7 +32,6 @@
         --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
-    /* Reset and layout */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
         font-family: 'Inter', sans-serif;
@@ -236,20 +234,28 @@
 
         const fileNameInput = document.getElementById('fileName');
         const fileName = fileNameInput.value.trim() || `accounts_${new Date().toISOString().slice(0,10)}.txt`;
-        const blob = new Blob([extractedData], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
 
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        try {
+            const blob = new Blob([extractedData], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
 
-        URL.revokeObjectURL(url);
-        showStatus("Download started", true);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
 
-        show_9574412('pop');
+            URL.revokeObjectURL(url);
+            showStatus("Download started", true);
+
+            setTimeout(() => {
+                show_9574412('pop');
+            }, 500);
+        } catch (err) {
+            console.error("Download failed:", err);
+            showStatus("Download failed", false);
+        }
     }
 
     TelegramWebApp.onEvent('themeChanged', () => {
