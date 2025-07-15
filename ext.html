@@ -1,138 +1,341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="google-site-verification" content="OpMUi8ebuzFZJyDHFw3Tsk303pel-c1OMQ3aacq39dA" /> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D-TECH Account Extractor</title>
-
+    <title>Account Extractor Mini App</title>
+    <script src='//libtl.com/sdk.js' data-zone='9574412' data-sdk='show_9574412'></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --bg-color: #17212b;
+            --primary-color: #2b5278;
+            --secondary-color: #5288c1;
+            --text-color: #e1e1e1;
+            --accent-color: #5ac8fa;
+            --success-color: #34c759;
+            --error-color: #ff3b30;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #00ff00;
-            text-align: center;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 16px;
+            line-height: 1.5;
         }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
         h1 {
-            font-size: 2rem;
+            color: var(--accent-color);
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
             margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
         }
-        input[type="file"], input[type="text"] {
+
+        .file-input-container {
+            position: relative;
             margin: 20px 0;
-            padding: 10px;
-            width: 80%;
         }
-        button {
-            background-color: #00ff00;
-            color: #121212;
-            padding: 10px 20px;
+
+        .file-input-label {
+            display: block;
+            padding: 12px 16px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .file-input-label:hover {
+            background-color: var(--accent-color);
+        }
+
+        #fileInput {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--secondary-color);
+            color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: var(--border-radius);
             font-size: 1rem;
             cursor: pointer;
-            margin: 10px;
+            margin: 8px 0;
+            width: 100%;
+            transition: background-color 0.2s;
         }
-        button:hover {
-            background-color: #00cc00;
+
+        .button:hover {
+            background-color: var(--accent-color);
         }
-        pre {
-            text-align: left;
+
+        .button-success {
+            background-color: var(--success-color);
+        }
+
+        .button-success:hover {
+            background-color: #30a74e;
+        }
+
+        .output-container {
+            margin-top: 20px;
+        }
+
+        #output {
             background-color: #1e1e1e;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 16px;
+            border-radius: var(--border-radius);
             overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        #accountCount {
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--accent-color);
+        }
+
+        #fileName {
+            width: 100%;
+            padding: 12px 16px;
+            margin: 10px 0;
+            border: 1px solid var(--secondary-color);
+            border-radius: var(--border-radius);
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .status-message {
+            padding: 12px;
+            border-radius: var(--border-radius);
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .success {
+            background-color: rgba(52, 199, 89, 0.2);
+            color: var(--success-color);
+        }
+
+        .error {
+            background-color: rgba(255, 59, 48, 0.2);
+            color: var(--error-color);
+        }
+
+        @media (min-width: 600px) {
+            .container {
+                max-width: 500px;
+            }
+            
+            .button-group {
+                display: flex;
+                gap: 10px;
+            }
+            
+            .button {
+                width: auto;
+                flex: 1;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>D-TECH Account Extractor</h1>
-    <p>Select a file to extract <strong>email:password</strong> pairs.</p>
-    <input type="file" id="fileInput" accept=".txt">
-    <br>
-    <button onclick="processFile()">Extract Accounts</button>
-    <br><br>
-    <h3>Extracted Accounts:</h3>
-    <pre id="output"></pre>
-    <p id="accountCount" style="font-weight: bold;"></p>
-    <br>
-    <button id="copyBtn" style="display:none;" onclick="copyToClipboard()">Copy to Clipboard</button>
-    <br><br>
-    <input type="text" id="fileName" placeholder="Enter file name (e.g., accounts.txt)" style="display:none;">
-    <br>
-    <button id="downloadBtn" style="display:none;" onclick="downloadFile()">Download Extracted File</button>
+    <div class="container">
+        <h1>Account Extractor</h1>
+        
+        <div class="card">
+            <p>Select a file to extract <strong>email:password</strong> pairs.</p>
+            
+            <div class="file-input-container">
+                <label for="fileInput" class="file-input-label">Choose File</label>
+                <input type="file" id="fileInput" accept=".txt,.csv,.json,.log">
+            </div>
+            
+            <button id="extractBtn" class="button" onclick="processFile()">Extract Accounts</button>
+            
+            <div id="statusMessage" class="status-message hidden"></div>
+        </div>
+        
+        <div id="resultsSection" class="hidden">
+            <div class="card">
+                <h3>Extracted Accounts:</h3>
+                <div class="output-container">
+                    <pre id="output">No accounts extracted yet.</pre>
+                </div>
+                <p id="accountCount"></p>
+                
+                <div class="button-group">
+                    <button id="copyBtn" class="button button-success" onclick="copyToClipboard()">Copy to Clipboard</button>
+                    <button id="downloadBtn" class="button" onclick="downloadFile()">Download File</button>
+                </div>
+                
+                <input type="text" id="fileName" placeholder="Enter file name (e.g., accounts.txt)">
+            </div>
+        </div>
+    </div>
 
     <script>
+        const TelegramWebApp = window.Telegram.WebApp;
         let extractedData = "";
+        let accountCount = 0;
+
+        // Initialize Telegram WebApp
+        TelegramWebApp.ready();
+        TelegramWebApp.expand();
+
+        function showStatus(message, isSuccess) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+            statusElement.className = `status-message ${isSuccess ? 'success' : 'error'}`;
+            statusElement.classList.remove('hidden');
+            
+            setTimeout(() => {
+                statusElement.classList.add('hidden');
+            }, 3000);
+        }
 
         function processFile() {
             const fileInput = document.getElementById('fileInput');
             const output = document.getElementById('output');
-            const downloadBtn = document.getElementById('downloadBtn');
-            const copyBtn = document.getElementById('copyBtn');
-            const fileNameInput = document.getElementById('fileName');
-            const accountCount = document.getElementById('accountCount');
-            output.textContent = "";
-            accountCount.textContent = "";
+            const resultsSection = document.getElementById('resultsSection');
+            const accountCountElement = document.getElementById('accountCount');
+            
+            output.textContent = "Processing...";
+            accountCountElement.textContent = "";
 
             if (!fileInput.files.length) {
-                alert("Please select a file first!");
+                showStatus("Please select a file first!", false);
                 return;
             }
 
             const file = fileInput.files[0];
+            
+            // Check file size (limit to 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showStatus("File is too large (max 5MB)", false);
+                return;
+            }
+
             const reader = new FileReader();
 
             reader.onload = function(event) {
                 const content = event.target.result;
-                const pattern = /(\S+@\S+)\s*:\s*(\S+)/g;
+                const pattern = /(\S+@\S+)\s*[:|;]\s*(\S+)/g;
                 let match;
                 extractedData = "";
-                let count = 0;
+                accountCount = 0;
 
                 while ((match = pattern.exec(content)) !== null) {
                     extractedData += `${match[1]}:${match[2]}\n`;
-                    count++;
+                    accountCount++;
                 }
 
                 if (extractedData) {
                     output.textContent = extractedData;
-                    accountCount.textContent = `Total Accounts Extracted: ${count}`;
-                    downloadBtn.style.display = "inline-block";
-                    copyBtn.style.display = "inline-block";
-                    fileNameInput.style.display = "inline-block";
+                    accountCountElement.textContent = `Total Accounts Extracted: ${accountCount}`;
+                    resultsSection.classList.remove('hidden');
+                    
+                    // Scroll to results
+                    resultsSection.scrollIntoView({ behavior: 'smooth' });
+                    
+                    showStatus("Accounts extracted successfully!", true);
                 } else {
                     output.textContent = "No valid email:password pairs found.";
-                    downloadBtn.style.display = "none";
-                    copyBtn.style.display = "none";
-                    fileNameInput.style.display = "none";
+                    resultsSection.classList.add('hidden');
+                    showStatus("No valid accounts found in the file.", false);
                 }
             };
 
             reader.onerror = function() {
-                alert("Error reading file!");
+                showStatus("Error reading file!", false);
             };
 
             reader.readAsText(file);
         }
 
         function copyToClipboard() {
+            if (!extractedData) {
+                showStatus("No data to copy!", false);
+                return;
+            }
+
             navigator.clipboard.writeText(extractedData).then(() => {
-                alert("Copied to clipboard!");
+                showStatus("Copied to clipboard!", true);
+                
+                // Show rewarded ad after copy
+                show_9574412('pop').then(() => {
+                    // User watched ad
+                    showStatus("Thank you for supporting us!", true);
+                }).catch(e => {
+                    console.log("Ad error:", e);
+                });
             }).catch(() => {
-                alert("Failed to copy!");
+                showStatus("Failed to copy!", false);
             });
         }
 
         function downloadFile() {
+            if (!extractedData) {
+                showStatus("No data to download!", false);
+                return;
+            }
+
             const fileNameInput = document.getElementById('fileName');
-            const fileName = fileNameInput.value || "extracted_accounts.txt";
+            const fileName = fileNameInput.value.trim() || `accounts_${new Date().toISOString().slice(0,10)}.txt`;
             const blob = new Blob([extractedData], { type: "text/plain" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
             link.download = fileName;
             link.click();
+            
+            // Show rewarded ad after download
+            show_9574412('pop').then(() => {
+                // User watched ad
+                showStatus("Thank you for supporting us!", true);
+            }).catch(e => {
+                console.log("Ad error:", e);
+            });
         }
+
+        // Handle Telegram theme changes
+        TelegramWebApp.onEvent('themeChanged', () => {
+            document.body.className = TelegramWebApp.colorScheme;
+        });
+        document.body.className = TelegramWebApp.colorScheme;
     </script>
 </body>
 </html>
