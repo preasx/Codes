@@ -672,4 +672,170 @@
 
         const checkNameAvailability = async (name) => {
             elements.nameStatus.textContent = "Checking availability...";
-            elements.nam
+            elements.nameStatus.className = "name-status name-checking";
+            elements.nameStatus.style.display = "block";
+
+            try {
+                const mapping = await getMapping();
+                if (mapping[name]) {
+                    elements.nameStatus.textContent = `❌ "${name}" is taken`;
+                    elements.nameStatus.className = "name-status name-taken";
+                    elements.createBtn.disabled = true;
+                } else {
+                    elements.nameStatus.textContent = `✅ "${name}" is available!`;
+                    elements.nameStatus.className = "name-status name-available";
+                    elements.createBtn.disabled = false;
+                }
+            } catch (e) {
+                elements.nameStatus.textContent = "⚠️ Check failed";
+                elements.nameStatus.className = "name-status name-checking";
+            }
+        };
+
+        const updateMapping = async (newMapping) => {
+            const token = await getToken();
+            const gists = await safeFetch("https://api.github.com/gists", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const gistId = gists.find(g => g.files["gistfile1.txt"])?.id;
+            if (!gistId) throw new Error("No valid Gist found");
+
+            await safeFetch(`https://api.github.com/gists/${gistId}`, {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    files: {
+                        "gistfile1.txt": {
+                            content: JSON.stringify(newMapping, null, 2)
+                        }
+                    }
+                })
+            });
+        };
+
+        const handleAction = async (mode) => {
+            let name = sanitizeName(elements.nameInput.value.trim());
+            const url = elements.urlInput.value.trim();
+
+            if (!name) return log("Name is required", "warn");
+            if (mode === "create" && !url) return log("URL is required", "warn");
+
+            try {
+                const mapping = await getMapping();
+                if (!mapping._expires) mapping._expires = {};
+
+                if (mode === "create") {
+                    if (mapping[name]) {
+                        log(`"${name}" is already taken`, "error");
+                        return checkNameAvailability(name);
+                    }
+                    mapping[name] = url;
+                    mapping._expires[name] = getUnix() + 3600;
+                    elements.finalUrl.textContent = `https://${name}.log-in.co.za`;
+                    elements.urlDisplay.classList.add("active");
+                    log(`Created "${name}" (1h expiry)`, "success");
+                } else if (mode === "extend") {
+                    if (!mapping[name]) throw new Error("Entry not found");
+                    mapping._expires[name] = (mapping._expires[name] || getUnix()) + 3600;
+                    log(`Extended "${name}" by 1h`, "success");
+                }
+
+                await updateMapping(mapping);
+                showNotification(
+                    mode === "create" ? "Subdomain created!" : "Subdomain extended!",
+                    "success"
+                );
+            } catch (e) {
+                log(`Error: ${e.message}`, "error");
+            }
+        };
+
+        const checkTime = async () => {
+            const name = sanitizeName(elements.nameInput.value.trim());
+            if (!name) return log("Enter a name first", "warn");
+
+            log(`Checking time for "${name}"...`, "info");
+
+            try {
+                const mapping = await getMapping();
+                const expires = mapping._expires?.[name];
+                if (!expires) throw new Error("No expiry set");
+
+                const remaining = expires - getUnix();
+                if (remaining <= 0) throw new Error("Expired");
+
+                const mins = Math.floor(remaining / 60);
+                const hrs = Math.floor(mins / 60);
+                const minPart = mins % 60;
+
+                let msg = `✅ ${hrs}h ${minPart}m remaining`;
+                let type = "info";
+
+                if (mins < 30) {
+                    msg = `⚠️ Only ${mins}m left!`;
+                    type = "warn";
+                }
+
+                log(msg, type);
+                if (mins < 60) showNotification(msg, type);
+            } catch (e) {
+                log(`Error: ${e.message}`, "error");
+            }
+        };
+
+        const withAd = async (callback) => {
+            try {
+                await show_9630863();
+                callback();
+            } catch {
+                log("Ad blocked or skipped", "error");
+            }
+        };
+
+        // Event Listeners
+        elements.nameInput.addEventListener("input", function() {
+            const name = sanitizeName(this.value);
+            this.value = name;
+            elements.previewUrl.textContent = `https://${name || "[name]"}.log-in.co.za`;
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => name && checkNameAvailability(name), 500);
+        });
+
+        elements.copyBtn.addEventListener("click", async () => {
+            try {
+                await navigator.clipboard.writeText(elements.finalUrl.textContent);
+                elements.copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                elements.copyBtn.classList.add("copied");
+                setTimeout(() => {
+                    elements.copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                    elements.copyBtn.classList.remove("copied");
+                }, 2000);
+                showNotification("URL copied!", "success");
+            } catch {
+                showNotification("Failed to copy", "error");
+            }
+        });
+
+        elements.createBtn.addEventListener("click", () => withAd(() => handleAction("create")));
+        elements.extendBtn.addEventListener("click", () => withAd(() => handleAction("extend")));
+        elements.checkBtn.addEventListener("click", checkTime);
+
+        // Initialize
+        log("System ready. Enter details to begin.");
+        showNotification("Welcome to D-TECH Subdomain Creator", "info");
+
+        // Ad config
+        show_9630863({
+            type: 'inApp',
+            inAppSettings: {
+                frequency: 2,
+                interval: 30,
+                timeout: 5
+            }
+        });
+    </script>
+</body>
+</html>
