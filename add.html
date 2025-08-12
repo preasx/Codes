@@ -670,12 +670,14 @@
             }
 
             try {
-                const data = await safeFetch(`${MAPPING_RAW_URL}?t=${now}`);
+                const response = await fetch(`${MAPPING_RAW_URL}?t=${now}`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
                 mappingCache = data;
                 lastCacheTime = now;
                 return data;
             } catch (e) {
-                log("Failed to load mapping", "error");
+                log(`Failed to load mapping: ${e.message}`, "error");
                 throw e;
             }
         };
@@ -697,8 +699,9 @@
                     elements.createBtn.disabled = false;
                 }
             } catch (e) {
-                elements.nameStatus.textContent = "⚠️ Check failed";
+                elements.nameStatus.textContent = "⚠️ Check failed - try again";
                 elements.nameStatus.className = "name-status name-checking";
+                log(`Name check error: ${e.message}`, "error");
             }
         };
 
