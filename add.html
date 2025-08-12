@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D-TECH Subdomain Creator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src='//libtl.com/sdk.js' data-zone='9630863' data-sdk='show_9630863'></script>
     <style>
         * {
             margin: 0;
@@ -565,6 +564,10 @@
         const INITIAL_DURATION = 7200; // 2 hours = 7200 seconds
         const EXTENSION_DURATION = 43200; // 12 hours = 43200 seconds
 
+        // Initialize mapping cache
+        let mappingCache = null;
+        let lastCacheTime = 0;
+
         // DOM Elements
         const elements = {
             log: document.getElementById("log"),
@@ -807,15 +810,6 @@
             }
         };
 
-        const withAd = async (callback) => {
-            try {
-                await show_9630863();
-                callback();
-            } catch {
-                log("Ad blocked or skipped", "error");
-            }
-        };
-
         // Event Listeners
         elements.nameInput.addEventListener("input", function() {
             const name = sanitizeName(this.value);
@@ -840,23 +834,13 @@
             }
         });
 
-        elements.createBtn.addEventListener("click", () => withAd(() => handleAction("create")));
-        elements.extendBtn.addEventListener("click", () => withAd(() => handleAction("extend")));
+        elements.createBtn.addEventListener("click", () => handleAction("create"));
+        elements.extendBtn.addEventListener("click", () => handleAction("extend"));
         elements.checkBtn.addEventListener("click", checkTime);
 
         // Initialize
         log("System ready. Enter details to begin.");
         showNotification("Welcome to D-TECH Subdomain Creator", "info");
-
-        // Ad config
-        show_9630863({
-            type: 'inApp',
-            inAppSettings: {
-                frequency: 2,
-                interval: 30,
-                timeout: 5
-            }
-        });
     </script>
 </body>
 </html>
