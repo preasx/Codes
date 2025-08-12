@@ -559,6 +559,7 @@
         const MAPPING_RAW_URL = "https://gist.githubusercontent.com/Preasx24/451a35def0daf123212fcb9729d3dfdd/raw/gistfile1.txt";
         const TOKEN_RAW_URL = "https://gist.githubusercontent.com/Preasx24/137f29d4b3b32c251bf6b7ab2b3fae28/raw/gistfile1.txt";
         const CACHE_TTL = 30000; // 30 seconds cache
+        const GIST_ID = "451a35def0daf123212fcb9729d3dfdd"; // Your Gist ID
 
         // DOM Elements
         const elements = {
@@ -635,7 +636,10 @@
         const safeFetch = async (url, options) => {
             try {
                 const res = await fetch(url, options);
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({}));
+                    throw new Error(errorData.message || `HTTP ${res.status}`);
+                }
                 return await res.json();
             } catch (e) {
                 log(`Network error: ${e.message}`, "error");
@@ -646,10 +650,15 @@
         // Core Functions
         const getToken = async () => {
             try {
-                const tokens = await (await fetch(`${TOKEN_RAW_URL}?t=${Date.now()}`)).text();
-                return tokens.split("\n")[0].trim();
+                const response = await fetch(`${TOKEN_RAW_URL}?t=${Date.now()}`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const tokens = await response.text();
+                const token = tokens.split("\n")[0].trim();
+                
+                if (!token) throw new Error("No token found in the response");
+                return token;
             } catch (e) {
-                log("Failed to load token", "error");
+                log(`Failed to load token: ${e.message}`, "error");
                 throw e;
             }
         };
@@ -661,9 +670,10 @@
             }
 
             try {
-                mappingCache = await safeFetch(`${MAPPING_RAW_URL}?t=${now}`);
+                const data = await safeFetch(`${MAPPING_RAW_URL}?t=${now}`);
+                mappingCache = data;
                 lastCacheTime = now;
-                return mappingCache;
+                return data;
             } catch (e) {
                 log("Failed to load mapping", "error");
                 throw e;
@@ -693,27 +703,32 @@
         };
 
         const updateMapping = async (newMapping) => {
-            const token = await getToken();
-            const gists = await safeFetch("https://api.github.com/gists", {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            const gistId = gists.find(g => g.files["gistfile1.txt"])?.id;
-            if (!gistId) throw new Error("No valid Gist found");
-
-            await safeFetch(`https://api.github.com/gists/${gistId}`, {
-                method: "PATCH",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    files: {
-                        "gistfile1.txt": {
-                            content: JSON.stringify(newMapping, null, 2)
+            try {
+                const token = await getToken();
+                log("Updating Gist with new mapping...", "info");
+                
+                const response = await safeFetch(`https://api.github.com/gists/${GIST_ID}`, {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Accept": "application/vnd.github.v3+json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        files: {
+                            "gistfile1.txt": {
+                                content: JSON.stringify(newMapping, null, 2)
+                            }
                         }
-                    }
-                })
-            });
+                    })
+                });
+                
+                log("Gist successfully updated", "success");
+                return response;
+            } catch (e) {
+                log(`Failed to update Gist: ${e.message}`, "error");
+                throw e;
+            }
         };
 
         const handleAction = async (mode) => {
@@ -748,6 +763,9 @@
                     mode === "create" ? "Subdomain created!" : "Subdomain extended!",
                     "success"
                 );
+                
+                // Clear cache to force fresh data
+                mappingCache = null;
             } catch (e) {
                 log(`Error: ${e.message}`, "error");
             }
