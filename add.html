@@ -514,10 +514,10 @@
 
         <div class="button-group">
             <button class="primary pulse" id="create-btn" disabled>
-                <i class="fas fa-plus-circle"></i> Create (1h)
+                <i class="fas fa-plus-circle"></i> Create (2h)
             </button>
             <button class="secondary" id="extend-btn">
-                <i class="fas fa-clock"></i> Extend 1h
+                <i class="fas fa-clock"></i> Extend 12h
             </button>
             <button class="info" id="check-btn">
                 <i class="fas fa-history"></i> Check Time
@@ -558,8 +558,12 @@
         // Configuration
         const MAPPING_RAW_URL = "https://gist.githubusercontent.com/Preasx24/451a35def0daf123212fcb9729d3dfdd/raw/gistfile1.txt";
         const TOKEN_RAW_URL = "https://gist.githubusercontent.com/Preasx24/137f29d4b3b32c251bf6b7ab2b3fae28/raw/gistfile1.txt";
+        const GIST_ID = "451a35def0daf123212fcb9729d3dfdd";
         const CACHE_TTL = 30000; // 30 seconds cache
-        const GIST_ID = "451a35def0daf123212fcb9729d3dfdd"; // Your Gist ID
+        
+        // Updated time durations (in seconds)
+        const INITIAL_DURATION = 7200; // 2 hours = 7200 seconds
+        const EXTENSION_DURATION = 43200; // 12 hours = 43200 seconds
 
         // DOM Elements
         const elements = {
@@ -577,10 +581,6 @@
             checkBtn: document.getElementById("check-btn"),
             urlInput: document.getElementById("url")
         };
-
-        // State
-        let mappingCache = null;
-        let lastCacheTime = 0;
 
         // Utility Functions
         const getUnix = () => Math.floor(Date.now() / 1000);
@@ -748,19 +748,19 @@
                         return checkNameAvailability(name);
                     }
                     mapping[name] = url;
-                    mapping._expires[name] = getUnix() + 3600;
+                    mapping._expires[name] = getUnix() + INITIAL_DURATION;
                     elements.finalUrl.textContent = `https://${name}.log-in.co.za`;
                     elements.urlDisplay.classList.add("active");
-                    log(`Created "${name}" (1h expiry)`, "success");
+                    log(`Created "${name}" (2h expiry)`, "success");
                 } else if (mode === "extend") {
                     if (!mapping[name]) throw new Error("Entry not found");
-                    mapping._expires[name] = (mapping._expires[name] || getUnix()) + 3600;
-                    log(`Extended "${name}" by 1h`, "success");
+                    mapping._expires[name] = (mapping._expires[name] || getUnix()) + EXTENSION_DURATION;
+                    log(`Extended "${name}" by 12h`, "success");
                 }
 
                 await updateMapping(mapping);
                 showNotification(
-                    mode === "create" ? "Subdomain created!" : "Subdomain extended!",
+                    mode === "create" ? "Subdomain created for 2 hours!" : "Subdomain extended by 12 hours!",
                     "success"
                 );
                 
