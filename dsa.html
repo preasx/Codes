@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DTECH Ad & Voucher</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+    #voucher { margin-top: 30px; font-size: 1.5em; font-weight: bold; color: green; }
+    button { padding: 10px 20px; font-size: 1em; margin-top: 20px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <h1>View this Ad to Get Your DTECH Voucher!</h1>
+
+  <button id="viewAdBtn">View Ad</button>
+
+  <div id="voucher"></div>
+
+  <script>
+    const adURL = "https://www.profitableratecpm.com/tfwrrp64?key=5daf46a9dc8edcfd478059e39e8bf8da";
+
+    function generateVoucher() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let voucher = '';
+      for (let i = 0; i < 10; i++) {
+        voucher += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return 'DTECH-' + voucher;
+    }
+
+    document.getElementById('viewAdBtn').addEventListener('click', () => {
+      // Open the ad in a new tab/window
+      window.open(adURL, "_blank");
+
+      // Generate and show voucher after opening ad
+      const voucherCode = generateVoucher();
+      document.getElementById('voucher').textContent = `Your Voucher: ${voucherCode}`;
+    });
+  </script>
+
+</body>
+</html>
