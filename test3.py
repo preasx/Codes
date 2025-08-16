@@ -3,7 +3,7 @@ import random
 from fake_useragent import UserAgent
 from playwright.async_api import async_playwright
 
-URL = "https://www.profitableratecpm.com/jj50ng1ug?key=d817462d4540e42b6ac6b98de364db34"  # Change this to your ad/test URL
+URL = "https://rebukeirresistiblesubstitute.com/uvetpu8b?key=1f8334c24e1ccd85f28b42a15b4f0aad"  # Change this to your ad/test URL
 CLICK_LIMIT = 12  # How many ad clicks before stopping
 
 async def click_ads():
