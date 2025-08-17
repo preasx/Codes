@@ -6,7 +6,7 @@ from fake_useragent import UserAgent
 from playwright.async_api import async_playwright
 
 # ----------------- CONFIG -----------------
-URL = "https://www.profitableratecpm.com/sksir9fsh7?key=0033c8199e3577b7de554461d7390fd0"
+URL = "https://www.profitableratecpm.com/k6pen7jfqk?key=c55ed5acc95e65abe09406a0f16524bd"
 CLICK_LIMIT = 12
 
 # -------------------------------
