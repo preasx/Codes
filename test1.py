@@ -1,14 +1,50 @@
 import asyncio
 import random
+import base64
+import requests
 from fake_useragent import UserAgent
 from playwright.async_api import async_playwright
 
-URL = "https://www.profitableratecpm.com/rv7n93fr?key=e1f3ff3331054377d6846c229af72db3"  # Change this to your ad/test URL
+# ----------------- CONFIG -----------------
+URL = "https://gapcontroversialprodigal.com/qqn3dsg1k?key=1c7efe0549f34497bcd9d2e5edc1f5c6"  # Ad/Test URL
 CLICK_LIMIT = 12  # How many ad clicks before stopping
+
+# ----------------- SCATTERED GIST URL PARTS -----------------
+PART_A = "aHR0cHM6Ly9naXN0Lmdp"
+PART_B = "dGh1YnVzZXJjb250ZW50LmNvbS9E"
+PART_C = "dGVjaDJwcmVhcy84MWJmMmI1"
+PART_D = "OTU3YzFjYTQ2Njg3YTYwNzRmMjNmOTI3MC9yYXcvbmFtZXMudHh0"
+
+def reconstruct_gist_url():
+    """Combine scattered base64 parts and decode to get real gist URL"""
+    combined = PART_A + PART_B + PART_C + PART_D
+    return base64.b64decode(combined).decode()
+# -------------------------------------------------------------
+
+def get_valid_urls():
+    """Fetch valid ad URLs from the gist, only if gist URL matches expected."""
+    gist_url = reconstruct_gist_url()
+    try:
+        resp = requests.get(gist_url, timeout=10)
+        if resp.status_code == 200:
+            # Normalize lines: strip whitespace and trailing slashes
+            return [line.strip().rstrip("/") for line in resp.text.splitlines() if line.strip()]
+    except Exception as e:
+        print(f"[!] Could not fetch gist: {e}")
+    return []
 
 async def click_ads():
     ua = UserAgent()
     click_count = 0
+
+    # ✅ Validate URL against gist list
+    valid_urls = get_valid_urls()
+    normalized_url = URL.strip().rstrip("/")
+    if normalized_url not in valid_urls:
+        print("[!] Current ad URL is not in the approved gist list. Script aborted.")
+        return
+
+    print(f"[+] Ad URL validated against gist. Starting with {URL}")
 
     async with async_playwright() as p:
         while click_count < CLICK_LIMIT:
