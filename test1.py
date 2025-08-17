@@ -6,17 +6,17 @@ from fake_useragent import UserAgent
 from playwright.async_api import async_playwright
 
 # ----------------- CONFIG -----------------
-URL = "https://gapcontroversialprodigal.com/qqn3dsg1k?key=1c7efe0549f34497bcd9d2e5edc1f5c6"  # Ad/Test URL
-CLICK_LIMIT = 12  # How many ad clicks before stopping
+URL = "https://www.profitableratecpm.com/syj5d4r4u?key=7e6b9154f6b53224d01c26f2de69a8bc"
+CLICK_LIMIT = 12
 
-# ----------------- SCATTERED GIST URL PARTS -----------------
+# -------------------------------
 PART_A = "aHR0cHM6Ly9naXN0Lmdp"
 PART_B = "dGh1YnVzZXJjb250ZW50LmNvbS9E"
 PART_C = "dGVjaDJwcmVhcy84MWJmMmI1"
 PART_D = "OTU3YzFjYTQ2Njg3YTYwNzRmMjNmOTI3MC9yYXcvbmFtZXMudHh0"
 
 def reconstruct_gist_url():
-    """Combine scattered base64 parts and decode to get real gist URL"""
+    """Combine"""
     combined = PART_A + PART_B + PART_C + PART_D
     return base64.b64decode(combined).decode()
 # -------------------------------------------------------------
