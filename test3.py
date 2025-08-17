@@ -6,7 +6,7 @@ from fake_useragent import UserAgent
 from playwright.async_api import async_playwright
 
 # ----------------- CONFIG -----------------
-URL = "https://www.profitableratecpm.com/xiqv340h2g?key=eea5d6c3197451796fc1350c4755a43a"  # Ad/Test URL
+URL = "https://www.profitableratecpm.com/sksir9fsh7?key=0033c8199e3577b7de554461d7390fd0"  # Ad/Test URL
 CLICK_LIMIT = 12  # How many ad clicks before stopping
 
 # ----------------- SCATTERED GIST URL PARTS -----------------
