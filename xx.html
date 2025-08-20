@@ -335,6 +335,11 @@
         
         .creator {
             text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .creator:hover {
+            transform: translateY(-5px);
         }
         
         .creator img {
@@ -344,6 +349,18 @@
             object-fit: cover;
             margin-bottom: 10px;
             border: 2px solid var(--primary);
+        }
+        
+        .creator-link {
+            color: var(--secondary);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        .creator-link:hover {
+            color: var(--primary);
         }
         
         /* Tutorials */
@@ -358,6 +375,11 @@
             padding: 30px;
             border-radius: 10px;
             text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .tutorial-card:hover {
+            transform: translateY(-10px);
         }
         
         .tutorial-card i {
@@ -462,11 +484,28 @@
             .hero p {
                 font-size: 1.2rem;
             }
+            
+            .creators {
+                justify-content: center;
+            }
         }
         
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--dark);
+                flex-direction: column;
+                padding: 20px;
+                text-align: center;
+                border-top: 1px solid var(--primary);
+            }
+            
+            .nav-links.active {
+                display: flex;
             }
             
             .mobile-menu-btn {
@@ -484,6 +523,11 @@
             
             .hero {
                 padding: 120px 0 80px;
+            }
+            
+            .creators {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
@@ -691,11 +735,17 @@
                         <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='100' height='100'><rect width='100' height='100' fill='%2300ff88'/><circle cx='50' cy='40' r='20' fill='%230a0a0a'/><rect x='30' y='70' width='40' height='20' fill='%230a0a0a'/></svg>" alt="WhiteRoseSA">
                         <h4>WhiteRoseSA</h4>
                         <p>Usability & Optimization</p>
+                        <a href="https://t.me/Whiterosesa" target="_blank" class="creator-link">
+                            <i class="fab fa-telegram"></i> @Whiterosesa
+                        </a>
                     </div>
                     <div class="creator">
                         <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='100' height='100'><rect width='100' height='100' fill='%230099ff'/><circle cx='50' cy='40' r='20' fill='%230a0a0a'/><rect x='30' y='70' width='40' height='20' fill='%230a0a0a'/></svg>" alt="DTech">
-                        <h4>DTech</h4>
-                        <p>Original Method</p>
+                        <h4>PREASX24 (D-Tech)</h4>
+                        <p>Original Method Creator</p>
+                        <a href="https://t.me/PREASX24" target="_blank" class="creator-link">
+                            <i class="fab fa-telegram"></i> @PREASX24
+                        </a>
                     </div>
                 </div>
             </div>
@@ -716,14 +766,18 @@
                     <p>Step-by-step guidance on setup, configuration, and optimization directly within the tool.</p>
                 </div>
                 <div class="tutorial-card">
-                    <i class="fab fa-youtube"></i>
-                    <h3>YouTube Guides</h3>
-                    <p>Visual tutorials covering beginner to advanced strategies for maximizing AdPulse.</p>
+                    <a href="https://youtu.be/0tYnJBxO-Js?si=lG99vOdfoY56BFVR" target="_blank" style="color: inherit; text-decoration: none;">
+                        <i class="fab fa-youtube"></i>
+                        <h3>YouTube Guides</h3>
+                        <p>Visual tutorials covering beginner to advanced strategies for maximizing AdPulse.</p>
+                    </a>
                 </div>
                 <div class="tutorial-card">
-                    <i class="fab fa-telegram"></i>
-                    <h3>Telegram Channel</h3>
-                    <p>Direct support from creators, updates, announcements, and community engagement.</p>
+                    <a href="https://t.me/DTECHX24" target="_blank" style="color: inherit; text-decoration: none;">
+                        <i class="fab fa-telegram"></i>
+                        <h3>Telegram Channel</h3>
+                        <p>Direct support from creators, updates, announcements, and community engagement.</p>
+                    </a>
                 </div>
             </div>
         </div>
@@ -797,8 +851,9 @@
             </div>
             <div class="social-links">
                 <a href="https://t.me/DTECHX24" target="_blank"><i class="fab fa-telegram"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="#"><i class="fas fa-envelope"></i></a>
+                <a href="https://youtu.be/0tYnJBxO-Js?si=lG99vOdfoY56BFVR" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://t.me/Whiterosesa" target="_blank"><i class="fas fa-user"></i></a>
+                <a href="https://t.me/PREASX24" target="_blank"><i class="fas fa-user"></i></a>
             </div>
             <p class="copyright">© 2023 AdPulse. Developed by WhiteRoseSA & DTech. All rights reserved.</p>
         </div>
@@ -828,7 +883,7 @@
         const navLinks = document.querySelector('.nav-links');
         
         mobileMenuBtn.addEventListener('click', () => {
-            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+            navLinks.classList.toggle('active');
         });
     </script>
 </body>
