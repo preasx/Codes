@@ -1,0 +1,128 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ExoClick VAST Video Demo</title>
+  <link rel="preconnect" href="https://cdn.fluidplayer.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.css" />
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --card: #121829;
+      --fg: #e6ecff;
+      --muted: #9fb0d9;
+      --accent: #6aa1ff;
+      --accent2: #7cf6d6;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 70% -10%, rgba(122,246,214,0.12), rgba(0,0,0,0)) ,
+                  radial-gradient(900px 700px at -10% 110%, rgba(106,161,255,0.12), rgba(0,0,0,0)) ,
+                  var(--bg);
+      color: var(--fg);
+      display: grid; place-items: center; padding: 24px;
+    }
+    .shell { width: min(1100px, 100%); }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      border-radius: 24px;
+      padding: 20px;
+    }
+    header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; }
+    header .title {
+      font-weight: 700; font-size: clamp(18px, 2.6vw, 28px);
+      letter-spacing: 0.2px;
+    }
+    header .meta { color: var(--muted); font-size: 13px; }
+    .notice {
+      margin-top: 14px; font-size: 13px; color: var(--muted);
+    }
+    .badge { display:inline-flex; align-items:center; gap:8px; border-radius:999px; padding:6px 10px; background: rgba(106,161,255,0.12); color: var(--fg); font-size:12px; }
+    .badge svg { width:16px; height:16px; }
+    .player-wrap { position: relative; border-radius: 18px; overflow: hidden; }
+    video { width: 100%; height: auto; display: block; background: #000; }
+    footer { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:14px; flex-wrap: wrap; }
+    .tiny { font-size:12px; color: var(--muted); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="card">
+      <header>
+        <div class="title">🎬 Video Player with ExoClick VAST (Pre‑Roll)</div>
+        <div class="badge" title="VAST enabled">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.77 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" stroke="currentColor" stroke-width="1.4"/></svg>
+          VAST Active
+        </div>
+      </header><div class="player-wrap">
+    <!-- Content video: replace the src with your own video if you like -->
+    <video id="my-video" controls playsinline preload="auto" muted poster="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg">
+      <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
+  </div>
+
+  <div class="notice">Tip: Some browsers require user interaction to play sound. The demo starts <b>muted</b> to maximize auto‑play and pre‑roll start. Unmute after the ad if needed.</div>
+
+  <footer>
+    <div class="tiny">Ad tag: <code id="vast-url">https://s.magsrv.com/v1/vast.php?idzone=5705536</code></div>
+    <div class="tiny">If you use an ad blocker, disable it for this page to see the ad.</div>
+  </footer>
+</div>
+
+  </div>  <!-- Fluid Player -->  <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>  <script>
+    (function(){
+      const VAST_TAG = 'https://s.magsrv.com/v1/vast.php?idzone=5705536';
+      // Update the visible tag text (for convenience)
+      const el = document.getElementById('vast-url');
+      if (el) el.textContent = VAST_TAG;
+
+      const player = fluidPlayer('my-video', {
+        layoutControls: {
+          fillToContainer: true,
+          primaryColor: '#6aa1ff',
+          playButtonShowing: true,
+          mute: true,                // Start muted to improve auto-play start on mobile
+          allowTheatre: true,
+          controlBar: {
+            autoHide: true,
+            autoHideTimeout: 3
+          },
+          logo: {
+            imageUrl: '',
+            position: 'top left',
+            clickUrl: '',
+            opacity: 0
+          }
+        },
+        vastOptions: {
+          // Show a single pre‑roll; you can add mid/post by extending this adList
+          adList: [
+            { roll: 'preRoll', vastTag: VAST_TAG, adText: 'Advertisement', adClickable: true }
+          ],
+          vastAdvanced: {
+            // Fallback behavior if no ad is returned
+            enablePreloading: true,
+            showPlayButton: true
+          },
+          // Optional UI strings
+          adCTAText: 'Visit sponsor',
+          adCTATextPosition: 'bottom right'
+        }
+      });
+
+      // Helpful console logging for debugging
+      const log = (evt) => console.log('[fluidplayer]', evt.type, evt.detail || '');
+      ['adStarted','adCompleted','adError','adSkip','adClicked','adLog'].forEach(e=>player.on(e, log));
+    })();
+  </script></body>
+</html>
