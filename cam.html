@@ -29,16 +29,6 @@
             resize: vertical;
             box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        .input-group {
-            margin: 15px 0;
-        }
-        input {
-            width: 70%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-right: 10px;
-        }
         button { 
             padding: 12px 25px;
             border: none;
@@ -48,14 +38,14 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin: 5px;
+            margin: 10px 5px;
         }
         .run-btn {
             background: linear-gradient(to right, #00b09b, #96c93d);
             color: white;
         }
-        .install-btn {
-            background: linear-gradient(to right, #3494E6, #EC6EAD);
+        .clear-btn {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
             color: white;
         }
         button:hover {
@@ -82,37 +72,50 @@
             justify-content: center;
             flex-wrap: wrap;
         }
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e8f5e8;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 14px;
+            color: #2e7d32;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Python Environment</h1>
-        <textarea id="code" placeholder="Enter Python code here"># Welcome to Python in Android!
-# You can run any Python code here
+        <textarea id="code" placeholder="Enter Python code here"># Welcome to Python in WebView!
+# This code runs on a remote Python execution service
 
-import numpy as np
-import matplotlib.pyplot as plt
+print("Hello from Python!")
 
-print("NumPy version:", np.__version__)
+# Simple calculation example
+a = 15
+b = 7
+result = a * b
+print(f"{a} multiplied by {b} is {result}")
 
-# Create a simple array
-arr = np.array([1, 2, 3, 4, 5])
-print("Array:", arr)
-print("Sum:", np.sum(arr))
+# List example
+fruits = ["apple", "banana", "cherry"]
+for i, fruit in enumerate(fruits, 1):
+    print(f"Fruit {i}: {fruit}")
 
-# You can also install additional packages using the install button below</textarea>
+# Math operations
+import math
+print(f"Square root of 64: {math.sqrt(64)}")</textarea>
         
         <div class="btn-group">
             <button class="run-btn" onclick="runPython()">Run Python</button>
-            <button class="run-btn" onclick="clearCode()">Clear Code</button>
-        </div>
-        
-        <div class="input-group">
-            <input type="text" id="packageName" placeholder="Enter package name to install">
-            <button class="install-btn" onclick="installPackage()">Install Package</button>
+            <button class="clear-btn" onclick="clearCode()">Clear Code</button>
         </div>
         
         <div id="output">Ready to run Python code. Click "Run Python" to execute.</div>
+        
+        <div class="status">
+            Powered by Piston API - Python code executes on a remote server
+        </div>
 
         <script>
             function runPython() {
@@ -121,22 +124,9 @@ print("Sum:", np.sum(arr))
                     document.getElementById('output').innerText = 'Running Python code...';
                     Android.runPythonScript(code);
                 } else {
-                    document.getElementById('output').innerText = 'Android interface not available.';
-                }
-            }
-            
-            function installPackage() {
-                const packageName = document.getElementById('packageName').value;
-                if (!packageName) {
-                    document.getElementById('output').innerText = 'Please enter a package name.';
-                    return;
-                }
-                
-                if (typeof Android !== 'undefined' && Android.installPackage) {
-                    document.getElementById('output').innerText = 'Installing package...';
-                    Android.installPackage(packageName);
-                } else {
-                    document.getElementById('output').innerText = 'Android interface not available.';
+                    document.getElementById('output').innerText = 'Android interface not available. Running in browser mode.';
+                    // Fallback for browser testing
+                    updateOutput("Python execution would happen here:\n" + code);
                 }
             }
             
