@@ -1,195 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Advanced Python Environment</title>
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
-  <style>
-    body {
-      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-      color: #333;
-      min-height: 100vh;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      background-color: rgba(255, 255, 255, 0.95);
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      overflow: hidden;
-      margin: 20px 0;
-    }
-    header {
-      background: linear-gradient(to right, #2c3e50, #4ca1af);
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    textarea {
-      width: 100%;
-      height: 220px;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-family: 'Courier New', monospace;
-      font-size: 16px;
-      resize: vertical;
-    }
-    .buttons {
-      margin-top: 15px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    button {
-      padding: 10px 18px;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      color: white;
-    }
-    .btn-run { background: linear-gradient(to right, #00b09b, #96c93d); }
-    .btn-clear { background: linear-gradient(to right, #ff416c, #ff4b2b); }
-    .btn-install { background: linear-gradient(to right, #3494E6, #EC6EAD); }
-    #output {
-      min-height: 200px;
-      padding: 15px;
-      background: #f8f9fa;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-family: 'Courier New', monospace;
-      margin-top: 20px;
-      white-space: pre-wrap;
-    }
-    .status {
-      padding: 15px;
-      text-align: center;
-      font-weight: 500;
-      color: #6c757d;
-      border-top: 1px solid #eee;
-    }
-    .loading {
-      display: none;
-      text-align: center;
-      padding: 20px;
-      color: #4ca1af;
-      font-weight: 500;
-    }
-  </style>
+    <title>Python Environment</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        textarea { 
+            width: 100%; 
+            height: 200px; 
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            resize: vertical;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        input {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+        button { 
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 5px;
+        }
+        .run-btn {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+        }
+        .install-btn {
+            background: linear-gradient(to right, #3494E6, #EC6EAD);
+            color: white;
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+        #output { 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Advanced Python Environment</h1>
-      <p>Run Python code in your browser with Pyodide</p>
-    </header>
+    <div class="container">
+        <h1>Python Environment</h1>
+        <textarea id="code" placeholder="Enter Python code here"># Welcome to Python in Android!
+# You can run any Python code here
 
-    <div style="padding:20px;">
-      <textarea id="code"># Example: Data analysis with pandas
-import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
-data = {
-    "Name": ["Alice", "Bob", "Charlie", "David"],
-    "Age": [25, 30, 35, 40],
-    "City": ["New York", "London", "Paris", "Tokyo"]
-}
-df = pd.DataFrame(data)
-print("DataFrame:")
-print(df)
-print("\nAverage age:", df["Age"].mean())
-print("Max age:", df["Age"].max())</textarea>
+print("NumPy version:", np.__version__)
 
-      <div class="buttons">
-        <button class="btn-run" id="run-btn" disabled>Run Code</button>
-        <button class="btn-clear" id="clear-btn" disabled>Clear Code</button>
-        <input type="text" id="package-input" placeholder="Enter package (e.g. numpy)">
-        <button class="btn-install" id="install-btn" disabled>Install</button>
-      </div>
+# Create a simple array
+arr = np.array([1, 2, 3, 4, 5])
+print("Array:", arr)
+print("Sum:", np.sum(arr))
 
-      <div class="loading" id="loading">Loading Python runtime... Please wait</div>
-      <div id="output">Python environment initializing...</div>
+# You can also install additional packages using the install button below</textarea>
+        
+        <div class="btn-group">
+            <button class="run-btn" onclick="runPython()">Run Python</button>
+            <button class="run-btn" onclick="clearCode()">Clear Code</button>
+        </div>
+        
+        <div class="input-group">
+            <input type="text" id="packageName" placeholder="Enter package name to install">
+            <button class="install-btn" onclick="installPackage()">Install Package</button>
+        </div>
+        
+        <div id="output">Ready to run Python code. Click "Run Python" to execute.</div>
+
+        <script>
+            function runPython() {
+                const code = document.getElementById('code').value;
+                if (typeof Android !== 'undefined' && Android.runPythonScript) {
+                    document.getElementById('output').innerText = 'Running Python code...';
+                    Android.runPythonScript(code);
+                } else {
+                    document.getElementById('output').innerText = 'Android interface not available.';
+                }
+            }
+            
+            function installPackage() {
+                const packageName = document.getElementById('packageName').value;
+                if (!packageName) {
+                    document.getElementById('output').innerText = 'Please enter a package name.';
+                    return;
+                }
+                
+                if (typeof Android !== 'undefined' && Android.installPackage) {
+                    document.getElementById('output').innerText = 'Installing package...';
+                    Android.installPackage(packageName);
+                } else {
+                    document.getElementById('output').innerText = 'Android interface not available.';
+                }
+            }
+            
+            function clearCode() {
+                document.getElementById('code').value = '';
+                document.getElementById('output').innerText = 'Code cleared.';
+            }
+            
+            function updateOutput(result) {
+                document.getElementById('output').innerText = result;
+            }
+        </script>
     </div>
-
-    <div class="status">Powered by Pyodide</div>
-  </div>
-
-<script>
-let pyodide;
-let installedPackages = new Set();
-
-async function initializePyodide() {
-  document.getElementById("loading").style.display = "block";
-  try {
-    pyodide = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/" });
-    await pyodide.loadPackage(["numpy", "pandas"]);
-    document.getElementById("output").innerText = "Python environment ready!";
-    installedPackages.add("numpy");
-    installedPackages.add("pandas");
-
-    // enable buttons
-    document.getElementById("run-btn").disabled = false;
-    document.getElementById("clear-btn").disabled = false;
-    document.getElementById("install-btn").disabled = false;
-  } catch (err) {
-    document.getElementById("output").innerText = "Error loading Python: " + err.message;
-  }
-  document.getElementById("loading").style.display = "none";
-}
-
-async function runPython() {
-  const code = document.getElementById("code").value;
-  if (!code.trim()) {
-    document.getElementById("output").innerText = "Please enter some code.";
-    return;
-  }
-  try {
-    pyodide.runPython(`
-import sys
-from io import StringIO
-sys.stdout = StringIO()
-sys.stderr = sys.stdout
-    `);
-    await pyodide.runPythonAsync(code);
-    const output = pyodide.runPython("sys.stdout.getvalue()");
-    document.getElementById("output").innerText = output;
-  } catch (err) {
-    document.getElementById("output").innerText = "Error: " + err.message;
-  }
-}
-
-async function installPackage() {
-  const pkg = document.getElementById("package-input").value.trim();
-  if (!pkg) return;
-  try {
-    document.getElementById("output").innerText = `Installing ${pkg}...`;
-    await pyodide.loadPackage(pkg);
-    installedPackages.add(pkg);
-    const ver = pyodide.runPython(`__import__('${pkg}').__version__ if hasattr(__import__('${pkg}'),'__version__') else 'unknown'`);
-    document.getElementById("output").innerText = `Installed ${pkg} (version ${ver})`;
-    document.getElementById("package-input").value = "";
-  } catch (err) {
-    document.getElementById("output").innerText = `Error installing ${pkg}: ${err.message}`;
-  }
-}
-
-function clearCode() {
-  document.getElementById("code").value = "";
-  document.getElementById("output").innerText = "Editor cleared.";
-}
-
-document.getElementById("run-btn").addEventListener("click", runPython);
-document.getElementById("install-btn").addEventListener("click", installPackage);
-document.getElementById("clear-btn").addEventListener("click", clearCode);
-
-initializePyodide();
-</script>
 </body>
 </html>
