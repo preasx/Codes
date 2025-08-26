@@ -1,144 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Python Environment</title>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            padding: 20px; 
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            color: #333;
-            min-height: 100vh;
-        }
-        .container {
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        textarea { 
-            width: 100%; 
-            height: 200px; 
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 16px;
-            resize: vertical;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        button { 
-            padding: 12px 25px;
-            border: none;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin: 10px 5px;
-        }
-        .run-btn {
-            background: linear-gradient(to right, #00b09b, #96c93d);
-            color: white;
-        }
-        .clear-btn {
-            background: linear-gradient(to right, #ff416c, #ff4b2b);
-            color: white;
-        }
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
-        }
-        #output { 
-            border: 1px solid #ddd; 
-            padding: 15px; 
-            min-height: 150px;
-            max-height: 300px;
-            overflow-y: auto;
-            border-radius: 8px;
-            background-color: #f8f9fa;
-            font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-        }
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .status {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #e8f5e8;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 14px;
-            color: #2e7d32;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>My Diary for You 💖</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+  <style>
+    body { background: #fdf6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    #book { width: 90%; height: 90%; }
+    .page { padding: 30px; font-family: 'Georgia', serif; font-size: 18px; line-height: 1.6; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    /* Themes */
+    .theme-black-slow { background: #000; color: #fff; }
+    .theme-white-slow { background: #fff; color: #000; }
+    h2 { text-align: center; margin-bottom: 20px; color: #e91e63; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Python Environment</h1>
-        <textarea id="code" placeholder="Enter Python code here"># Welcome to Python in WebView!
-# This code runs on a remote Python execution service
+  <div id="book"></div>
 
-print("Hello from Python!")
+  <script>
+    const entries = [
+      { title: "Entry 1", url: "https://gist.githubusercontent.com/preasx/7240dedb381f2dc484d26c48a4376829/raw" },
+      { title: "Entry 2", url: "https://gist.githubusercontent.com/preasx/bd3e2284a39a435993b0191a48bf1335/raw" }
+    ];
 
-# Simple calculation example
-a = 15
-b = 7
-result = a * b
-print(f"{a} multiplied by {b} is {result}")
+    async function loadDiary() {
+      const book = document.getElementById("book");
+      for (let e of entries) {
+        try {
+          const res = await fetch(e.url);
+          const text = await res.text();
+          const lines = text.split('\n');
+          let theme = 'theme-white-slow'; // default theme
+          if (lines[0].startsWith('theme:')) {
+            theme = 'theme-' + lines[0].split(':')[1].trim();
+            lines.shift(); // remove theme line
+          }
+          const content = lines.join('<br>');
+          const page = document.createElement("div");
+          page.className = `page ${theme}`;
+          page.innerHTML = `<h2>${e.title}</h2><p>${content}</p>`;
+          book.appendChild(page);
+        } catch (err) {
+          console.error("Failed to fetch gist:", e.url, err);
+        }
+      }
+      $('#book').turn({ gradients: true, acceleration: true });
+    }
 
-# List example
-fruits = ["apple", "banana", "cherry"]
-for i, fruit in enumerate(fruits, 1):
-    print(f"Fruit {i}: {fruit}")
-
-# Math operations
-import math
-print(f"Square root of 64: {math.sqrt(64)}")</textarea>
-        
-        <div class="btn-group">
-            <button class="run-btn" onclick="runPython()">Run Python</button>
-            <button class="clear-btn" onclick="clearCode()">Clear Code</button>
-        </div>
-        
-        <div id="output">Ready to run Python code. Click "Run Python" to execute.</div>
-        
-        <div class="status">
-            Powered by Piston API - Python code executes on a remote server
-        </div>
-
-        <script>
-            function runPython() {
-                const code = document.getElementById('code').value;
-                if (typeof Android !== 'undefined' && Android.runPythonScript) {
-                    document.getElementById('output').innerText = 'Running Python code...';
-                    Android.runPythonScript(code);
-                } else {
-                    document.getElementById('output').innerText = 'Android interface not available. Running in browser mode.';
-                    // Fallback for browser testing
-                    updateOutput("Python execution would happen here:\n" + code);
-                }
-            }
-            
-            function clearCode() {
-                document.getElementById('code').value = '';
-                document.getElementById('output').innerText = 'Code cleared.';
-            }
-            
-            function updateOutput(result) {
-                document.getElementById('output').innerText = result;
-            }
-        </script>
-    </div>
+    loadDiary();
+  </script>
 </body>
 </html>
