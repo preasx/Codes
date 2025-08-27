@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Book</title>
+<title>My Diary Book</title>
 <style>
   body {
     margin: 0;
@@ -17,7 +17,7 @@
 
   #book-container {
     width: 700px;
-    height: 90vh; /* almost full height */
+    height: 90vh;
     background: #fff;
     padding: 30px;
     box-shadow: 0 0 20px rgba(0,0,0,0.2);
@@ -25,28 +25,30 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    overflow: hidden; /* no scrolling */
+    overflow: hidden; /* no scroll */
     position: relative;
   }
 
   #chapter-title {
     text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 22px;
+    margin-bottom: 15px;
     color: #b71c1c;
   }
 
   #page-content {
     flex: 1;
     white-space: pre-wrap;
-    font-size: 18px;
-    line-height: 1.6;
+    font-size: 14px; /* smaller font for more lines */
+    line-height: 1.4; /* tighter line spacing */
+    overflow: hidden;
   }
 
   .nav-buttons {
     display: flex;
     justify-content: space-between;
     margin-top: 15px;
+    flex-shrink: 0;
   }
 
   button {
@@ -82,7 +84,7 @@ const chapters = [
   { title: "Chapter 2", url: "chapters/chapter2.txt" }
 ];
 
-const LINES_PER_PAGE = 25; // adjust to fill page nicely without scrolling
+const LINES_PER_PAGE = 45; // increased lines per page
 let pages = [];
 let currentPage = 0;
 
