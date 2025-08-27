@@ -1,54 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Diary for You 💖</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My GitHub Book</title>
   <style>
-    body { background: #fdf6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    #book { width: 90%; height: 90%; }
-    .page { padding: 30px; font-family: 'Georgia', serif; font-size: 18px; line-height: 1.6; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-    /* Themes */
-    .theme-black-slow { background: #000; color: #fff; }
-    .theme-white-slow { background: #fff; color: #000; }
-    h2 { text-align: center; margin-bottom: 20px; color: #e91e63; }
+    body {
+      font-family: Georgia, serif;
+      background: #f4f1ea;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    .book-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      border-radius: 8px;
+    }
+    h1, h2 {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .page {
+      display: none;
+      white-space: pre-wrap;
+      font-size: 16px;
+      padding: 1rem;
+    }
+    .page.active {
+      display: block;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+    button {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      background: #333;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #aaa;
+    }
   </style>
 </head>
 <body>
-  <div id="book"></div>
+  <div class="book-container">
+    <h1>My GitHub Book</h1>
+    <div id="chapter-title"></div>
+    <div id="pages"></div>
+    <div class="nav-buttons">
+      <button id="prevBtn" onclick="prevPage()">⬅ Previous</button>
+      <button id="nextBtn" onclick="nextPage()">Next ➡</button>
+    </div>
+  </div>
 
   <script>
-    const entries = [
-      { title: "Entry 1", url: "https://gist.githubusercontent.com/preasx/7240dedb381f2dc484d26c48a4376829/raw" },
-      { title: "Entry 2", url: "https://gist.githubusercontent.com/preasx/bd3e2284a39a435993b0191a48bf1335/raw" }
+    const chapters = [
+      { title: "Chapter 1", url: "chapters/chapter1.txt" },
+      { title: "Chapter 2", url: "chapters/chapter2.txt" },
+      { title: "Chapter 3", url: "chapters/chapter3.txt" }
     ];
 
-    async function loadDiary() {
-      const book = document.getElementById("book");
-      for (let e of entries) {
-        try {
-          const res = await fetch(e.url);
-          const text = await res.text();
-          const lines = text.split('\n');
-          let theme = 'theme-white-slow'; // default theme
-          if (lines[0].startsWith('theme:')) {
-            theme = 'theme-' + lines[0].split(':')[1].trim();
-            lines.shift(); // remove theme line
-          }
-          const content = lines.join('<br>');
-          const page = document.createElement("div");
-          page.className = `page ${theme}`;
-          page.innerHTML = `<h2>${e.title}</h2><p>${content}</p>`;
-          book.appendChild(page);
-        } catch (err) {
-          console.error("Failed to fetch gist:", e.url, err);
+    let pages = [];
+    let currentPage = 0;
+
+    async function loadChapters() {
+      for (const chapter of chapters) {
+        const res = await fetch(chapter.url);
+        const text = await res.text();
+
+        // Split into 120-line chunks
+        const lines = text.split("\n");
+        for (let i = 0; i < lines.length; i += 120) {
+          pages.push({
+            chapter: chapter.title,
+            content: lines.slice(i, i + 120).join("\n")
+          });
         }
       }
-      $('#book').turn({ gradients: true, acceleration: true });
+      renderPage();
     }
 
-    loadDiary();
+    function renderPage() {
+      const pagesContainer = document.getElementById("pages");
+      const chapterTitle = document.getElementById("chapter-title");
+
+      pagesContainer.innerHTML = "";
+      const page = pages[currentPage];
+
+      chapterTitle.innerHTML = `<h2>${page.chapter}</h2>`;
+
+      const pageDiv = document.createElement("div");
+      pageDiv.className = "page active";
+      pageDiv.textContent = page.content;
+      pagesContainer.appendChild(pageDiv);
+
+      document.getElementById("prevBtn").disabled = currentPage === 0;
+      document.getElementById("nextBtn").disabled = currentPage === pages.length - 1;
+    }
+
+    function nextPage() {
+      if (currentPage < pages.length - 1) {
+        currentPage++;
+        renderPage();
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        renderPage();
+      }
+    }
+
+    loadChapters();
   </script>
 </body>
 </html>
