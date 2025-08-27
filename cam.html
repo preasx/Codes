@@ -1,127 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My GitHub Book</title>
-  <style>
-    body {
-      font-family: Georgia, serif;
-      background: #f4f1ea;
-      margin: 0;
-      padding: 0;
-      line-height: 1.6;
-    }
-    .book-container {
-      max-width: 800px;
-      margin: auto;
-      padding: 2rem;
-      background: #fff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      border-radius: 8px;
-    }
-    h1, h2 {
-      text-align: center;
-      margin-top: 1rem;
-    }
-    .page {
-      display: none;
-      white-space: pre-wrap;
-      font-size: 16px;
-      padding: 1rem;
-    }
-    .page.active {
-      display: block;
-    }
-    .nav-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 1rem;
-    }
-    button {
-      padding: 0.6rem 1.2rem;
-      border: none;
-      background: #333;
-      color: #fff;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:disabled {
-      background: #aaa;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Book</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Georgia, serif;
+    background: #fdf6e3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  #book-container {
+    width: 700px;
+    height: 90vh; /* almost full height */
+    background: #fff;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: hidden; /* no scrolling */
+    position: relative;
+  }
+
+  #chapter-title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #b71c1c;
+  }
+
+  #page-content {
+    flex: 1;
+    white-space: pre-wrap;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+
+  button {
+    padding: 8px 16px;
+    border: none;
+    background: #b71c1c;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+</style>
 </head>
 <body>
-  <div class="book-container">
-    <h1>My GitHub Book</h1>
-    <div id="chapter-title"></div>
-    <div id="pages"></div>
-    <div class="nav-buttons">
-      <button id="prevBtn" onclick="prevPage()">⬅ Previous</button>
-      <button id="nextBtn" onclick="nextPage()">Next ➡</button>
-    </div>
+
+<div id="book-container">
+  <div id="chapter-title"></div>
+  <div id="page-content"></div>
+  <div class="nav-buttons">
+    <button id="prevBtn" onclick="prevPage()">⬅ Previous</button>
+    <button id="nextBtn" onclick="nextPage()">Next ➡</button>
   </div>
+</div>
 
-  <script>
-    const chapters = [
-      { title: "Chapter 1", url: "chapters/chapter1.txt" },
-      { title: "Chapter 2", url: "chapters/chapter2.txt" },
-      { title: "Chapter 3", url: "chapters/chapter3.txt" }
-    ];
+<script>
+const chapters = [
+  { title: "Chapter 1", url: "chapters/chapter1.txt" },
+  { title: "Chapter 2", url: "chapters/chapter2.txt" }
+];
 
-    let pages = [];
-    let currentPage = 0;
+const LINES_PER_PAGE = 25; // adjust to fill page nicely without scrolling
+let pages = [];
+let currentPage = 0;
 
-    async function loadChapters() {
-      for (const chapter of chapters) {
-        const res = await fetch(chapter.url);
-        const text = await res.text();
-
-        // Split into 120-line chunks
-        const lines = text.split("\n");
-        for (let i = 0; i < lines.length; i += 120) {
-          pages.push({
-            chapter: chapter.title,
-            content: lines.slice(i, i + 120).join("\n")
-          });
-        }
-      }
-      renderPage();
+async function loadChapters() {
+  for (const chapter of chapters) {
+    const res = await fetch(chapter.url);
+    const text = await res.text();
+    const lines = text.split("\n");
+    for (let i = 0; i < lines.length; i += LINES_PER_PAGE) {
+      pages.push({
+        chapter: chapter.title,
+        content: lines.slice(i, i + LINES_PER_PAGE).join("\n")
+      });
     }
+  }
+  renderPage();
+}
 
-    function renderPage() {
-      const pagesContainer = document.getElementById("pages");
-      const chapterTitle = document.getElementById("chapter-title");
+function renderPage() {
+  const pageContent = document.getElementById("page-content");
+  const chapterTitle = document.getElementById("chapter-title");
+  const page = pages[currentPage];
 
-      pagesContainer.innerHTML = "";
-      const page = pages[currentPage];
+  chapterTitle.textContent = page.chapter;
+  pageContent.textContent = page.content;
 
-      chapterTitle.innerHTML = `<h2>${page.chapter}</h2>`;
+  document.getElementById("prevBtn").disabled = currentPage === 0;
+  document.getElementById("nextBtn").disabled = currentPage === pages.length - 1;
+}
 
-      const pageDiv = document.createElement("div");
-      pageDiv.className = "page active";
-      pageDiv.textContent = page.content;
-      pagesContainer.appendChild(pageDiv);
+function nextPage() {
+  if (currentPage < pages.length - 1) {
+    currentPage++;
+    renderPage();
+  }
+}
 
-      document.getElementById("prevBtn").disabled = currentPage === 0;
-      document.getElementById("nextBtn").disabled = currentPage === pages.length - 1;
-    }
+function prevPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    renderPage();
+  }
+}
 
-    function nextPage() {
-      if (currentPage < pages.length - 1) {
-        currentPage++;
-        renderPage();
-      }
-    }
+// initialize
+loadChapters();
+</script>
 
-    function prevPage() {
-      if (currentPage > 0) {
-        currentPage--;
-        renderPage();
-      }
-    }
-
-    loadChapters();
-  </script>
 </body>
 </html>
