@@ -13,6 +13,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background: linear-gradient(135deg, #fdf6e3 0%, #f5e5cb 100%);
   }
 
   #book-container {
@@ -20,62 +21,117 @@
     height: 90vh;
     background: #fff;
     padding: 30px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    box-shadow: 0 0 25px rgba(0,0,0,0.2), 0 0 15px rgba(0,0,0,0.1) inset;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
+    border: 1px solid #e9dfc7;
   }
 
   #chapter-title {
     text-align: center;
-    font-size: 22px;
-    margin-bottom: 15px;
-    color: #b71c1c;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #8b4513;
     flex-shrink: 0;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9dfc7;
   }
 
   #page-content {
     flex: 1;
     white-space: pre-wrap;
-    font-size: 14px;
-    line-height: 1.4;
+    font-size: 16px;
+    line-height: 1.6;
     overflow: hidden;
-    padding: 5px;
+    padding: 15px;
     box-sizing: border-box;
+    background: #fff;
+    border: 1px solid #f0e9d9;
+    border-radius: 5px;
+    color: #333;
+    text-align: justify;
   }
 
   .nav-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 15px;
+    margin-top: 20px;
     flex-shrink: 0;
+    align-items: center;
   }
 
   button {
-    padding: 8px 16px;
+    padding: 10px 20px;
     border: none;
-    background: #b71c1c;
+    background: #8b4513;
     color: #fff;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  button:hover:not(:disabled) {
+    background: #6b3300;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+
+  button:active:not(:disabled) {
+    transform: translateY(0);
   }
 
   button:disabled {
     background: #ccc;
     cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  #page-indicator {
+    color: #8b4513;
+    font-size: 14px;
+    font-style: italic;
+  }
+
+  .loading {
+    text-align: center;
+    color: #8b4513;
+    font-style: italic;
+    margin: 20px 0;
+  }
+
+  @media (max-width: 768px) {
+    #book-container {
+      width: 90%;
+      padding: 20px;
+    }
+    
+    #chapter-title {
+      font-size: 20px;
+    }
+    
+    #page-content {
+      font-size: 15px;
+    }
   }
 </style>
 </head>
 <body>
 
 <div id="book-container">
-  <div id="chapter-title"></div>
-  <div id="page-content"></div>
+  <div id="chapter-title">Loading...</div>
+  <div id="page-content">
+    <div class="loading">Loading your diary content...</div>
+  </div>
   <div class="nav-buttons">
     <button id="prevBtn" onclick="prevPage()">⬅ Previous</button>
+    <div id="page-indicator">Page 1 of 1</div>
     <button id="nextBtn" onclick="nextPage()">Next ➡</button>
   </div>
 </div>
@@ -110,78 +166,80 @@ function makeMeasurer() {
   return m;
 }
 
-function maxFitSubstring(text) {
+function findOptimalBreakPoint(text) {
+  // First try to break at paragraph boundaries (double newlines)
+  const doubleNewlineIndex = text.indexOf('\n\n');
+  if (doubleNewlineIndex !== -1) {
+    measureEl.textContent = text.substring(0, doubleNewlineIndex + 2);
+    if (measureEl.scrollHeight <= measureEl.clientHeight) {
+      return doubleNewlineIndex + 2;
+    }
+  }
+  
+  // Then try to break at single newlines
+  const newlineIndex = text.indexOf('\n');
+  if (newlineIndex !== -1) {
+    measureEl.textContent = text.substring(0, newlineIndex + 1);
+    if (measureEl.scrollHeight <= measureEl.clientHeight) {
+      return newlineIndex + 1;
+    }
+  }
+  
+  // Then try to break at sentence endings
+  const sentenceEndIndex = Math.max(
+    text.lastIndexOf('. '),
+    text.lastIndexOf('? '),
+    text.lastIndexOf('! ')
+  );
+  
+  if (sentenceEndIndex !== -1) {
+    measureEl.textContent = text.substring(0, sentenceEndIndex + 2);
+    if (measureEl.scrollHeight <= measureEl.clientHeight) {
+      return sentenceEndIndex + 2;
+    }
+  }
+  
+  // Then try to break at word boundaries
+  const lastSpaceIndex = text.lastIndexOf(' ');
+  if (lastSpaceIndex !== -1) {
+    measureEl.textContent = text.substring(0, lastSpaceIndex);
+    if (measureEl.scrollHeight <= measureEl.clientHeight) {
+      return lastSpaceIndex + 1;
+    }
+  }
+  
+  // If no good break point found, use binary search as fallback
+  return findBreakPointWithBinarySearch(text);
+}
+
+function findBreakPointWithBinarySearch(text) {
   let low = 1;
   let high = text.length;
-  let best = 0;
-
+  let bestFit = 0;
+  
   while (low <= high) {
     const mid = Math.floor((low + high) / 2);
-    const testText = text.slice(0, mid);
+    measureEl.textContent = text.substring(0, mid);
     
-    // Check if we're in the middle of a word
-    const isMidWord = mid < text.length && 
-                     /\S/.test(text[mid-1]) && 
-                     /\S/.test(text[mid]);
-    
-    // If we're in the middle of a word, try to find the next space
-    if (isMidWord) {
-      const nextSpace = text.indexOf(' ', mid);
-      if (nextSpace !== -1) {
-        measureEl.textContent = text.slice(0, nextSpace);
-        if (measureEl.scrollHeight <= measureEl.clientHeight) {
-          best = nextSpace;
-          low = nextSpace + 1;
-          continue;
-        }
-      }
-    }
-    
-    measureEl.textContent = testText;
     if (measureEl.scrollHeight <= measureEl.clientHeight) {
-      best = mid;
+      bestFit = mid;
       low = mid + 1;
     } else {
       high = mid - 1;
     }
   }
   
-  if (best === 0) return 0;
-
-  // Try to break at a word boundary
-  const slice = text.slice(0, best);
-  let lastGoodBreak = best;
-  
-  // Look for paragraph breaks first
-  const lastParagraphBreak = slice.lastIndexOf('\n\n');
-  if (lastParagraphBreak > 0 && lastParagraphBreak >= Math.floor(best * 0.7)) {
-    return lastParagraphBreak + 2;
+  // Try to break at the nearest word boundary
+  if (bestFit > 0) {
+    const partialText = text.substring(0, bestFit);
+    const lastSpace = partialText.lastIndexOf(' ');
+    
+    if (lastSpace > 0 && lastSpace > bestFit * 0.7) {
+      return lastSpace + 1;
+    }
   }
   
-  // Then look for line breaks
-  const lastLineBreak = slice.lastIndexOf('\n');
-  if (lastLineBreak > 0 && lastLineBreak >= Math.floor(best * 0.7)) {
-    return lastLineBreak + 1;
-  }
-  
-  // Then look for sentence endings
-  const lastSentenceEnd = Math.max(
-    slice.lastIndexOf('. '),
-    slice.lastIndexOf('? '),
-    slice.lastIndexOf('! ')
-  );
-  if (lastSentenceEnd > 0 && lastSentenceEnd >= Math.floor(best * 0.6)) {
-    return lastSentenceEnd + 2;
-  }
-  
-  // Then look for word boundaries
-  const lastWordBreak = slice.lastIndexOf(' ');
-  if (lastWordBreak > 0 && lastWordBreak >= Math.floor(best * 0.5)) {
-    return lastWordBreak + 1;
-  }
-  
-  // If no good break point found, return the best we have
-  return best;
+  return Math.max(bestFit, 1);
 }
 
 function paginateTextByHeight(text, chapterTitle) {
@@ -189,16 +247,15 @@ function paginateTextByHeight(text, chapterTitle) {
   const out = [];
   
   while (idx < text.length) {
-    const remaining = text.slice(idx);
-    const fitLen = maxFitSubstring(remaining);
+    const remaining = text.substring(idx);
+    const breakPoint = findOptimalBreakPoint(remaining);
     
-    if (fitLen === 0) {
+    if (breakPoint <= 0) {
       console.error("Could not paginate text - measurement issue");
       break;
     }
     
-    const take = Math.max(fitLen, 1);
-    const pageContent = remaining.slice(0, take).trim();
+    const pageContent = remaining.substring(0, breakPoint).trim();
     
     if (pageContent.length > 0) {
       out.push({
@@ -207,10 +264,10 @@ function paginateTextByHeight(text, chapterTitle) {
       });
     }
     
-    idx += take;
+    idx += breakPoint;
     
     // Skip any leading whitespace on the next page
-    while (idx < text.length && (text[idx] === ' ' || text[idx] === '\n')) {
+    while (idx < text.length && (text[idx] === ' ' || text[idx] === '\n' || text[idx] === '\r')) {
       idx++;
     }
   }
@@ -246,16 +303,19 @@ async function loadChapters() {
 function renderPage() {
   const pageContent = document.getElementById("page-content");
   const chapterTitle = document.getElementById("chapter-title");
+  const pageIndicator = document.getElementById("page-indicator");
   
   if (pages.length === 0) {
     chapterTitle.textContent = "No Content";
     pageContent.textContent = "The diary is empty or content failed to load.";
+    pageIndicator.textContent = "Page 0 of 0";
     return;
   }
   
   const page = pages[currentPage];
   chapterTitle.textContent = page.chapter;
   pageContent.textContent = page.content;
+  pageIndicator.textContent = `Page ${currentPage + 1} of ${pages.length}`;
 
   document.getElementById("prevBtn").disabled = currentPage === 0;
   document.getElementById("nextBtn").disabled = currentPage === pages.length - 1;
