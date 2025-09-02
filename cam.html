@@ -24,7 +24,7 @@
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* no scroll */
+    overflow: hidden;
     position: relative;
   }
 
@@ -38,10 +38,12 @@
 
   #page-content {
     flex: 1;
-    white-space: pre-wrap; /* preserve newlines */
+    white-space: pre-wrap;
     font-size: 14px;
     line-height: 1.4;
-    overflow: hidden; /* the visible page */
+    overflow: hidden;
+    padding: 5px;
+    box-sizing: border-box;
   }
 
   .nav-buttons {
@@ -86,11 +88,10 @@ const chapters = [
 
 let pages = [];
 let currentPage = 0;
-let measureEl; // hidden measurer
+let measureEl;
 
 function makeMeasurer() {
   const pageEl = document.getElementById("page-content");
-  // Clone styles by cloning the node
   const m = pageEl.cloneNode(false);
   m.id = "page-measurer";
   m.style.position = "absolute";
@@ -98,17 +99,17 @@ function makeMeasurer() {
   m.style.pointerEvents = "none";
   m.style.left = "-9999px";
   m.style.top = "0";
-  // Fix dimensions so measurements match the visible page exactly
-  // Use clientWidth/Height of the visible container
+  m.style.width = getComputedStyle(pageEl).width;
+  m.style.height = getComputedStyle(pageEl).height;
+  m.style.padding = getComputedStyle(pageEl).padding;
+  m.style.boxSizing = getComputedStyle(pageEl).boxSizing;
+  m.style.font = getComputedStyle(pageEl).font;
+  m.style.lineHeight = getComputedStyle(pageEl).lineHeight;
+  m.style.overflow = "auto";
   document.body.appendChild(m);
-  // After appended, lock width/height to the visible element’s box
-  m.style.width = pageEl.clientWidth + "px";
-  m.style.height = pageEl.clientHeight + "px";
-  m.style.overflow = "auto"; // allow scrollHeight to be larger than clientHeight
   return m;
 }
 
-// Find max substring that fits in measurer via binary search
 function maxFitSubstring(text) {
   let low = 1;
   let high = text.length;
@@ -116,67 +117,143 @@ function maxFitSubstring(text) {
 
   while (low <= high) {
     const mid = Math.floor((low + high) / 2);
-    measureEl.textContent = text.slice(0, mid);
+    const testText = text.slice(0, mid);
+    
+    // Check if we're in the middle of a word
+    const isMidWord = mid < text.length && 
+                     /\S/.test(text[mid-1]) && 
+                     /\S/.test(text[mid]);
+    
+    // If we're in the middle of a word, try to find the next space
+    if (isMidWord) {
+      const nextSpace = text.indexOf(' ', mid);
+      if (nextSpace !== -1) {
+        measureEl.textContent = text.slice(0, nextSpace);
+        if (measureEl.scrollHeight <= measureEl.clientHeight) {
+          best = nextSpace;
+          low = nextSpace + 1;
+          continue;
+        }
+      }
+    }
+    
+    measureEl.textContent = testText;
     if (measureEl.scrollHeight <= measureEl.clientHeight) {
-      best = mid;       // mid fits, try to take more
+      best = mid;
       low = mid + 1;
     } else {
-      high = mid - 1;   // mid overflows, take less
+      high = mid - 1;
     }
   }
+  
   if (best === 0) return 0;
 
-  // Prefer to break at whitespace/newline within the fitted range to avoid cutting a word
+  // Try to break at a word boundary
   const slice = text.slice(0, best);
-  const lastWs = Math.max(
-    slice.lastIndexOf("\n"),
-    slice.lastIndexOf(" "),
-    slice.lastIndexOf("\r"),
-    slice.lastIndexOf("\t")
-  );
-  if (lastWs >= Math.floor(best * 0.6)) {
-    return lastWs + 1; // include the break char
+  let lastGoodBreak = best;
+  
+  // Look for paragraph breaks first
+  const lastParagraphBreak = slice.lastIndexOf('\n\n');
+  if (lastParagraphBreak > 0 && lastParagraphBreak >= Math.floor(best * 0.7)) {
+    return lastParagraphBreak + 2;
   }
+  
+  // Then look for line breaks
+  const lastLineBreak = slice.lastIndexOf('\n');
+  if (lastLineBreak > 0 && lastLineBreak >= Math.floor(best * 0.7)) {
+    return lastLineBreak + 1;
+  }
+  
+  // Then look for sentence endings
+  const lastSentenceEnd = Math.max(
+    slice.lastIndexOf('. '),
+    slice.lastIndexOf('? '),
+    slice.lastIndexOf('! ')
+  );
+  if (lastSentenceEnd > 0 && lastSentenceEnd >= Math.floor(best * 0.6)) {
+    return lastSentenceEnd + 2;
+  }
+  
+  // Then look for word boundaries
+  const lastWordBreak = slice.lastIndexOf(' ');
+  if (lastWordBreak > 0 && lastWordBreak >= Math.floor(best * 0.5)) {
+    return lastWordBreak + 1;
+  }
+  
+  // If no good break point found, return the best we have
   return best;
 }
 
 function paginateTextByHeight(text, chapterTitle) {
   let idx = 0;
   const out = [];
+  
   while (idx < text.length) {
     const remaining = text.slice(idx);
     const fitLen = maxFitSubstring(remaining);
-
-    // Safety: if nothing fits (e.g., extremely small page), force one char to avoid infinite loop
+    
+    if (fitLen === 0) {
+      console.error("Could not paginate text - measurement issue");
+      break;
+    }
+    
     const take = Math.max(fitLen, 1);
-
-    out.push({
-      chapter: chapterTitle,
-      content: remaining.slice(0, take)
-    });
+    const pageContent = remaining.slice(0, take).trim();
+    
+    if (pageContent.length > 0) {
+      out.push({
+        chapter: chapterTitle,
+        content: pageContent
+      });
+    }
+    
     idx += take;
+    
+    // Skip any leading whitespace on the next page
+    while (idx < text.length && (text[idx] === ' ' || text[idx] === '\n')) {
+      idx++;
+    }
   }
+  
   return out;
 }
 
 async function loadChapters() {
-  // Create hidden measurer once layout is ready
   measureEl = makeMeasurer();
+  pages = [];
 
   for (const chapter of chapters) {
-    const res = await fetch(chapter.url);
-    const text = await res.text();
-    const chapterPages = paginateTextByHeight(text, chapter.title);
-    pages = pages.concat(chapterPages);
+    try {
+      const res = await fetch(chapter.url);
+      if (!res.ok) throw new Error(`Failed to fetch ${chapter.url}`);
+      
+      const text = await res.text();
+      const chapterPages = paginateTextByHeight(text, chapter.title);
+      pages = pages.concat(chapterPages);
+    } catch (error) {
+      console.error("Error loading chapter:", error);
+      // Add an error page
+      pages.push({
+        chapter: chapter.title,
+        content: `Error loading content: ${error.message}`
+      });
+    }
   }
+  
   renderPage();
 }
 
 function renderPage() {
   const pageContent = document.getElementById("page-content");
   const chapterTitle = document.getElementById("chapter-title");
+  
+  if (pages.length === 0) {
+    chapterTitle.textContent = "No Content";
+    pageContent.textContent = "The diary is empty or content failed to load.";
+    return;
+  }
+  
   const page = pages[currentPage];
-
   chapterTitle.textContent = page.chapter;
   pageContent.textContent = page.content;
 
@@ -198,21 +275,22 @@ function prevPage() {
   }
 }
 
-// Rebuild pagination on resize so page breaks stay correct
 let resizeTimer;
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(async () => {
-    // Re-measure and rebuild pages
     currentPage = 0;
-    pages = [];
     if (measureEl) measureEl.remove();
     await loadChapters();
-  }, 200);
+  }, 500);
 });
 
-// init
-loadChapters();
+// Initialize
+loadChapters().catch(error => {
+  console.error("Failed to load chapters:", error);
+  document.getElementById("page-content").textContent = 
+    "Failed to load content. Please check if chapter files exist.";
+});
 </script>
 
 </body>
