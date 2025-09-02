@@ -562,6 +562,11 @@ function validateBirthday() {
     setTimeout(() => {
       document.getElementById('validation-modal').classList.remove('active');
       document.getElementById('book-container').classList.add('celebrate');
+      
+      // Enable next button after validation
+      document.getElementById("nextBtn").disabled = false;
+      document.getElementById("timer-indicator").style.display = 'none';
+      
       setTimeout(() => {
         document.getElementById('book-container').classList.remove('celebrate');
       }, 1000);
