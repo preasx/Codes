@@ -30,40 +30,22 @@
     border: 1px solid #b39f7a;
   }
 
-  #chapter-title {
-    text-align: center;
-    font-size: 28px;
-    margin: 0;
-    padding: 25px 20px 20px 20px;
-    color: #7a3c12;
-    flex-shrink: 0;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.08);
-    background: linear-gradient(to bottom, #f5ecd5 0%, #fefdf5 100%);
-    border-bottom: 2px solid #e5d9bc;
-    letter-spacing: 1px;
-  }
-
   #page-content {
     flex: 1;
     white-space: pre-wrap;
     font-size: 9pt;
     line-height: 1.6;
     overflow: hidden;
-    padding: 20px;
+    padding: 0 20px;
     box-sizing: border-box;
     color: #333;
     text-align: left;
     overflow-y: auto;
     font-family: 'Georgia', serif;
     position: relative;
-    background-image: 
-      linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
-      linear-gradient(#eee 0.1em, transparent 0.1em);
+    background-image: linear-gradient(#e1e1e1 0.1em, transparent 0.1em);
     background-size: 100% 1.6em;
     background-position: 0 1.4em;
-    border-left: 1px solid #e5d9bc;
-    border-right: 1px solid #e5d9bc;
   }
 
   .nav-buttons {
@@ -130,6 +112,9 @@
     height: 100%;
     background: #fefdf5;
     padding: 40px;
+    background-image: linear-gradient(#e1e1e1 0.1em, transparent 0.1em);
+    background-size: 100% 1.6em;
+    background-position: 0 1.4em;
   }
 
   .chapter-page h1 {
@@ -137,6 +122,10 @@
     color: #7a3c12;
     margin-bottom: 20px;
     text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+    background: #fefdf5;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   }
 
   .chapter-page h2 {
@@ -145,6 +134,9 @@
     font-weight: normal;
     font-style: italic;
     margin-top: 30px;
+    background: #fefdf5;
+    padding: 8px 16px;
+    border-radius: 6px;
   }
 
   .chapter-divider {
@@ -158,11 +150,6 @@
     #book-container {
       width: 95%;
       height: 85vh;
-    }
-    
-    #chapter-title {
-      font-size: 22px;
-      padding: 15px;
     }
     
     button {
@@ -183,7 +170,6 @@
 <body>
 
 <div id="book-container">
-  <div id="chapter-title">My Diary</div>
   <div id="page-content">
     <div class="loading">Loading your diary content...</div>
   </div>
@@ -294,6 +280,7 @@ function paginateContent(wordsData, chapterTitle) {
       // If adding this paragraph would exceed the word limit, create a new page
       if (currentWordCount + item.wordCount > wordsPerPage && currentWordCount > 0) {
         pages.push({
+          type: 'content',
           chapter: chapterTitle,
           content: currentPageContent.join('')
         });
@@ -313,6 +300,7 @@ function paginateContent(wordsData, chapterTitle) {
   // Add the last page if it has content
   if (currentPageContent.length > 0) {
     pages.push({
+      type: 'content',
       chapter: chapterTitle,
       content: currentPageContent.join('')
     });
@@ -337,6 +325,7 @@ async function loadChapters() {
       console.error("Error loading chapter:", error);
       // Add an error page
       pages.push({
+        type: 'content',
         chapter: chapter.title,
         content: `Error loading content: ${error.message}`
       });
@@ -348,11 +337,9 @@ async function loadChapters() {
 
 function renderPage() {
   const pageContent = document.getElementById("page-content");
-  const chapterTitle = document.getElementById("chapter-title");
   const pageIndicator = document.getElementById("page-indicator");
   
   if (pages.length === 0) {
-    chapterTitle.textContent = "No Content";
     pageContent.textContent = "The diary is empty or content failed to load.";
     pageIndicator.textContent = "Page 0 of 0";
     return;
@@ -360,9 +347,8 @@ function renderPage() {
   
   const page = pages[currentPage];
   
-  // Display chapter title only for content pages, not for chapter intro pages
+  // Display chapter page or content page
   if (page.isChapterPage) {
-    chapterTitle.textContent = "";
     pageContent.innerHTML = `
       <div class="chapter-page">
         <h1>${page.content.split('\n')[0]}</h1>
@@ -371,7 +357,6 @@ function renderPage() {
       </div>
     `;
   } else {
-    chapterTitle.textContent = page.chapter;
     pageContent.textContent = page.content;
   }
   
