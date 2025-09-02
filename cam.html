@@ -39,8 +39,8 @@
   #page-content {
     flex: 1;
     white-space: pre-wrap;
-    font-size: 10px; /* smaller font for more lines */
-    line-height: 1.2; /* tighter line spacing */
+    font-size: 14px;
+    line-height: 1.4;
     overflow: hidden;
   }
 
@@ -84,7 +84,8 @@ const chapters = [
   { title: "Chapter 2", url: "chapters/chapter2.txt" }
 ];
 
-const LINES_PER_PAGE = 70; // increased lines per page
+// instead of lines, we split by characters
+const CHARS_PER_PAGE = 2500; // adjust for your preferred page size
 let pages = [];
 let currentPage = 0;
 
@@ -92,11 +93,12 @@ async function loadChapters() {
   for (const chapter of chapters) {
     const res = await fetch(chapter.url);
     const text = await res.text();
-    const lines = text.split("\n");
-    for (let i = 0; i < lines.length; i += LINES_PER_PAGE) {
+
+    // slice text into chunks of fixed character length
+    for (let i = 0; i < text.length; i += CHARS_PER_PAGE) {
       pages.push({
         chapter: chapter.title,
-        content: lines.slice(i, i + LINES_PER_PAGE).join("\n")
+        content: text.slice(i, i + CHARS_PER_PAGE)
       });
     }
   }
