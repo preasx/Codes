@@ -7,81 +7,82 @@
 <style>
   body {
     margin: 0;
-    font-family: Georgia, serif;
-    background: #fdf6e3;
+    font-family: 'Georgia', serif;
+    background: #f5edd6;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: 20px;
-    background: linear-gradient(135deg, #fdf6e3 0%, #f5e5cb 100%);
   }
 
   #book-container {
-    width: 700px;
-    max-width: 90vw;
-    height: 85vh;
-    background: #fff;
-    padding: 30px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.2), 0 0 15px rgba(0,0,0,0.1) inset;
-    border-radius: 10px;
+    width: 800px;
+    height: 90vh;
+    background: #fffdf5;
+    padding: 40px;
+    box-shadow: 0 5px 30px rgba(0,0,0,0.15), 0 0 15px rgba(0,0,0,0.05) inset;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
-    border: 1px solid #e9dfc7;
+    border: 1px solid #d6c8a5;
   }
 
   #chapter-title {
     text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #8b4513;
+    font-size: 26px;
+    margin-bottom: 25px;
+    color: #7a3c12;
     flex-shrink: 0;
     font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e9dfc7;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.08);
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e5d9bc;
+    letter-spacing: 1px;
   }
 
   #page-content {
     flex: 1;
     white-space: pre-wrap;
-    font-size: 16px;
-    line-height: 1.6;
+    font-size: 9pt;
+    line-height: 1.5;
     overflow: hidden;
-    padding: 15px;
+    padding: 20px;
     box-sizing: border-box;
     background: #fff;
-    border: 1px solid #f0e9d9;
-    border-radius: 5px;
+    border: 1px solid #e5d9bc;
+    border-radius: 8px;
     color: #333;
-    text-align: justify;
+    text-align: left;
     overflow-y: auto;
+    font-family: 'Georgia', serif;
   }
 
   .nav-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 25px;
     flex-shrink: 0;
     align-items: center;
   }
 
   button {
-    padding: 10px 20px;
+    padding: 12px 24px;
     border: none;
-    background: #8b4513;
+    background: #7a3c12;
     color: #fff;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
     transition: all 0.2s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-family: 'Georgia', serif;
   }
 
   button:hover:not(:disabled) {
-    background: #6b3300;
+    background: #5d2d0a;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   }
@@ -91,90 +92,39 @@
   }
 
   button:disabled {
-    background: #ccc;
+    background: #c4b5a3;
     cursor: not-allowed;
     box-shadow: none;
   }
 
   #page-indicator {
-    color: #8b4513;
-    font-size: 14px;
+    color: #7a3c12;
+    font-size: 15px;
     font-style: italic;
+    font-weight: bold;
   }
 
   .loading {
     text-align: center;
-    color: #8b4513;
+    color: #7a3c12;
     font-style: italic;
     margin: 20px 0;
+    font-size: 9pt;
   }
 
-  .settings-panel {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .settings-toggle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #8b4513;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }
-
-  .settings-panel.hidden {
-    display: none;
-  }
-
-  label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-  }
-
-  input[type="number"] {
-    width: 60px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
     #book-container {
-      padding: 20px;
-      height: 80vh;
+      width: 95%;
+      padding: 30px;
+      height: 85vh;
     }
     
     #chapter-title {
-      font-size: 20px;
-    }
-    
-    #page-content {
-      font-size: 15px;
-      padding: 10px;
+      font-size: 22px;
     }
     
     button {
-      padding: 8px 16px;
+      padding: 10px 20px;
       font-size: 14px;
     }
   }
@@ -183,21 +133,6 @@
 <body>
 
 <div id="book-container">
-  <button class="settings-toggle" onclick="toggleSettings()">⚙️</button>
-  
-  <div id="settings-panel" class="settings-panel hidden">
-    <h3 style="margin: 0 0 10px 0;">Page Settings</h3>
-    <label>
-      Words per page:
-      <input type="number" id="words-per-page" min="50" max="500" value="250">
-    </label>
-    <label>
-      Font size:
-      <input type="number" id="font-size" min="12" max="24" value="16">
-    </label>
-    <button onclick="applySettings()">Apply</button>
-  </div>
-  
   <div id="chapter-title">Loading...</div>
   <div id="page-content">
     <div class="loading">Loading your diary content...</div>
@@ -217,85 +152,105 @@ const chapters = [
 
 let pages = [];
 let currentPage = 0;
-let wordsPerPage = 250;
-let fontSize = 16;
+const wordsPerPage = 500;
 
-function toggleSettings() {
-  const panel = document.getElementById('settings-panel');
-  panel.classList.toggle('hidden');
-}
-
-function applySettings() {
-  wordsPerPage = parseInt(document.getElementById('words-per-page').value) || 250;
-  fontSize = parseInt(document.getElementById('font-size').value) || 16;
-  
-  document.getElementById('page-content').style.fontSize = `${fontSize}px`;
-  
-  // Repaginate with new settings
-  currentPage = 0;
-  paginateAllChapters();
-  renderPage();
-  
-  // Hide settings panel
-  document.getElementById('settings-panel').classList.add('hidden');
-}
-
-// Split text into words while preserving paragraphs
+// Split text into words while preserving all formatting and spacing
 function splitTextIntoWords(text) {
-  // Split by paragraphs first
-  const paragraphs = text.split(/\n\s*\n/);
+  // Split by paragraphs first while keeping all formatting
+  const paragraphs = text.split(/(\n+)/);
   const result = [];
   
   for (const paragraph of paragraphs) {
-    if (paragraph.trim().length === 0) continue;
+    if (paragraph.trim().length === 0 && !paragraph.includes('\n')) continue;
     
-    // Split paragraph into words
-    const words = paragraph.trim().split(/\s+/);
+    // For empty lines (only newlines), preserve them as is
+    if (paragraph.replace(/\n/g, '').length === 0) {
+      result.push({
+        type: 'newlines',
+        text: paragraph,
+        wordCount: 0
+      });
+      continue;
+    }
+    
+    // For text paragraphs, split into words while preserving all spaces
+    const words = [];
+    let currentWord = '';
+    let inWord = false;
+    
+    for (let i = 0; i < paragraph.length; i++) {
+      const char = paragraph[i];
+      
+      if (char.match(/\s/)) {
+        if (inWord) {
+          words.push(currentWord);
+          currentWord = '';
+          inWord = false;
+        }
+        currentWord += char;
+      } else {
+        if (!inWord && currentWord.length > 0) {
+          words.push(currentWord);
+          currentWord = '';
+        }
+        currentWord += char;
+        inWord = true;
+      }
+    }
+    
+    if (currentWord.length > 0) {
+      words.push(currentWord);
+    }
+    
     result.push({
       type: 'paragraph',
       words: words,
-      text: paragraph.trim()
+      text: paragraph,
+      wordCount: words.filter(w => w.trim().length > 0).length
     });
   }
   
   return result;
 }
 
-// Paginate content based on word count
+// Paginate content based on word count while preserving formatting
 function paginateContent(wordsData, chapterTitle) {
   const pages = [];
-  let currentPageWords = [];
+  let currentPageContent = [];
   let currentWordCount = 0;
   
   for (const item of wordsData) {
+    if (item.type === 'newlines') {
+      // Always add newlines to preserve formatting
+      currentPageContent.push(item.text);
+      continue;
+    }
+    
     if (item.type === 'paragraph') {
       // If adding this paragraph would exceed the word limit, create a new page
-      if (currentWordCount + item.words.length > wordsPerPage && currentWordCount > 0) {
+      if (currentWordCount + item.wordCount > wordsPerPage && currentWordCount > 0) {
         pages.push({
           chapter: chapterTitle,
-          content: currentPageWords.join(' ')
+          content: currentPageContent.join('')
         });
         
-        currentPageWords = [];
+        currentPageContent = [];
         currentWordCount = 0;
       }
       
       // Add the entire paragraph to the current page
-      if (item.words.length > 0) {
-        currentPageWords.push(item.text);
-        currentWordCount += item.words.length;
+      if (item.wordCount > 0) {
+        currentPageContent.push(item.text);
+        currentWordCount += item.wordCount;
       }
-      
-      // Add paragraph break
-      currentPageWords.push('');
     }
   }
   
   // Add the last page if it has content
-  if (currentPageWords.length > 0) {
+  if (currentPageContent.length > 0) {
     pages.push({
       chapter: chapterTitle,
-      content: currentPageWords.join('\n')
+      content: currentPageContent.join('')
     });
   }
   
@@ -325,16 +280,6 @@ async function loadChapters() {
   }
   
   renderPage();
-}
-
-function paginateAllChapters() {
-  // This would re-process all loaded content with new settings
-  // For a real implementation, we would need to store the original text
-  // and re-paginate it with the new wordsPerPage value
-  console.log("Repaginating with", wordsPerPage, "words per page");
-  
-  // For now, we'll just reload the chapters
-  loadChapters();
 }
 
 function renderPage() {
@@ -373,7 +318,6 @@ function prevPage() {
 }
 
 // Initialize
-document.getElementById('page-content').style.fontSize = `${fontSize}px`;
 loadChapters().catch(error => {
   console.error("Failed to load chapters:", error);
   document.getElementById("page-content").textContent = 
