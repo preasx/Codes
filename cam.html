@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>My Diary Book</title>
 <style>
   body {
@@ -24,7 +24,6 @@
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     overflow: hidden; /* no scroll */
     position: relative;
   }
@@ -34,14 +33,15 @@
     font-size: 22px;
     margin-bottom: 15px;
     color: #b71c1c;
+    flex-shrink: 0;
   }
 
   #page-content {
     flex: 1;
-    white-space: pre-wrap;
+    white-space: pre-wrap; /* preserve newlines */
     font-size: 14px;
     line-height: 1.4;
-    overflow: hidden;
+    overflow: hidden; /* the visible page */
   }
 
   .nav-buttons {
@@ -84,23 +84,90 @@ const chapters = [
   { title: "Chapter 2", url: "chapters/chapter2.txt" }
 ];
 
-// instead of lines, we split by characters
-const CHARS_PER_PAGE = 3000; // adjust for your preferred page size
 let pages = [];
 let currentPage = 0;
+let measureEl; // hidden measurer
+
+function makeMeasurer() {
+  const pageEl = document.getElementById("page-content");
+  // Clone styles by cloning the node
+  const m = pageEl.cloneNode(false);
+  m.id = "page-measurer";
+  m.style.position = "absolute";
+  m.style.visibility = "hidden";
+  m.style.pointerEvents = "none";
+  m.style.left = "-9999px";
+  m.style.top = "0";
+  // Fix dimensions so measurements match the visible page exactly
+  // Use clientWidth/Height of the visible container
+  document.body.appendChild(m);
+  // After appended, lock width/height to the visible element’s box
+  m.style.width = pageEl.clientWidth + "px";
+  m.style.height = pageEl.clientHeight + "px";
+  m.style.overflow = "auto"; // allow scrollHeight to be larger than clientHeight
+  return m;
+}
+
+// Find max substring that fits in measurer via binary search
+function maxFitSubstring(text) {
+  let low = 1;
+  let high = text.length;
+  let best = 0;
+
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2);
+    measureEl.textContent = text.slice(0, mid);
+    if (measureEl.scrollHeight <= measureEl.clientHeight) {
+      best = mid;       // mid fits, try to take more
+      low = mid + 1;
+    } else {
+      high = mid - 1;   // mid overflows, take less
+    }
+  }
+  if (best === 0) return 0;
+
+  // Prefer to break at whitespace/newline within the fitted range to avoid cutting a word
+  const slice = text.slice(0, best);
+  const lastWs = Math.max(
+    slice.lastIndexOf("\n"),
+    slice.lastIndexOf(" "),
+    slice.lastIndexOf("\r"),
+    slice.lastIndexOf("\t")
+  );
+  if (lastWs >= Math.floor(best * 0.6)) {
+    return lastWs + 1; // include the break char
+  }
+  return best;
+}
+
+function paginateTextByHeight(text, chapterTitle) {
+  let idx = 0;
+  const out = [];
+  while (idx < text.length) {
+    const remaining = text.slice(idx);
+    const fitLen = maxFitSubstring(remaining);
+
+    // Safety: if nothing fits (e.g., extremely small page), force one char to avoid infinite loop
+    const take = Math.max(fitLen, 1);
+
+    out.push({
+      chapter: chapterTitle,
+      content: remaining.slice(0, take)
+    });
+    idx += take;
+  }
+  return out;
+}
 
 async function loadChapters() {
+  // Create hidden measurer once layout is ready
+  measureEl = makeMeasurer();
+
   for (const chapter of chapters) {
     const res = await fetch(chapter.url);
     const text = await res.text();
-
-    // slice text into chunks of fixed character length
-    for (let i = 0; i < text.length; i += CHARS_PER_PAGE) {
-      pages.push({
-        chapter: chapter.title,
-        content: text.slice(i, i + CHARS_PER_PAGE)
-      });
-    }
+    const chapterPages = paginateTextByHeight(text, chapter.title);
+    pages = pages.concat(chapterPages);
   }
   renderPage();
 }
@@ -131,7 +198,20 @@ function prevPage() {
   }
 }
 
-// initialize
+// Rebuild pagination on resize so page breaks stay correct
+let resizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(async () => {
+    // Re-measure and rebuild pages
+    currentPage = 0;
+    pages = [];
+    if (measureEl) measureEl.remove();
+    await loadChapters();
+  }, 200);
+});
+
+// init
 loadChapters();
 </script>
 
