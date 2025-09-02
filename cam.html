@@ -12,13 +12,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    padding: 20px;
     background: linear-gradient(135deg, #fdf6e3 0%, #f5e5cb 100%);
   }
 
   #book-container {
     width: 700px;
-    height: 90vh;
+    max-width: 90vw;
+    height: 85vh;
     background: #fff;
     padding: 30px;
     box-shadow: 0 0 25px rgba(0,0,0,0.2), 0 0 15px rgba(0,0,0,0.1) inset;
@@ -55,6 +57,7 @@
     border-radius: 5px;
     color: #333;
     text-align: justify;
+    overflow-y: auto;
   }
 
   .nav-buttons {
@@ -106,10 +109,59 @@
     margin: 20px 0;
   }
 
+  .settings-panel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .settings-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #8b4513;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .settings-panel.hidden {
+    display: none;
+  }
+
+  label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+
   @media (max-width: 768px) {
     #book-container {
-      width: 90%;
       padding: 20px;
+      height: 80vh;
     }
     
     #chapter-title {
@@ -118,6 +170,12 @@
     
     #page-content {
       font-size: 15px;
+      padding: 10px;
+    }
+    
+    button {
+      padding: 8px 16px;
+      font-size: 14px;
     }
   }
 </style>
@@ -125,6 +183,21 @@
 <body>
 
 <div id="book-container">
+  <button class="settings-toggle" onclick="toggleSettings()">⚙️</button>
+  
+  <div id="settings-panel" class="settings-panel hidden">
+    <h3 style="margin: 0 0 10px 0;">Page Settings</h3>
+    <label>
+      Words per page:
+      <input type="number" id="words-per-page" min="50" max="500" value="250">
+    </label>
+    <label>
+      Font size:
+      <input type="number" id="font-size" min="12" max="24" value="16">
+    </label>
+    <button onclick="applySettings()">Apply</button>
+  </div>
+  
   <div id="chapter-title">Loading...</div>
   <div id="page-content">
     <div class="loading">Loading your diary content...</div>
@@ -144,148 +217,102 @@ const chapters = [
 
 let pages = [];
 let currentPage = 0;
-let measureEl;
+let wordsPerPage = 250;
+let fontSize = 16;
 
-function makeMeasurer() {
-  const pageEl = document.getElementById("page-content");
-  const m = pageEl.cloneNode(false);
-  m.id = "page-measurer";
-  m.style.position = "absolute";
-  m.style.visibility = "hidden";
-  m.style.pointerEvents = "none";
-  m.style.left = "-9999px";
-  m.style.top = "0";
-  m.style.width = getComputedStyle(pageEl).width;
-  m.style.height = getComputedStyle(pageEl).height;
-  m.style.padding = getComputedStyle(pageEl).padding;
-  m.style.boxSizing = getComputedStyle(pageEl).boxSizing;
-  m.style.font = getComputedStyle(pageEl).font;
-  m.style.lineHeight = getComputedStyle(pageEl).lineHeight;
-  m.style.overflow = "auto";
-  document.body.appendChild(m);
-  return m;
+function toggleSettings() {
+  const panel = document.getElementById('settings-panel');
+  panel.classList.toggle('hidden');
 }
 
-function findOptimalBreakPoint(text) {
-  // First try to break at paragraph boundaries (double newlines)
-  const doubleNewlineIndex = text.indexOf('\n\n');
-  if (doubleNewlineIndex !== -1) {
-    measureEl.textContent = text.substring(0, doubleNewlineIndex + 2);
-    if (measureEl.scrollHeight <= measureEl.clientHeight) {
-      return doubleNewlineIndex + 2;
-    }
-  }
+function applySettings() {
+  wordsPerPage = parseInt(document.getElementById('words-per-page').value) || 250;
+  fontSize = parseInt(document.getElementById('font-size').value) || 16;
   
-  // Then try to break at single newlines
-  const newlineIndex = text.indexOf('\n');
-  if (newlineIndex !== -1) {
-    measureEl.textContent = text.substring(0, newlineIndex + 1);
-    if (measureEl.scrollHeight <= measureEl.clientHeight) {
-      return newlineIndex + 1;
-    }
-  }
+  document.getElementById('page-content').style.fontSize = `${fontSize}px`;
   
-  // Then try to break at sentence endings
-  const sentenceEndIndex = Math.max(
-    text.lastIndexOf('. '),
-    text.lastIndexOf('? '),
-    text.lastIndexOf('! ')
-  );
+  // Repaginate with new settings
+  currentPage = 0;
+  paginateAllChapters();
+  renderPage();
   
-  if (sentenceEndIndex !== -1) {
-    measureEl.textContent = text.substring(0, sentenceEndIndex + 2);
-    if (measureEl.scrollHeight <= measureEl.clientHeight) {
-      return sentenceEndIndex + 2;
-    }
-  }
-  
-  // Then try to break at word boundaries
-  const lastSpaceIndex = text.lastIndexOf(' ');
-  if (lastSpaceIndex !== -1) {
-    measureEl.textContent = text.substring(0, lastSpaceIndex);
-    if (measureEl.scrollHeight <= measureEl.clientHeight) {
-      return lastSpaceIndex + 1;
-    }
-  }
-  
-  // If no good break point found, use binary search as fallback
-  return findBreakPointWithBinarySearch(text);
+  // Hide settings panel
+  document.getElementById('settings-panel').classList.add('hidden');
 }
 
-function findBreakPointWithBinarySearch(text) {
-  let low = 1;
-  let high = text.length;
-  let bestFit = 0;
+// Split text into words while preserving paragraphs
+function splitTextIntoWords(text) {
+  // Split by paragraphs first
+  const paragraphs = text.split(/\n\s*\n/);
+  const result = [];
   
-  while (low <= high) {
-    const mid = Math.floor((low + high) / 2);
-    measureEl.textContent = text.substring(0, mid);
+  for (const paragraph of paragraphs) {
+    if (paragraph.trim().length === 0) continue;
     
-    if (measureEl.scrollHeight <= measureEl.clientHeight) {
-      bestFit = mid;
-      low = mid + 1;
-    } else {
-      high = mid - 1;
-    }
+    // Split paragraph into words
+    const words = paragraph.trim().split(/\s+/);
+    result.push({
+      type: 'paragraph',
+      words: words,
+      text: paragraph.trim()
+    });
   }
   
-  // Try to break at the nearest word boundary
-  if (bestFit > 0) {
-    const partialText = text.substring(0, bestFit);
-    const lastSpace = partialText.lastIndexOf(' ');
-    
-    if (lastSpace > 0 && lastSpace > bestFit * 0.7) {
-      return lastSpace + 1;
-    }
-  }
-  
-  return Math.max(bestFit, 1);
+  return result;
 }
 
-function paginateTextByHeight(text, chapterTitle) {
-  let idx = 0;
-  const out = [];
+// Paginate content based on word count
+function paginateContent(wordsData, chapterTitle) {
+  const pages = [];
+  let currentPageWords = [];
+  let currentWordCount = 0;
   
-  while (idx < text.length) {
-    const remaining = text.substring(idx);
-    const breakPoint = findOptimalBreakPoint(remaining);
-    
-    if (breakPoint <= 0) {
-      console.error("Could not paginate text - measurement issue");
-      break;
-    }
-    
-    const pageContent = remaining.substring(0, breakPoint).trim();
-    
-    if (pageContent.length > 0) {
-      out.push({
-        chapter: chapterTitle,
-        content: pageContent
-      });
-    }
-    
-    idx += breakPoint;
-    
-    // Skip any leading whitespace on the next page
-    while (idx < text.length && (text[idx] === ' ' || text[idx] === '\n' || text[idx] === '\r')) {
-      idx++;
+  for (const item of wordsData) {
+    if (item.type === 'paragraph') {
+      // If adding this paragraph would exceed the word limit, create a new page
+      if (currentWordCount + item.words.length > wordsPerPage && currentWordCount > 0) {
+        pages.push({
+          chapter: chapterTitle,
+          content: currentPageWords.join(' ')
+        });
+        
+        currentPageWords = [];
+        currentWordCount = 0;
+      }
+      
+      // Add the entire paragraph to the current page
+      if (item.words.length > 0) {
+        currentPageWords.push(item.text);
+        currentWordCount += item.words.length;
+      }
+      
+      // Add paragraph break
+      currentPageWords.push('');
     }
   }
   
-  return out;
+  // Add the last page if it has content
+  if (currentPageWords.length > 0) {
+    pages.push({
+      chapter: chapterTitle,
+      content: currentPageWords.join('\n')
+    });
+  }
+  
+  return pages;
 }
 
 async function loadChapters() {
-  measureEl = makeMeasurer();
   pages = [];
-
+  
   for (const chapter of chapters) {
     try {
       const res = await fetch(chapter.url);
       if (!res.ok) throw new Error(`Failed to fetch ${chapter.url}`);
       
       const text = await res.text();
-      const chapterPages = paginateTextByHeight(text, chapter.title);
+      const wordsData = splitTextIntoWords(text);
+      const chapterPages = paginateContent(wordsData, chapter.title);
       pages = pages.concat(chapterPages);
     } catch (error) {
       console.error("Error loading chapter:", error);
@@ -298,6 +325,16 @@ async function loadChapters() {
   }
   
   renderPage();
+}
+
+function paginateAllChapters() {
+  // This would re-process all loaded content with new settings
+  // For a real implementation, we would need to store the original text
+  // and re-paginate it with the new wordsPerPage value
+  console.log("Repaginating with", wordsPerPage, "words per page");
+  
+  // For now, we'll just reload the chapters
+  loadChapters();
 }
 
 function renderPage() {
@@ -335,17 +372,8 @@ function prevPage() {
   }
 }
 
-let resizeTimer;
-window.addEventListener("resize", () => {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(async () => {
-    currentPage = 0;
-    if (measureEl) measureEl.remove();
-    await loadChapters();
-  }, 500);
-});
-
 // Initialize
+document.getElementById('page-content').style.fontSize = `${fontSize}px`;
 loadChapters().catch(error => {
   console.error("Failed to load chapters:", error);
   document.getElementById("page-content").textContent = 
