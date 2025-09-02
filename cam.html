@@ -23,8 +23,8 @@
   }
 
   #book-container { 
-    width: 90vw; 
-    height: 85vh; 
+    width: 95vw; 
+    height: 90vh; 
     display: flex; 
     flex-direction: column; 
     overflow: hidden; 
@@ -42,12 +42,14 @@
     font-size: 9pt; 
     line-height: 1.6; 
     overflow-y: auto; 
-    padding: 20px; 
+    padding: 15px; 
     text-align: left; 
     font-family: 'Georgia', serif; 
-    background-image: linear-gradient(rgba(0,0,0,0.05) 0.1em, transparent 0.1em); 
-    background-size: 100% 1.6em; 
-    background-position: 0 1.4em;
+    background-image: 
+      linear-gradient(rgba(0,0,0,0.05) 0.1em, transparent 0.1em),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath fill='%23f2a7a7' fill-opacity='0.1' d='M20,30 Q30,15 40,30 T60,30 T40,30 T20,30Z'/%3E%3C/svg%3E");
+    background-size: 100% 1.6em, 200px 200px;
+    background-position: 0 1.4em, 0 0;
     transition: all 1.5s ease;
   }
 
@@ -55,7 +57,7 @@
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    padding: 8px 20px; 
+    padding: 8px 15px; 
     height: 50px; 
     min-height: 50px; 
     border-top: 1px solid #e5d9bc;
@@ -94,6 +96,7 @@
     font-weight: bold; 
     color: #7a3c12;
     transition: all 1.5s ease;
+    opacity: 0.7;
   }
 
   .loading { 
@@ -112,9 +115,11 @@
     align-items: center; 
     height: 100%; 
     padding: 0 5px; 
-    background-image: linear-gradient(rgba(0,0,0,0.05) 0.1em, transparent 0.1em); 
-    background-size: 100% 1.6em; 
-    background-position: 0 1.4em; 
+    background-image: 
+      linear-gradient(rgba(0,0,0,0.05) 0.1em, transparent 0.1em),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath fill='%23f2a7a7' fill-opacity='0.1' d='M20,30 Q30,15 40,30 T60,30 T40,30 T20,30Z'/%3E%3C/svg%3E");
+    background-size: 100% 1.6em, 200px 200px;
+    background-position: 0 1.4em, 0 0;
     text-align: center; 
     transition: all 1.5s ease;
   }
@@ -164,26 +169,6 @@
     margin: 15px 0; 
     background: #b39f7a;
     transition: all 1.5s ease;
-  }
-
-  /* Progress Bar */
-  .progress-container { 
-    position: absolute; 
-    bottom: 60px; 
-    left: 5px; 
-    right: 5px; 
-    height: 4px; 
-    background: rgba(0,0,0,0.1); 
-    border-radius: 2px; 
-    overflow: hidden; 
-    z-index: 10; 
-  }
-
-  .progress-bar { 
-    height: 100%; 
-    border-radius: 2px; 
-    background: #7a3c12;
-    transition: width 0.3s ease; 
   }
 
   /* Decorative elements */
@@ -239,12 +224,21 @@
 
   /* Page turning animation */
   @keyframes pageTurn {
-    0% { opacity: 0; transform: translateX(20px); }
-    100% { opacity: 1; transform: translateX(0); }
+    0% { opacity: 0; transform: translateX(30px) rotateY(-10deg); }
+    100% { opacity: 1; transform: translateX(0) rotateY(0); }
+  }
+
+  @keyframes chapterTransition {
+    0% { opacity: 0; transform: scale(1.1); filter: blur(10px); }
+    100% { opacity: 1; transform: scale(1); filter: blur(0); }
   }
 
   .page-turn {
-    animation: pageTurn 0.5s ease forwards;
+    animation: pageTurn 1.2s ease forwards;
+  }
+
+  .chapter-transition {
+    animation: chapterTransition 2s ease forwards;
   }
 
   /* Flower decoration */
@@ -268,10 +262,120 @@
     background: rgba(254, 253, 245, 0.8);
     padding: 2px 6px;
     border-radius: 3px;
+    transition: all 0.3s ease;
   }
+
+  /* Floating hearts background */
+  .floating-hearts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .heart {
+    position: absolute;
+    opacity: 0;
+    font-size: 20px;
+    color: rgba(242, 167, 167, 0.6);
+    animation: float 15s linear infinite;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.7;
+    }
+    90% {
+      opacity: 0.5;
+    }
+    100% {
+      transform: translateY(-100px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* Theme 1: Classic Parchment */
+  .theme-classic { background: #d9c7a7; }
+  .theme-classic #book-container { background: #fefdf5; border: 1px solid #b39f7a; }
+  .theme-classic #page-content { color: #333; }
+  .theme-classic .nav-buttons { background: linear-gradient(to bottom, #fefdf5 0%, #f5ecd5 100%); border-top-color: #e5d9bc; }
+  .theme-classic button { background: #7a3c12; color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+  .theme-classic button:hover:not(:disabled) { background: #5d2d0a; }
+  .theme-classic button:disabled { background: #c4b5a3; }
+  .theme-classic #page-indicator { color: #7a3c12; }
+  .theme-classic .loading { color: #7a3c12; }
+  .theme-classic .chapter-title { color: #7a3c12; background: rgba(254, 253, 245, 0.9); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+  .theme-classic .chapter-subtitle { color: #8d6e63; background: rgba(254, 253, 245, 0.9); }
+  .theme-classic .chapter-divider { background: #b39f7a; }
+
+  /* Theme 2: Cool Blue */
+  .theme-blue { background: #a7c7d9; }
+  .theme-blue #book-container { background: #f5fdff; border: 1px solid #7a9fb3; }
+  .theme-blue #page-content { color: #233; }
+  .theme-blue .nav-buttons { background: linear-gradient(to bottom, #f5fdff 0%, #d5ecf5 100%); border-top-color: #bcd9e5; }
+  .theme-blue button { background: #123c7a; color: #fff; box-shadow: 0 2px 5px rgba(0,0,50,0.1); }
+  .theme-blue button:hover:not(:disabled) { background: #0a2d5d; }
+  .theme-blue button:disabled { background: #a3b5c4; }
+  .theme-blue #page-indicator { color: #123c7a; }
+  .theme-blue .loading { color: #123c7a; }
+  .theme-blue .chapter-title { color: #123c7a; background: rgba(245, 253, 255, 0.9); box-shadow: 0 2px 10px rgba(0,0,50,0.1); }
+  .theme-blue .chapter-subtitle { color: #636e8d; background: rgba(245, 253, 255, 0.9); }
+  .theme-blue .chapter-divider { background: #7a9fb3; }
+
+  /* Theme 3: Romantic Pink */
+  .theme-romantic { background: #d9a7c7; }
+  .theme-romantic #book-container { background: #fff5fd; border: 1px solid #b37a9f; }
+  .theme-romantic #page-content { color: #332; }
+  .theme-romantic .nav-buttons { background: linear-gradient(to bottom, #fff5fd 0%, #f5d5ec 100%); border-top-color: #e5bcd9; }
+  .theme-romantic button { background: #7a123c; color: #fff; box-shadow: 0 2px 5px rgba(50,0,0,0.1); }
+  .theme-romantic button:hover:not(:disabled) { background: #5d0a2d; }
+  .theme-romantic button:disabled { background: #c4a3b5; }
+  .theme-romantic #page-indicator { color: #7a123c; }
+  .theme-romantic .loading { color: #7a123c; }
+  .theme-romantic .chapter-title { color: #7a123c; background: rgba(255, 245, 253, 0.9); box-shadow: 0 2px 10px rgba(50,0,0,0.1); }
+  .theme-romantic .chapter-subtitle { color: #8d638e; background: rgba(255, 245, 253, 0.9); }
+  .theme-romantic .chapter-divider { background: #b37a9f; }
+
+  /* Theme 4: Purple Dream */
+  .theme-purple { background: #c7a7d9; }
+  .theme-purple #book-container { background: #fdf5ff; border: 1px solid #9f7ab3; }
+  .theme-purple #page-content { color: #323; }
+  .theme-purple .nav-buttons { background: linear-gradient(to bottom, #fdf5ff 0%, #ecd5f5 100%); border-top-color: #d9bce5; }
+  .theme-purple button { background: #3c127a; color: #fff; box-shadow: 0 2px 5px rgba(50,0,50,0.1); }
+  .theme-purple button:hover:not(:disabled) { background: #2d0a5d; }
+  .theme-purple button:disabled { background: #b5a3c4; }
+  .theme-purple #page-indicator { color: #3c127a; }
+  .theme-purple .loading { color: #3c127a; }
+  .theme-purple .chapter-title { color: #3c127a; background: rgba(253, 245, 255, 0.9); box-shadow: 0 2px 10px rgba(50,0,50,0.1); }
+  .theme-purple .chapter-subtitle { color: #6e638d; background: rgba(253, 245, 255, 0.9); }
+  .theme-purple .chapter-divider { background: #9f7ab3; }
+
+  /* Theme 5: Romantic Red */
+  .theme-red { background: #d9a7a7; }
+  .theme-red #book-container { background: #fff5f5; border: 1px solid #b37a7a; }
+  .theme-red #page-content { color: #322; }
+  .theme-red .nav-buttons { background: linear-gradient(to bottom, #fff5f5 0%, #f5d5d5 100%); border-top-color: #e5bcbc; }
+  .theme-red button { background: #7a1212; color: #fff; box-shadow: 0 2px 5px rgba(50,0,0,0.1); }
+  .theme-red button:hover:not(:disabled) { background: #5d0a0a; }
+  .theme-red button:disabled { background: #c4a3a3; }
+  .theme-red #page-indicator { color: #7a1212; }
+  .theme-red .loading { color: #7a1212; }
+  .theme-red .chapter-title { color: #7a1212; background: rgba(255, 245, 245, 0.9); box-shadow: 0 2px 10px rgba(50,0,0,0.1); }
+  .theme-red .chapter-subtitle { color: #8d6363; background: rgba(255, 245, 245, 0.9); }
+  .theme-red .chapter-divider { background: #b37a7a; }
 </style>
 </head>
 <body class="theme-classic">
+
+<!-- Floating hearts background -->
+<div class="floating-hearts" id="floating-hearts"></div>
 
 <div id="book-container">
   <!-- Decorative Elements -->
@@ -281,11 +385,6 @@
   <div class="book-corner corner-bl"></div>
   <div class="book-corner corner-br"></div>
   <div class="flower-decoration">🌸</div>
-
-  <!-- Progress Bar -->
-  <div class="progress-container">
-    <div class="progress-bar" id="progress-bar"></div>
-  </div>
 
   <!-- Timer Indicator -->
   <div class="timer-indicator" id="timer-indicator">Next page in 30s</div>
@@ -314,11 +413,40 @@ let currentPage = 0;
 const wordsPerPage = 500;
 let pageTimer = null;
 let timeOnPage = 0;
+let themeInterval;
+let currentTheme = 0;
+const themes = ['classic', 'blue', 'romantic', 'purple', 'red'];
 
 // Initialize all features
 function initFeatures() {
   // Start the page timer
   startPageTimer();
+  
+  // Start theme cycling
+  themeInterval = setInterval(cycleThemes, 15000);
+  
+  // Create floating hearts
+  createFloatingHearts();
+}
+
+// Create floating hearts in background
+function createFloatingHearts() {
+  const container = document.getElementById('floating-hearts');
+  for (let i = 0; i < 15; i++) {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerHTML = '❤';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.animationDelay = Math.random() * 15 + 's';
+    heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+    container.appendChild(heart);
+  }
+}
+
+// Theme cycling function
+function cycleThemes() {
+  currentTheme = (currentTheme + 1) % themes.length;
+  document.body.className = 'theme-' + themes[currentTheme];
 }
 
 // Start the page timer
@@ -329,12 +457,22 @@ function startPageTimer() {
   // Reset time on page
   timeOnPage = 0;
   
+  // Don't start timer on chapter pages
+  if (pages.length > 0 && pages[currentPage].isChapterPage) {
+    document.getElementById("nextBtn").disabled = false;
+    document.getElementById("timer-indicator").style.display = 'none';
+    return;
+  }
+  
   // Enable next button if we're on the last page
   if (currentPage === pages.length - 1) {
     document.getElementById("nextBtn").disabled = true;
     document.getElementById("timer-indicator").textContent = "Last page";
     return;
   }
+  
+  // Show timer indicator
+  document.getElementById("timer-indicator").style.display = 'block';
   
   // Disable next button initially
   document.getElementById("nextBtn").disabled = true;
@@ -354,12 +492,6 @@ function startPageTimer() {
       clearInterval(pageTimer);
     }
   }, 1000);
-}
-
-// Update progress bar
-function updateProgress() {
-  const progress = ((currentPage + 1) / pages.length) * 100;
-  document.getElementById('progress-bar').style.width = `${progress}%`;
 }
 
 // Create a special chapter introduction page
@@ -449,7 +581,8 @@ function paginateContent(wordsData, chapterTitle) {
         pages.push({
           type: 'content',
           chapter: chapterTitle,
-          content: currentPageContent.join('')
+          content: currentPageContent.join(''),
+          isChapterPage: false
         });
         
         currentPageContent = [];
@@ -467,7 +600,8 @@ function paginateContent(wordsData, chapterTitle) {
     pages.push({
       type: 'content',
       chapter: chapterTitle,
-      content: currentPageContent.join('')
+      content: currentPageContent.join(''),
+      isChapterPage: false
     });
   }
   
@@ -491,7 +625,8 @@ async function loadChapters() {
       pages.push({
         type: 'content',
         chapter: chapter.title,
-        content: `Error loading content: ${error.message}`
+        content: `Error loading content: ${error.message}`,
+        isChapterPage: false
       });
     }
   }
@@ -511,10 +646,14 @@ function renderPage() {
   
   const page = pages[currentPage];
   
-  // Add page turn animation
-  pageContent.classList.remove('page-turn');
-  void pageContent.offsetWidth; // Trigger reflow
-  pageContent.classList.add('page-turn');
+  // Add appropriate animation
+  if (page.isChapterPage) {
+    pageContent.classList.remove('page-turn');
+    pageContent.classList.add('chapter-transition');
+  } else {
+    pageContent.classList.remove('chapter-transition');
+    pageContent.classList.add('page-turn');
+  }
   
   if (page.isChapterPage) {
     pageContent.innerHTML = `
@@ -524,12 +663,13 @@ function renderPage() {
         <div class="chapter-subtitle">${page.content.split('\n')[1]}</div>
       </div>
     `;
+    pageIndicator.style.opacity = '0';
   } else {
     pageContent.textContent = page.content;
+    pageIndicator.style.opacity = '0.7';
   }
   
   pageIndicator.textContent = `Page ${currentPage + 1}`;
-  updateProgress();
   
   document.getElementById("prevBtn").disabled = currentPage === 0;
   
