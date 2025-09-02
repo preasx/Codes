@@ -8,7 +8,7 @@
   body {
     margin: 0;
     font-family: 'Georgia', serif;
-    background: #f5edd6;
+    background: #d9c7a7;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,26 +19,27 @@
   #book-container {
     width: 800px;
     height: 90vh;
-    background: #fffdf5;
-    padding: 40px;
-    box-shadow: 0 5px 30px rgba(0,0,0,0.15), 0 0 15px rgba(0,0,0,0.05) inset;
-    border-radius: 12px;
+    background: #fefdf5;
+    padding: 0;
+    box-shadow: 0 5px 30px rgba(0,0,0,0.2), 0 0 20px rgba(0,0,0,0.1) inset;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
-    border: 1px solid #d6c8a5;
+    border: 1px solid #b39f7a;
   }
 
   #chapter-title {
     text-align: center;
-    font-size: 26px;
-    margin-bottom: 25px;
+    font-size: 28px;
+    margin: 0;
+    padding: 25px 20px 20px 20px;
     color: #7a3c12;
     flex-shrink: 0;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.08);
-    padding-bottom: 12px;
+    background: linear-gradient(to bottom, #f5ecd5 0%, #fefdf5 100%);
     border-bottom: 2px solid #e5d9bc;
     letter-spacing: 1px;
   }
@@ -47,25 +48,33 @@
     flex: 1;
     white-space: pre-wrap;
     font-size: 9pt;
-    line-height: 1.5;
+    line-height: 1.6;
     overflow: hidden;
     padding: 20px;
     box-sizing: border-box;
-    background: #fff;
-    border: 1px solid #e5d9bc;
-    border-radius: 8px;
     color: #333;
     text-align: left;
     overflow-y: auto;
     font-family: 'Georgia', serif;
+    position: relative;
+    background-image: 
+      linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
+      linear-gradient(#eee 0.1em, transparent 0.1em);
+    background-size: 100% 1.6em;
+    background-position: 0 1.4em;
+    border-left: 1px solid #e5d9bc;
+    border-right: 1px solid #e5d9bc;
   }
 
   .nav-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 25px;
+    margin-top: 0;
     flex-shrink: 0;
     align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(to bottom, #fefdf5 0%, #f5ecd5 100%);
+    border-top: 2px solid #e5d9bc;
   }
 
   button {
@@ -112,20 +121,61 @@
     font-size: 9pt;
   }
 
+  .chapter-page {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background: #fefdf5;
+    padding: 40px;
+  }
+
+  .chapter-page h1 {
+    font-size: 36px;
+    color: #7a3c12;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+  }
+
+  .chapter-page h2 {
+    font-size: 24px;
+    color: #8d6e63;
+    font-weight: normal;
+    font-style: italic;
+    margin-top: 30px;
+  }
+
+  .chapter-divider {
+    width: 100px;
+    height: 3px;
+    background: #b39f7a;
+    margin: 30px 0;
+  }
+
   @media (max-width: 900px) {
     #book-container {
       width: 95%;
-      padding: 30px;
       height: 85vh;
     }
     
     #chapter-title {
       font-size: 22px;
+      padding: 15px;
     }
     
     button {
       padding: 10px 20px;
       font-size: 14px;
+    }
+    
+    .chapter-page h1 {
+      font-size: 28px;
+    }
+    
+    .chapter-page h2 {
+      font-size: 20px;
     }
   }
 </style>
@@ -133,7 +183,7 @@
 <body>
 
 <div id="book-container">
-  <div id="chapter-title">Loading...</div>
+  <div id="chapter-title">My Diary</div>
   <div id="page-content">
     <div class="loading">Loading your diary content...</div>
   </div>
@@ -146,13 +196,23 @@
 
 <script>
 const chapters = [
-  { title: "Chapter 1", url: "chapters/chapter1.txt" },
-  { title: "Chapter 2", url: "chapters/chapter2.txt" }
+  { title: "Chapter 1: The Beginning", url: "chapters/chapter1.txt" },
+  { title: "Chapter 2: Growing Up", url: "chapters/chapter2.txt" }
 ];
 
 let pages = [];
 let currentPage = 0;
 const wordsPerPage = 500;
+
+// Create a special chapter introduction page
+function createChapterPage(chapterTitle) {
+  return {
+    type: 'chapter',
+    chapter: chapterTitle,
+    content: `CHAPTER\n${chapterTitle.toUpperCase()}`,
+    isChapterPage: true
+  };
+}
 
 // Split text into words while preserving all formatting and spacing
 function splitTextIntoWords(text) {
@@ -216,6 +276,10 @@ function splitTextIntoWords(text) {
 // Paginate content based on word count while preserving formatting
 function paginateContent(wordsData, chapterTitle) {
   const pages = [];
+  
+  // Add chapter introduction page
+  pages.push(createChapterPage(chapterTitle));
+  
   let currentPageContent = [];
   let currentWordCount = 0;
   
@@ -295,8 +359,22 @@ function renderPage() {
   }
   
   const page = pages[currentPage];
-  chapterTitle.textContent = page.chapter;
-  pageContent.textContent = page.content;
+  
+  // Display chapter title only for content pages, not for chapter intro pages
+  if (page.isChapterPage) {
+    chapterTitle.textContent = "";
+    pageContent.innerHTML = `
+      <div class="chapter-page">
+        <h1>${page.content.split('\n')[0]}</h1>
+        <div class="chapter-divider"></div>
+        <h2>${page.content.split('\n')[1]}</h2>
+      </div>
+    `;
+  } else {
+    chapterTitle.textContent = page.chapter;
+    pageContent.textContent = page.content;
+  }
+  
   pageIndicator.textContent = `Page ${currentPage + 1} of ${pages.length}`;
 
   document.getElementById("prevBtn").disabled = currentPage === 0;
