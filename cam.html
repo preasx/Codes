@@ -607,8 +607,8 @@ function startPageTimer() {
   // Reset time on page
   timeOnPage = 0;
   
-  // Don't start timer on chapter pages or if validation is needed
-  if (pages.length > 0 && (pages[currentPage].isChapterPage || checkChapterValidation())) {
+  // Don't start timer if validation is needed
+  if (pages.length > 0 && checkChapterValidation()) {
     document.getElementById("nextBtn").disabled = true;
     document.getElementById("timer-indicator").style.display = 'none';
     return;
@@ -814,6 +814,9 @@ function renderPage() {
       </div>
     `;
     pageIndicator.style.opacity = '0';
+    
+    // Check if we need to show validation for this chapter
+    checkChapterValidation();
   } else {
     pageContent.textContent = page.content;
     pageIndicator.style.opacity = '0.7';
@@ -826,8 +829,10 @@ function renderPage() {
   // Save current page to localStorage
   localStorage.setItem('diaryCurrentPage', currentPage.toString());
   
-  // Start the timer for the next page
-  startPageTimer();
+  // Start the timer for the next page (only for non-chapter pages)
+  if (!page.isChapterPage) {
+    startPageTimer();
+  }
 }
 
 function nextPage() {
