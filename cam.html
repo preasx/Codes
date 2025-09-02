@@ -5,8 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>My Diary Book</title>
 <style>
-  body {
+  * {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
     font-family: 'Georgia', serif;
     background: #d9c7a7;
     display: flex;
@@ -36,8 +41,7 @@
     font-size: 9pt;
     line-height: 1.6;
     overflow: hidden;
-    padding: 0 20px;
-    box-sizing: border-box;
+    padding: 0 25px;
     color: #333;
     text-align: left;
     overflow-y: auto;
@@ -51,25 +55,25 @@
   .nav-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 0;
-    flex-shrink: 0;
     align-items: center;
-    padding: 15px 20px;
+    padding: 12px 25px;
     background: linear-gradient(to bottom, #fefdf5 0%, #f5ecd5 100%);
     border-top: 2px solid #e5d9bc;
+    height: 60px;
   }
 
   button {
-    padding: 12px 24px;
+    padding: 10px 20px;
     border: none;
     background: #7a3c12;
     color: #fff;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 15px;
     transition: all 0.2s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     font-family: 'Georgia', serif;
+    height: 40px;
   }
 
   button:hover:not(:disabled) {
@@ -90,7 +94,7 @@
 
   #page-indicator {
     color: #7a3c12;
-    font-size: 15px;
+    font-size: 14px;
     font-style: italic;
     font-weight: bold;
   }
@@ -111,39 +115,40 @@
     align-items: center;
     height: 100%;
     background: #fefdf5;
-    padding: 40px;
+    padding: 0 20px;
     background-image: linear-gradient(#e1e1e1 0.1em, transparent 0.1em);
     background-size: 100% 1.6em;
     background-position: 0 1.4em;
   }
 
-  .chapter-page h1 {
-    font-size: 36px;
+  .chapter-title {
+    font-size: 32px;
     color: #7a3c12;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
-    background: #fefdf5;
-    padding: 10px 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  }
-
-  .chapter-page h2 {
-    font-size: 24px;
-    color: #8d6e63;
-    font-weight: normal;
-    font-style: italic;
-    margin-top: 30px;
     background: #fefdf5;
     padding: 8px 16px;
     border-radius: 6px;
+    letter-spacing: 2px;
+  }
+
+  .chapter-subtitle {
+    font-size: 20px;
+    color: #8d6e63;
+    font-weight: normal;
+    font-style: italic;
+    margin-top: 20px;
+    background: #fefdf5;
+    padding: 6px 12px;
+    border-radius: 4px;
+    letter-spacing: 1px;
   }
 
   .chapter-divider {
-    width: 100px;
-    height: 3px;
+    width: 80px;
+    height: 2px;
     background: #b39f7a;
-    margin: 30px 0;
+    margin: 20px 0;
   }
 
   @media (max-width: 900px) {
@@ -153,16 +158,16 @@
     }
     
     button {
-      padding: 10px 20px;
+      padding: 8px 16px;
       font-size: 14px;
     }
     
-    .chapter-page h1 {
-      font-size: 28px;
+    .chapter-title {
+      font-size: 26px;
     }
     
-    .chapter-page h2 {
-      font-size: 20px;
+    .chapter-subtitle {
+      font-size: 18px;
     }
   }
 </style>
@@ -351,9 +356,9 @@ function renderPage() {
   if (page.isChapterPage) {
     pageContent.innerHTML = `
       <div class="chapter-page">
-        <h1>${page.content.split('\n')[0]}</h1>
+        <div class="chapter-title">${page.content.split('\n')[0]}</div>
         <div class="chapter-divider"></div>
-        <h2>${page.content.split('\n')[1]}</h2>
+        <div class="chapter-subtitle">${page.content.split('\n')[1]}</div>
       </div>
     `;
   } else {
