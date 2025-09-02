@@ -140,6 +140,77 @@
     transition: all 1.5s ease;
   }
 
+  /* Controls Panel */
+  .controls-panel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+  }
+
+  .controls-panel:hover {
+    opacity: 1;
+  }
+
+  .control-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  /* Progress Bar */
+  .progress-container {
+    position: absolute;
+    bottom: 60px;
+    left: 5px;
+    right: 5px;
+    height: 4px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    z-index: 10;
+  }
+
+  .progress-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  /* Search Box */
+  .search-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+  }
+
+  .search-container:hover {
+    opacity: 1;
+  }
+
+  #search-input {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    width: 180px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
   /* Theme 1: Classic Parchment */
   .theme-classic {
     background: #d9c7a7;
@@ -150,7 +221,6 @@
   }
   .theme-classic #page-content {
     color: #333;
-    background-image: linear-gradient(rgba(0,0,0,0.05) 0.1em, transparent 0.1em);
   }
   .theme-classic .nav-buttons {
     background: linear-gradient(to bottom, #fefdf5 0%, #f5ecd5 100%);
@@ -185,6 +255,17 @@
   .theme-classic .chapter-divider {
     background: #b39f7a;
   }
+  .theme-classic .control-btn {
+    background: #7a3c12;
+    color: white;
+  }
+  .theme-classic .progress-bar {
+    background: #7a3c12;
+  }
+  .theme-classic #search-input {
+    background: #fefdf5;
+    color: #333;
+  }
 
   /* Theme 2: Cool Blue */
   .theme-blue {
@@ -196,7 +277,6 @@
   }
   .theme-blue #page-content {
     color: #233;
-    background-image: linear-gradient(rgba(0,50,100,0.05) 0.1em, transparent 0.1em);
   }
   .theme-blue .nav-buttons {
     background: linear-gradient(to bottom, #f5fdff 0%, #d5ecf5 100%);
@@ -231,6 +311,17 @@
   .theme-blue .chapter-divider {
     background: #7a9fb3;
   }
+  .theme-blue .control-btn {
+    background: #123c7a;
+    color: white;
+  }
+  .theme-blue .progress-bar {
+    background: #123c7a;
+  }
+  .theme-blue #search-input {
+    background: #f5fdff;
+    color: #233;
+  }
 
   /* Theme 3: Romantic Pink */
   .theme-romantic {
@@ -242,7 +333,6 @@
   }
   .theme-romantic #page-content {
     color: #332;
-    background-image: linear-gradient(rgba(100,0,50,0.05) 0.1em, transparent 0.1em);
   }
   .theme-romantic .nav-buttons {
     background: linear-gradient(to bottom, #fff5fd 0%, #f5d5ec 100%);
@@ -277,6 +367,17 @@
   .theme-romantic .chapter-divider {
     background: #b37a9f;
   }
+  .theme-romantic .control-btn {
+    background: #7a123c;
+    color: white;
+  }
+  .theme-romantic .progress-bar {
+    background: #7a123c;
+  }
+  .theme-romantic #search-input {
+    background: #fff5fd;
+    color: #332;
+  }
 
   /* Theme 4: Modern Dark */
   .theme-dark {
@@ -288,7 +389,6 @@
   }
   .theme-dark #page-content {
     color: #ccc;
-    background-image: linear-gradient(rgba(255,255,255,0.05) 0.1em, transparent 0.1em);
   }
   .theme-dark .nav-buttons {
     background: linear-gradient(to bottom, #1a1a1a 0%, #2a2a2a 100%);
@@ -323,14 +423,103 @@
   .theme-dark .chapter-divider {
     background: #666;
   }
+  .theme-dark .control-btn {
+    background: #666;
+    color: white;
+  }
+  .theme-dark .progress-bar {
+    background: #666;
+  }
+  .theme-dark #search-input {
+    background: #2a2a2a;
+    color: #ccc;
+  }
+
+  /* Highlight for search results */
+  .search-highlight {
+    background-color: rgba(255, 255, 0, 0.3);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+
+  /* Night mode overlay */
+  .night-mode {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 20, 0.1);
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  /* Font size controls */
+  .font-controls {
+    position: absolute;
+    bottom: 60px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+    z-index: 100;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+  }
+
+  .font-controls:hover {
+    opacity: 1;
+  }
+
+  .font-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
 </style>
 </head>
 <body class="theme-classic">
 
 <div id="book-container">
+  <!-- Controls Panel -->
+  <div class="controls-panel">
+    <div class="control-btn" id="theme-btn" title="Change Theme">🎨</div>
+    <div class="control-btn" id="night-mode-btn" title="Night Mode">🌙</div>
+    <div class="control-btn" id="bookmark-btn" title="Bookmark Page">🔖</div>
+  </div>
+
+  <!-- Search Box -->
+  <div class="search-container">
+    <input type="text" id="search-input" placeholder="Search diary..." />
+  </div>
+
+  <!-- Font Controls -->
+  <div class="font-controls">
+    <div class="font-btn" id="font-decrease" title="Decrease Font">A-</div>
+    <div class="font-btn" id="font-increase" title="Increase Font">A+</div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+
+  <!-- Night Mode Overlay -->
+  <div class="night-mode" id="night-mode"></div>
+
+  <!-- Content Area -->
   <div id="page-content">
     <div class="loading">Loading your diary content...</div>
   </div>
+
+  <!-- Navigation -->
   <div class="nav-buttons">
     <button id="prevBtn" onclick="prevPage()">⬅ Previous</button>
     <div id="page-indicator">Page 1 of 1</div>
@@ -350,17 +539,133 @@ const wordsPerPage = 500;
 let currentTheme = 0;
 const themes = ['classic', 'blue', 'romantic', 'dark'];
 let themeInterval;
+let bookmarks = new Set();
+let fontSize = 9;
+let nightMode = false;
+
+// Initialize all features
+function initFeatures() {
+  // Theme cycling
+  themeInterval = setInterval(cycleThemes, 15000);
+  
+  // Load bookmarks from localStorage
+  const savedBookmarks = localStorage.getItem('diaryBookmarks');
+  if (savedBookmarks) {
+    bookmarks = new Set(JSON.parse(savedBookmarks));
+  }
+  
+  // Set up event listeners
+  document.getElementById('theme-btn').addEventListener('click', cycleThemes);
+  document.getElementById('night-mode-btn').addEventListener('click', toggleNightMode);
+  document.getElementById('bookmark-btn').addEventListener('click', toggleBookmark);
+  document.getElementById('search-input').addEventListener('input', handleSearch);
+  document.getElementById('font-decrease').addEventListener('click', () => changeFontSize(-1));
+  document.getElementById('font-increase').addEventListener('click', () => changeFontSize(1));
+  
+  // Keyboard shortcuts
+  document.addEventListener('keydown', handleKeyPress);
+}
 
 // Theme cycling function
 function cycleThemes() {
   currentTheme = (currentTheme + 1) % themes.length;
   document.body.className = 'theme-' + themes[currentTheme];
+  updateBookmarkButton();
 }
 
-// Initialize theme cycling
-function initThemes() {
-  // Change theme every 15 seconds
-  themeInterval = setInterval(cycleThemes, 15000);
+// Toggle night mode
+function toggleNightMode() {
+  nightMode = !nightMode;
+  document.getElementById('night-mode').style.opacity = nightMode ? '1' : '0';
+}
+
+// Toggle bookmark
+function toggleBookmark() {
+  if (bookmarks.has(currentPage)) {
+    bookmarks.delete(currentPage);
+  } else {
+    bookmarks.add(currentPage);
+  }
+  
+  // Save to localStorage
+  localStorage.setItem('diaryBookmarks', JSON.stringify(Array.from(bookmarks)));
+  
+  updateBookmarkButton();
+}
+
+// Update bookmark button appearance
+function updateBookmarkButton() {
+  const btn = document.getElementById('bookmark-btn');
+  btn.textContent = bookmarks.has(currentPage) ? '📑' : '🔖';
+}
+
+// Handle search
+function handleSearch(e) {
+  const searchTerm = e.target.value.toLowerCase();
+  if (searchTerm.length < 2) {
+    clearHighlights();
+    return;
+  }
+  
+  const content = document.getElementById('page-content');
+  const text = content.textContent;
+  const regex = new RegExp(searchTerm, 'gi');
+  
+  // Clear previous highlights
+  clearHighlights();
+  
+  // Create highlighted content
+  const highlightedContent = text.replace(regex, match => 
+    `<span class="search-highlight">${match}</span>`
+  );
+  
+  content.innerHTML = highlightedContent;
+}
+
+// Clear search highlights
+function clearHighlights() {
+  const content = document.getElementById('page-content');
+  if (pages.length > 0 && currentPage < pages.length) {
+    const page = pages[currentPage];
+    content.textContent = page.isChapterPage ? 
+      page.content : page.content;
+  }
+}
+
+// Change font size
+function changeFontSize(delta) {
+  fontSize = Math.min(Math.max(fontSize + delta, 8), 16);
+  document.getElementById('page-content').style.fontSize = `${fontSize}pt`;
+}
+
+// Handle keyboard shortcuts
+function handleKeyPress(e) {
+  switch(e.key) {
+    case 'ArrowLeft':
+      prevPage();
+      break;
+    case 'ArrowRight':
+      nextPage();
+      break;
+    case 'b':
+    case 'B':
+      if (e.ctrlKey) toggleBookmark();
+      break;
+    case 'n':
+    case 'N':
+      if (e.ctrlKey) toggleNightMode();
+      break;
+    case 't':
+    case 'T':
+      if (e.ctrlKey) cycleThemes();
+      break;
+  }
+}
+
+// Update progress bar
+function updateProgress() {
+  const progress = ((currentPage + 1) / pages.length) * 100;
+  document.getElementById('progress-bar').style.width = `${progress}%`;
 }
 
 // Create a special chapter introduction page
@@ -524,7 +829,10 @@ function renderPage() {
     pageContent.textContent = page.content;
   }
   
+  pageContent.style.fontSize = `${fontSize}pt`;
   pageIndicator.textContent = `Page ${currentPage + 1} of ${pages.length}`;
+  updateProgress();
+  updateBookmarkButton();
 
   document.getElementById("prevBtn").disabled = currentPage === 0;
   document.getElementById("nextBtn").disabled = currentPage === pages.length - 1;
@@ -545,7 +853,7 @@ function prevPage() {
 }
 
 // Initialize
-initThemes();
+initFeatures();
 loadChapters().catch(error => {
   console.error("Failed to load chapters:", error);
   document.getElementById("page-content").textContent = 
