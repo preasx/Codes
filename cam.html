@@ -171,6 +171,181 @@
     transition: all 1.5s ease;
   }
 
+  /* Birthday Validation Modal */
+  .validation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .validation-modal.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .validation-content {
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe6e6 100%);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 2px solid #ff9e9e;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .validation-content::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath fill='%23ff9e9e' fill-opacity='0.1' d='M20,30 Q30,15 40,30 T60,30 T40,30 T20,30Z'/%3E%3C/svg%3E");
+    z-index: -1;
+  }
+
+  .validation-title {
+    font-size: 24px;
+    color: #7a1212;
+    margin-bottom: 20px;
+    font-variant: small-caps;
+  }
+
+  .validation-text {
+    font-size: 16px;
+    color: #8d6363;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .validation-input {
+    padding: 12px 15px;
+    border: 2px solid #ff9e9e;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .validation-input:focus {
+    outline: none;
+    border-color: #7a1212;
+    box-shadow: 0 0 10px rgba(122, 18, 18, 0.3);
+  }
+
+  .validation-btn {
+    background: #7a1212;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .validation-btn:hover {
+    background: #5d0a0a;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(122, 18, 18, 0.3);
+  }
+
+  .validation-error {
+    color: #ff5252;
+    margin-top: 10px;
+    font-style: italic;
+    display: none;
+  }
+
+  .validation-success {
+    color: #4caf50;
+    margin-top: 10px;
+    font-style: italic;
+    display: none;
+  }
+
+  /* Celebration Animation */
+  @keyframes celebrate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  .celebrate {
+    animation: celebrate 0.5s ease;
+  }
+
+  /* Floating elements */
+  .floating-hearts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .heart {
+    position: absolute;
+    opacity: 0;
+    font-size: 20px;
+    color: rgba(242, 167, 167, 0.6);
+    animation: float 15s linear infinite;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.7;
+    }
+    90% {
+      opacity: 0.5;
+    }
+    100% {
+      transform: translateY(-100px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* Page turning animation */
+  @keyframes pageTurn {
+    0% { opacity: 0; transform: translateX(30px) rotateY(-10deg); }
+    100% { opacity: 1; transform: translateX(0) rotateY(0); }
+  }
+
+  @keyframes chapterTransition {
+    0% { opacity: 0; transform: scale(1.1); filter: blur(10px); }
+    100% { opacity: 1; transform: scale(1); filter: blur(0); }
+  }
+
+  .page-turn {
+    animation: pageTurn 1.2s ease forwards;
+  }
+
+  .chapter-transition {
+    animation: chapterTransition 2s ease forwards;
+  }
+
   /* Decorative elements */
   .book-spine {
     position: absolute;
@@ -222,26 +397,6 @@
     border-bottom-right-radius: 5px;
   }
 
-  /* Page turning animation */
-  @keyframes pageTurn {
-    0% { opacity: 0; transform: translateX(30px) rotateY(-10deg); }
-    100% { opacity: 1; transform: translateX(0) rotateY(0); }
-  }
-
-  @keyframes chapterTransition {
-    0% { opacity: 0; transform: scale(1.1); filter: blur(10px); }
-    100% { opacity: 1; transform: scale(1); filter: blur(0); }
-  }
-
-  .page-turn {
-    animation: pageTurn 1.2s ease forwards;
-  }
-
-  .chapter-transition {
-    animation: chapterTransition 2s ease forwards;
-  }
-
-  /* Flower decoration */
   .flower-decoration {
     position: absolute;
     bottom: 10px;
@@ -265,114 +420,28 @@
     transition: all 0.3s ease;
   }
 
-  /* Floating hearts background */
-  .floating-hearts {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  .heart {
-    position: absolute;
-    opacity: 0;
-    font-size: 20px;
-    color: rgba(242, 167, 167, 0.6);
-    animation: float 15s linear infinite;
-  }
-
-  @keyframes float {
-    0% {
-      transform: translateY(100vh) rotate(0deg);
-      opacity: 0;
-    }
-    10% {
-      opacity: 0.7;
-    }
-    90% {
-      opacity: 0.5;
-    }
-    100% {
-      transform: translateY(-100px) rotate(360deg);
-      opacity: 0;
-    }
-  }
-
-  /* Theme 1: Classic Parchment */
+  /* Theme styles */
   .theme-classic { background: #d9c7a7; }
-  .theme-classic #book-container { background: #fefdf5; border: 1px solid #b39f7a; }
-  .theme-classic #page-content { color: #333; }
-  .theme-classic .nav-buttons { background: linear-gradient(to bottom, #fefdf5 0%, #f5ecd5 100%); border-top-color: #e5d9bc; }
-  .theme-classic button { background: #7a3c12; color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-  .theme-classic button:hover:not(:disabled) { background: #5d2d0a; }
-  .theme-classic button:disabled { background: #c4b5a3; }
-  .theme-classic #page-indicator { color: #7a3c12; }
-  .theme-classic .loading { color: #7a3c12; }
-  .theme-classic .chapter-title { color: #7a3c12; background: rgba(254, 253, 245, 0.9); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-  .theme-classic .chapter-subtitle { color: #8d6e63; background: rgba(254, 253, 245, 0.9); }
-  .theme-classic .chapter-divider { background: #b39f7a; }
-
-  /* Theme 2: Cool Blue */
   .theme-blue { background: #a7c7d9; }
-  .theme-blue #book-container { background: #f5fdff; border: 1px solid #7a9fb3; }
-  .theme-blue #page-content { color: #233; }
-  .theme-blue .nav-buttons { background: linear-gradient(to bottom, #f5fdff 0%, #d5ecf5 100%); border-top-color: #bcd9e5; }
-  .theme-blue button { background: #123c7a; color: #fff; box-shadow: 0 2px 5px rgba(0,0,50,0.1); }
-  .theme-blue button:hover:not(:disabled) { background: #0a2d5d; }
-  .theme-blue button:disabled { background: #a3b5c4; }
-  .theme-blue #page-indicator { color: #123c7a; }
-  .theme-blue .loading { color: #123c7a; }
-  .theme-blue .chapter-title { color: #123c7a; background: rgba(245, 253, 255, 0.9); box-shadow: 0 2px 10px rgba(0,0,50,0.1); }
-  .theme-blue .chapter-subtitle { color: #636e8d; background: rgba(245, 253, 255, 0.9); }
-  .theme-blue .chapter-divider { background: #7a9fb3; }
-
-  /* Theme 3: Romantic Pink */
   .theme-romantic { background: #d9a7c7; }
-  .theme-romantic #book-container { background: #fff5fd; border: 1px solid #b37a9f; }
-  .theme-romantic #page-content { color: #332; }
-  .theme-romantic .nav-buttons { background: linear-gradient(to bottom, #fff5fd 0%, #f5d5ec 100%); border-top-color: #e5bcd9; }
-  .theme-romantic button { background: #7a123c; color: #fff; box-shadow: 0 2px 5px rgba(50,0,0,0.1); }
-  .theme-romantic button:hover:not(:disabled) { background: #5d0a2d; }
-  .theme-romantic button:disabled { background: #c4a3b5; }
-  .theme-romantic #page-indicator { color: #7a123c; }
-  .theme-romantic .loading { color: #7a123c; }
-  .theme-romantic .chapter-title { color: #7a123c; background: rgba(255, 245, 253, 0.9); box-shadow: 0 2px 10px rgba(50,0,0,0.1); }
-  .theme-romantic .chapter-subtitle { color: #8d638e; background: rgba(255, 245, 253, 0.9); }
-  .theme-romantic .chapter-divider { background: #b37a9f; }
-
-  /* Theme 4: Purple Dream */
   .theme-purple { background: #c7a7d9; }
-  .theme-purple #book-container { background: #fdf5ff; border: 1px solid #9f7ab3; }
-  .theme-purple #page-content { color: #323; }
-  .theme-purple .nav-buttons { background: linear-gradient(to bottom, #fdf5ff 0%, #ecd5f5 100%); border-top-color: #d9bce5; }
-  .theme-purple button { background: #3c127a; color: #fff; box-shadow: 0 2px 5px rgba(50,0,50,0.1); }
-  .theme-purple button:hover:not(:disabled) { background: #2d0a5d; }
-  .theme-purple button:disabled { background: #b5a3c4; }
-  .theme-purple #page-indicator { color: #3c127a; }
-  .theme-purple .loading { color: #3c127a; }
-  .theme-purple .chapter-title { color: #3c127a; background: rgba(253, 245, 255, 0.9); box-shadow: 0 2px 10px rgba(50,0,50,0.1); }
-  .theme-purple .chapter-subtitle { color: #6e638d; background: rgba(253, 245, 255, 0.9); }
-  .theme-purple .chapter-divider { background: #9f7ab3; }
-
-  /* Theme 5: Romantic Red */
   .theme-red { background: #d9a7a7; }
-  .theme-red #book-container { background: #fff5f5; border: 1px solid #b37a7a; }
-  .theme-red #page-content { color: #322; }
-  .theme-red .nav-buttons { background: linear-gradient(to bottom, #fff5f5 0%, #f5d5d5 100%); border-top-color: #e5bcbc; }
-  .theme-red button { background: #7a1212; color: #fff; box-shadow: 0 2px 5px rgba(50,0,0,0.1); }
-  .theme-red button:hover:not(:disabled) { background: #5d0a0a; }
-  .theme-red button:disabled { background: #c4a3a3; }
-  .theme-red #page-indicator { color: #7a1212; }
-  .theme-red .loading { color: #7a1212; }
-  .theme-red .chapter-title { color: #7a1212; background: rgba(255, 245, 245, 0.9); box-shadow: 0 2px 10px rgba(50,0,0,0.1); }
-  .theme-red .chapter-subtitle { color: #8d6363; background: rgba(255, 245, 245, 0.9); }
-  .theme-red .chapter-divider { background: #b37a7a; }
 </style>
 </head>
 <body class="theme-classic">
+
+<!-- Birthday Validation Modal -->
+<div class="validation-modal" id="validation-modal">
+  <div class="validation-content">
+    <h2 class="validation-title">A Special Question</h2>
+    <p class="validation-text">To continue reading this chapter, please answer this question from my heart:</p>
+    <p class="validation-text">When is my birthday? (DD Month YYYY)</p>
+    <input type="text" class="validation-input" id="birthday-input" placeholder="e.g. 20 June 2005">
+    <button class="validation-btn" id="validate-btn">Validate Our Love</button>
+    <p class="validation-error" id="validation-error">That's not quite right, my love. Try again!</p>
+    <p class="validation-success" id="validation-success">Yes! You remembered! ❤️</p>
+  </div>
+</div>
 
 <!-- Floating hearts background -->
 <div class="floating-hearts" id="floating-hearts"></div>
@@ -416,9 +485,23 @@ let timeOnPage = 0;
 let themeInterval;
 let currentTheme = 0;
 const themes = ['classic', 'blue', 'romantic', 'purple', 'red'];
+let validatedChapters = new Set();
+const CORRECT_BIRTHDAY = "20 June 2005";
 
 // Initialize all features
 function initFeatures() {
+  // Load saved progress
+  const savedPage = localStorage.getItem('diaryCurrentPage');
+  const savedValidated = localStorage.getItem('diaryValidatedChapters');
+  
+  if (savedPage) {
+    currentPage = parseInt(savedPage);
+  }
+  
+  if (savedValidated) {
+    validatedChapters = new Set(JSON.parse(savedValidated));
+  }
+  
   // Start the page timer
   startPageTimer();
   
@@ -427,6 +510,14 @@ function initFeatures() {
   
   // Create floating hearts
   createFloatingHearts();
+  
+  // Setup validation event listeners
+  document.getElementById('validate-btn').addEventListener('click', validateBirthday);
+  document.getElementById('birthday-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      validateBirthday();
+    }
+  });
 }
 
 // Create floating hearts in background
@@ -449,6 +540,63 @@ function cycleThemes() {
   document.body.className = 'theme-' + themes[currentTheme];
 }
 
+// Validate birthday function
+function validateBirthday() {
+  const input = document.getElementById('birthday-input').value.trim();
+  const errorElement = document.getElementById('validation-error');
+  const successElement = document.getElementById('validation-success');
+  
+  if (input.toLowerCase() === CORRECT_BIRTHDAY.toLowerCase()) {
+    // Correct answer
+    errorElement.style.display = 'none';
+    successElement.style.display = 'block';
+    
+    // Get current chapter
+    const currentChapter = pages[currentPage].chapter;
+    validatedChapters.add(currentChapter);
+    
+    // Save to localStorage
+    localStorage.setItem('diaryValidatedChapters', JSON.stringify(Array.from(validatedChapters)));
+    
+    // Close modal after a delay
+    setTimeout(() => {
+      document.getElementById('validation-modal').classList.remove('active');
+      document.getElementById('book-container').classList.add('celebrate');
+      setTimeout(() => {
+        document.getElementById('book-container').classList.remove('celebrate');
+      }, 1000);
+    }, 1500);
+  } else {
+    // Incorrect answer
+    errorElement.style.display = 'block';
+    successElement.style.display = 'none';
+    
+    // Shake animation for error
+    const inputElement = document.getElementById('birthday-input');
+    inputElement.classList.add('celebrate');
+    setTimeout(() => {
+      inputElement.classList.remove('celebrate');
+    }, 500);
+  }
+}
+
+// Check if chapter needs validation
+function checkChapterValidation() {
+  if (pages.length === 0) return false;
+  
+  const page = pages[currentPage];
+  if (page.isChapterPage && !validatedChapters.has(page.chapter)) {
+    // Show validation modal
+    document.getElementById('validation-modal').classList.add('active');
+    document.getElementById('birthday-input').value = '';
+    document.getElementById('validation-error').style.display = 'none';
+    document.getElementById('validation-success').style.display = 'none';
+    document.getElementById('birthday-input').focus();
+    return true;
+  }
+  return false;
+}
+
 // Start the page timer
 function startPageTimer() {
   // Clear any existing timer
@@ -457,9 +605,9 @@ function startPageTimer() {
   // Reset time on page
   timeOnPage = 0;
   
-  // Don't start timer on chapter pages
-  if (pages.length > 0 && pages[currentPage].isChapterPage) {
-    document.getElementById("nextBtn").disabled = false;
+  // Don't start timer on chapter pages or if validation is needed
+  if (pages.length > 0 && (pages[currentPage].isChapterPage || checkChapterValidation())) {
+    document.getElementById("nextBtn").disabled = true;
     document.getElementById("timer-indicator").style.display = 'none';
     return;
   }
@@ -672,6 +820,9 @@ function renderPage() {
   pageIndicator.textContent = `Page ${currentPage + 1}`;
   
   document.getElementById("prevBtn").disabled = currentPage === 0;
+  
+  // Save current page to localStorage
+  localStorage.setItem('diaryCurrentPage', currentPage.toString());
   
   // Start the timer for the next page
   startPageTimer();
