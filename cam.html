@@ -1,33 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>My Diary Book</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Georgia', serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #d9c7a7; }
-  #book-container { width: 100vw; height: 100vh; display: flex; flex-direction: column; position: fixed; top:0; left:0; right:0; bottom:0; background: #fefdf5; border:1px solid #b39f7a; overflow: hidden; }
-  #page-content { flex: 1; white-space: pre-wrap; font-size: 11pt; line-height: 1.6; padding: 20px; text-align: left; font-family: 'Georgia', serif; background-image: linear-gradient(rgba(0,0,0,0.05) 0.1em, transparent 0.1em); background-size: 100% 1.6em; background-position: 0 1.4em; opacity:0; transform: translateX(50px); transition: all 0.8s ease; }
-  #page-content.show { opacity:1; transform: translateX(0); }
-  .nav-buttons { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; height: 50px; border-top:1px solid #e5d9bc; background: linear-gradient(to bottom, #fefdf5 0%, #f5ecd5 100%); }
-  button { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-family: 'Georgia', serif; height: 34px; background: #7a3c12; color:#fff; transition: all 0.3s ease; }
-  button:hover:not(:disabled){ background:#5d2d0a; transform: translateY(-2px); box-shadow:0 4px 8px rgba(0,0,0,0.2); }
-  button:disabled { cursor:not-allowed; opacity:0.5; }
-  #page-indicator { font-size: 13px; font-style: italic; font-weight: bold; color:#7a3c12; }
-  .chapter-page { display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center; }
-  .chapter-title { font-size:24px; margin-bottom:10px; color:#7a3c12; }
-  .chapter-subtitle { font-size:16px; font-style:italic; color:#8d6e63; }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body { 
+    font-family: 'Georgia', serif; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    overflow: hidden; 
+    background: #d9c7a7;
+    transition: background 1.5s ease;
+  }
+
+  #book-container { 
+    width: 90vw; 
+    height: 85vh; 
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; 
+    position: relative;
+    background: #fefdf5; 
+    border: 1px solid #b39f7a;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 50px rgba(0, 0, 0, 0.1) inset;
+    border-radius: 5px;
+    transition: all 1.5s ease;
+  }
+
+  #page-content { 
+    flex: 1; 
+    white-space: pre-wrap; 
+    font-size: 9pt; 
+    line-height: 1.6; 
+    overflow-y: auto; 
+    padding: 20px; 
+    text-align: left; 
+    font-family: 'Georgia', serif; 
+    background-image: linear-gradient(rgba(0,0,0,0.05) 0.1em, transparent 0.1em); 
+    background-size: 100% 1.6em; 
+    background-position: 0 1.4em;
+    transition: all 1.5s ease;
+  }
+
+  .nav-buttons { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 8px 20px; 
+    height: 50px; 
+    min-height: 50px; 
+    border-top: 1px solid #e5d9bc;
+    background: linear-gradient(to bottom, #fefdf5 0%, #f5ecd5 100%);
+    transition: all 1.5s ease;
+  }
+
+  button { 
+    padding: 8px 16px; 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-size: 14px; 
+    font-family: 'Georgia', serif; 
+    height: 34px; 
+    background: #7a3c12; 
+    color: #fff; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+
+  button:hover:not(:disabled) { 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+    background: #5d2d0a;
+  }
+
+  button:disabled { 
+    cursor: not-allowed; 
+    opacity: 0.5; 
+  }
+
+  #page-indicator { 
+    font-size: 13px; 
+    font-style: italic; 
+    font-weight: bold; 
+    color: #7a3c12;
+    transition: all 1.5s ease;
+  }
+
+  .loading { 
+    text-align: center; 
+    font-style: italic; 
+    margin: 20px 0; 
+    font-size: 9pt; 
+    color: #7a3c12;
+    transition: all 1.5s ease;
+  }
+
+  .chapter-page { 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100%; 
+    padding: 0 5px; 
+    background-image: linear-gradient(rgba(0,0,0,0.05) 0.1em, transparent 0.1em); 
+    background-size: 100% 1.6em; 
+    background-position: 0 1.4em; 
+    text-align: center; 
+    transition: all 1.5s ease;
+  }
+
+  .chapter-title { 
+    font-size: 28px; 
+    margin-bottom: 15px; 
+    padding: 10px 20px; 
+    border-radius: 4px; 
+    letter-spacing: 1px; 
+    text-align: center; 
+    width: 100%; 
+    color: #7a3c12; 
+    background: rgba(254, 253, 245, 0.9); 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    font-variant: small-caps;
+    position: relative;
+    transition: all 1.5s ease;
+  }
+
+  .chapter-title::after {
+    content: "";
+    display: block;
+    width: 100px;
+    height: 2px;
+    background: #b39f7a;
+    margin: 10px auto;
+  }
+
+  .chapter-subtitle { 
+    font-size: 18px; 
+    font-style: italic; 
+    padding: 8px 16px; 
+    border-radius: 3px; 
+    letter-spacing: 0.5px; 
+    text-align: center; 
+    width: 100%; 
+    color: #8d6e63; 
+    background: rgba(254, 253, 245, 0.9);
+    margin-top: 10px;
+    transition: all 1.5s ease;
+  }
+
+  .chapter-divider { 
+    width: 60px; 
+    height: 1px; 
+    margin: 15px 0; 
+    background: #b39f7a;
+    transition: all 1.5s ease;
+  }
+
+  /* Progress Bar */
+  .progress-container { 
+    position: absolute; 
+    bottom: 60px; 
+    left: 5px; 
+    right: 5px; 
+    height: 4px; 
+    background: rgba(0,0,0,0.1); 
+    border-radius: 2px; 
+    overflow: hidden; 
+    z-index: 10; 
+  }
+
+  .progress-bar { 
+    height: 100%; 
+    border-radius: 2px; 
+    background: #7a3c12;
+    transition: width 0.3s ease; 
+  }
+
+  /* Decorative elements */
+  .book-spine {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 15px;
+    background: linear-gradient(to right, #a38c66 0%, #c9b592 100%);
+    border-right: 1px solid #8a7556;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  }
+
+  .book-corner {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    z-index: 2;
+  }
+
+  .corner-tl {
+    top: 0;
+    left: 0;
+    border-top: 1px solid #b39f7a;
+    border-left: 1px solid #b39f7a;
+    border-top-left-radius: 5px;
+  }
+
+  .corner-tr {
+    top: 0;
+    right: 0;
+    border-top: 1px solid #b39f7a;
+    border-right: 1px solid #b39f7a;
+    border-top-right-radius: 5px;
+  }
+
+  .corner-bl {
+    bottom: 0;
+    left: 0;
+    border-bottom: 1px solid #b39f7a;
+    border-left: 1px solid #b39f7a;
+    border-bottom-left-radius: 5px;
+  }
+
+  .corner-br {
+    bottom: 0;
+    right: 0;
+    border-bottom: 1px solid #b39f7a;
+    border-right: 1px solid #b39f7a;
+    border-bottom-right-radius: 5px;
+  }
+
+  /* Page turning animation */
+  @keyframes pageTurn {
+    0% { opacity: 0; transform: translateX(20px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+
+  .page-turn {
+    animation: pageTurn 0.5s ease forwards;
+  }
+
+  /* Flower decoration */
+  .flower-decoration {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    opacity: 0.1;
+    font-size: 24px;
+    z-index: 1;
+  }
+
+  /* Timer indicator */
+  .timer-indicator {
+    position: absolute;
+    bottom: 65px;
+    right: 20px;
+    font-size: 11px;
+    color: #7a3c12;
+    font-style: italic;
+    background: rgba(254, 253, 245, 0.8);
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
 </style>
 </head>
-<body>
+<body class="theme-classic">
 
 <div id="book-container">
-  <div id="page-content"><div class="loading">Loading your diary content...</div></div>
+  <!-- Decorative Elements -->
+  <div class="book-spine"></div>
+  <div class="book-corner corner-tl"></div>
+  <div class="book-corner corner-tr"></div>
+  <div class="book-corner corner-bl"></div>
+  <div class="book-corner corner-br"></div>
+  <div class="flower-decoration">🌸</div>
+
+  <!-- Progress Bar -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+
+  <!-- Timer Indicator -->
+  <div class="timer-indicator" id="timer-indicator">Next page in 30s</div>
+
+  <!-- Content Area -->
+  <div id="page-content">
+    <div class="loading">Loading your diary content...</div>
+  </div>
+
+  <!-- Navigation -->
   <div class="nav-buttons">
     <button id="prevBtn" onclick="prevPage()">⬅ Previous</button>
     <div id="page-indicator">Page 1</div>
-    <button id="nextBtn" onclick="nextPage()">Next ➡</button>
+    <button id="nextBtn" onclick="nextPage()" disabled>Next ➡</button>
   </div>
 </div>
 
@@ -40,84 +312,265 @@ const chapters = [
 let pages = [];
 let currentPage = 0;
 const wordsPerPage = 500;
-let fontSize = 11;
-let unlockTimer = null;
+let pageTimer = null;
+let timeOnPage = 0;
 
-// create chapter intro
-function createChapterPage(title) {
-  return { isChapterPage:true, content:title };
+// Initialize all features
+function initFeatures() {
+  // Start the page timer
+  startPageTimer();
 }
 
-// split + paginate
-function splitText(text) {
-  return text.split(/\s+/);
-}
-function paginateContent(text, title) {
-  const words = splitText(text);
-  const pagesArr = [createChapterPage(title)];
-  for (let i=0;i<words.length;i+=wordsPerPage) {
-    pagesArr.push({ isChapterPage:false, content: words.slice(i,i+wordsPerPage).join(" ") });
+// Start the page timer
+function startPageTimer() {
+  // Clear any existing timer
+  if (pageTimer) clearInterval(pageTimer);
+  
+  // Reset time on page
+  timeOnPage = 0;
+  
+  // Enable next button if we're on the last page
+  if (currentPage === pages.length - 1) {
+    document.getElementById("nextBtn").disabled = true;
+    document.getElementById("timer-indicator").textContent = "Last page";
+    return;
   }
-  return pagesArr;
+  
+  // Disable next button initially
+  document.getElementById("nextBtn").disabled = true;
+  document.getElementById("timer-indicator").textContent = "Next page in 30s";
+  
+  // Start counting
+  pageTimer = setInterval(() => {
+    timeOnPage++;
+    
+    // Update timer indicator
+    document.getElementById("timer-indicator").textContent = `Next page in ${30 - timeOnPage}s`;
+    
+    // Enable next button after 30 seconds
+    if (timeOnPage >= 30) {
+      document.getElementById("nextBtn").disabled = false;
+      document.getElementById("timer-indicator").textContent = "Ready to turn page";
+      clearInterval(pageTimer);
+    }
+  }, 1000);
 }
 
-// load chapters
-async function loadChapters(){
-  pages=[];
-  for(const ch of chapters){
-    try{
-      const res=await fetch(ch.url);
-      const text=await res.text();
-      pages=pages.concat(paginateContent(text,ch.title));
-    }catch(e){
-      pages.push({isChapterPage:false,content:"Error loading "+ch.title});
+// Update progress bar
+function updateProgress() {
+  const progress = ((currentPage + 1) / pages.length) * 100;
+  document.getElementById('progress-bar').style.width = `${progress}%`;
+}
+
+// Create a special chapter introduction page
+function createChapterPage(chapterTitle) {
+  return {
+    type: 'chapter',
+    chapter: chapterTitle,
+    content: `CHAPTER\n${chapterTitle.toUpperCase()}`,
+    isChapterPage: true
+  };
+}
+
+// Split text into words while preserving all formatting and spacing
+function splitTextIntoWords(text) {
+  const paragraphs = text.split(/(\n+)/);
+  const result = [];
+  
+  for (const paragraph of paragraphs) {
+    if (paragraph.trim().length === 0 && !paragraph.includes('\n')) continue;
+    
+    if (paragraph.replace(/\n/g, '').length === 0) {
+      result.push({
+        type: 'newlines',
+        text: paragraph,
+        wordCount: 0
+      });
+      continue;
+    }
+    
+    const words = [];
+    let currentWord = '';
+    let inWord = false;
+    
+    for (let i = 0; i < paragraph.length; i++) {
+      const char = paragraph[i];
+      
+      if (char.match(/\s/)) {
+        if (inWord) {
+          words.push(currentWord);
+          currentWord = '';
+          inWord = false;
+        }
+        currentWord += char;
+      } else {
+        if (!inWord && currentWord.length > 0) {
+          words.push(currentWord);
+          currentWord = '';
+        }
+        currentWord += char;
+        inWord = true;
+      }
+    }
+    
+    if (currentWord.length > 0) {
+      words.push(currentWord);
+    }
+    
+    result.push({
+      type: 'paragraph',
+      words: words,
+      text: paragraph,
+      wordCount: words.filter(w => w.trim().length > 0).length
+    });
+  }
+  
+  return result;
+}
+
+// Paginate content based on word count while preserving formatting
+function paginateContent(wordsData, chapterTitle) {
+  const pages = [];
+  
+  // Add chapter introduction page
+  pages.push(createChapterPage(chapterTitle));
+  
+  let currentPageContent = [];
+  let currentWordCount = 0;
+  
+  for (const item of wordsData) {
+    if (item.type === 'newlines') {
+      currentPageContent.push(item.text);
+      continue;
+    }
+    
+    if (item.type === 'paragraph') {
+      if (currentWordCount + item.wordCount > wordsPerPage && currentWordCount > 0) {
+        pages.push({
+          type: 'content',
+          chapter: chapterTitle,
+          content: currentPageContent.join('')
+        });
+        
+        currentPageContent = [];
+        currentWordCount = 0;
+      }
+      
+      if (item.wordCount > 0) {
+        currentPageContent.push(item.text);
+        currentWordCount += item.wordCount;
+      }
     }
   }
+  
+  if (currentPageContent.length > 0) {
+    pages.push({
+      type: 'content',
+      chapter: chapterTitle,
+      content: currentPageContent.join('')
+    });
+  }
+  
+  return pages;
+}
+
+async function loadChapters() {
+  pages = [];
+  
+  for (const chapter of chapters) {
+    try {
+      const res = await fetch(chapter.url);
+      if (!res.ok) throw new Error(`Failed to fetch ${chapter.url}`);
+      
+      const text = await res.text();
+      const wordsData = splitTextIntoWords(text);
+      const chapterPages = paginateContent(wordsData, chapter.title);
+      pages = pages.concat(chapterPages);
+    } catch (error) {
+      console.error("Error loading chapter:", error);
+      pages.push({
+        type: 'content',
+        chapter: chapter.title,
+        content: `Error loading content: ${error.message}`
+      });
+    }
+  }
+  
   renderPage();
 }
 
-// render
-function renderPage(){
-  const page=pages[currentPage];
-  const content=document.getElementById("page-content");
-  content.classList.remove("show");
-  setTimeout(()=>{
-    if(page.isChapterPage){
-      content.innerHTML=`<div class="chapter-page"><div class="chapter-title">${page.content}</div><div class="chapter-subtitle">Enjoy reading ❤</div></div>`;
-    }else{
-      content.textContent=page.content;
-    }
-    content.style.fontSize=`${fontSize}pt`;
-    requestAnimationFrame(()=>content.classList.add("show"));
-  },200);
-
-  document.getElementById("page-indicator").textContent="Page "+(currentPage+1);
-  document.getElementById("prevBtn").disabled=currentPage===0;
-  document.getElementById("nextBtn").disabled=true; // lock next
-
-  // unlock after 30s
-  if(unlockTimer) clearTimeout(unlockTimer);
-  unlockTimer=setTimeout(()=>{
-    if(currentPage<pages.length-1){
-      document.getElementById("nextBtn").disabled=false;
-    }
-  },30000);
+function renderPage() {
+  const pageContent = document.getElementById("page-content");
+  const pageIndicator = document.getElementById("page-indicator");
+  
+  if (pages.length === 0) {
+    pageContent.textContent = "The diary is empty or content failed to load.";
+    pageIndicator.textContent = "Page 0";
+    return;
+  }
+  
+  const page = pages[currentPage];
+  
+  // Add page turn animation
+  pageContent.classList.remove('page-turn');
+  void pageContent.offsetWidth; // Trigger reflow
+  pageContent.classList.add('page-turn');
+  
+  if (page.isChapterPage) {
+    pageContent.innerHTML = `
+      <div class="chapter-page">
+        <div class="chapter-title">${page.content.split('\n')[0]}</div>
+        <div class="chapter-divider"></div>
+        <div class="chapter-subtitle">${page.content.split('\n')[1]}</div>
+      </div>
+    `;
+  } else {
+    pageContent.textContent = page.content;
+  }
+  
+  pageIndicator.textContent = `Page ${currentPage + 1}`;
+  updateProgress();
+  
+  document.getElementById("prevBtn").disabled = currentPage === 0;
+  
+  // Start the timer for the next page
+  startPageTimer();
 }
 
-function nextPage(){
-  if(currentPage<pages.length-1){
+function nextPage() {
+  if (currentPage < pages.length - 1) {
     currentPage++;
     renderPage();
-  }
-}
-function prevPage(){
-  if(currentPage>0){
-    currentPage--;
-    renderPage();
+    
+    // Add a nice transition effect
+    document.getElementById("book-container").style.transform = "translateX(-5px)";
+    setTimeout(() => {
+      document.getElementById("book-container").style.transform = "translateX(0)";
+    }, 100);
   }
 }
 
-loadChapters();
+function prevPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    renderPage();
+    
+    // Add a nice transition effect
+    document.getElementById("book-container").style.transform = "translateX(5px)";
+    setTimeout(() => {
+      document.getElementById("book-container").style.transform = "translateX(0)";
+    }, 100);
+  }
+}
+
+// Initialize
+initFeatures();
+loadChapters().catch(error => {
+  console.error("Failed to load chapters:", error);
+  document.getElementById("page-content").textContent = 
+    "Failed to load content. Please check if chapter files exist.";
+});
 </script>
+
 </body>
 </html>
