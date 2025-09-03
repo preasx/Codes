@@ -2,61 +2,31 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Dynamic Web App</title>
+<title>WebApp Home</title>
 <style>
-  body { margin:0; font-family: Arial; }
-  #topBar { display:flex; justify-content:flex-end; background:#eee; padding:5px; }
-  #closeBtn { display:none; cursor:pointer; padding:5px 10px; font-weight:bold; }
-  iframe { width:100%; height:calc(100vh - 40px); border:none; }
+  body { font-family: Arial; text-align:center; padding:20px; }
+  button { margin:5px; padding:10px; font-size:16px; }
 </style>
 </head>
 <body>
+  <h1>Welcome to the Web App</h1>
+  <p>Choose the main URL to load:</p>
+  <div id="urlButtons"></div>
 
-<div id="topBar">
-  <button id="closeBtn" onclick="returnToHome()">X</button>
-</div>
+  <script>
+    const urls = [
+      { name: "DTech24", url: "https://www.dtech24.co.za" },
+      { name: "Preasx24", url: "https://www.preasx24.co.za" },
+      { name: "DTechHQ", url: "https://www.dtechhq.co.za" }
+    ];
 
-<iframe id="mainFrame"></iframe>
-
-<script>
-const gistURL = "https://gist.githubusercontent.com/preasx/fcdbb29d7440c455e47fe33b34df5a08/raw/gistfile1.txt";
-const frame = document.getElementById("mainFrame");
-const closeBtn = document.getElementById("closeBtn");
-
-// Load the Gist home page initially
-frame.src = gistURL;
-
-// Function exposed to iframe to switch main URL
-function loadMainURL(url) {
-  frame.src = url;
-  closeBtn.style.display = "inline-block"; // show X button
-}
-
-// Function to return to Gist content
-function returnToHome() {
-  frame.src = gistURL;
-  closeBtn.style.display = "none"; // hide X button
-}
-
-// Make the function available to iframe
-window.loadMainURL = loadMainURL;
-
-// Optional: auto-detect URL buttons inside Gist if needed
-frame.onload = () => {
-  try {
-    const iframeWindow = frame.contentWindow;
-    // Example: detect buttons inside Gist and bind click to loadMainURL
-    if (iframeWindow && iframeWindow.document) {
-      const buttons = iframeWindow.document.querySelectorAll("[data-url]");
-      buttons.forEach(btn => {
-        btn.onclick = () => loadMainURL(btn.getAttribute("data-url"));
-      });
-    }
-  } catch(e) {
-    // Cross-origin if Gist blocks JS access
-  }
-};
-</script>
-
+    const container = document.getElementById("urlButtons");
+    urls.forEach(u => {
+      const btn = document.createElement("button");
+      btn.textContent = u.name;
+      btn.onclick = () => window.parent.loadMainURL(u.url);
+      container.appendChild(btn);
+    });
+  </script>
 </body>
 </html>
