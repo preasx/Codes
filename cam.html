@@ -626,17 +626,17 @@ function startPageTimer() {
   
   // Disable next button initially
   document.getElementById("nextBtn").disabled = true;
-  document.getElementById("timer-indicator").textContent = "Next page in 30s";
+  document.getElementById("timer-indicator").textContent = "Next page in 2s";
   
   // Start counting
   pageTimer = setInterval(() => {
     timeOnPage++;
     
     // Update timer indicator
-    document.getElementById("timer-indicator").textContent = `Next page in ${30 - timeOnPage}s`;
+    document.getElementById("timer-indicator").textContent = `Next page in ${2 - timeOnPage}s`;
     
     // Enable next button after 30 seconds
-    if (timeOnPage >= 30) {
+    if (timeOnPage >= 2) {
       document.getElementById("nextBtn").disabled = false;
       document.getElementById("timer-indicator").textContent = "Ready to turn page";
       clearInterval(pageTimer);
