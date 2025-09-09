@@ -21,7 +21,7 @@
         }
         
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -202,7 +202,7 @@
             margin-bottom: 5px;
         }
         
-        .input-group input {
+        .input-group input, .input-group textarea {
             width: 100%;
             padding: 12px;
             border-radius: 10px;
@@ -211,7 +211,7 @@
             color: white;
         }
         
-        .input-group input::placeholder {
+        .input-group input::placeholder, .input-group textarea::placeholder {
             color: rgba(255, 255, 255, 0.7);
         }
         
@@ -241,6 +241,7 @@
             display: flex;
             margin-bottom: 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            overflow-x: auto;
         }
         
         .tab {
@@ -248,6 +249,7 @@
             cursor: pointer;
             opacity: 0.7;
             transition: all 0.3s ease;
+            white-space: nowrap;
         }
         
         .tab.active {
@@ -261,6 +263,92 @@
         
         .tab-content.active {
             display: block;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .game-container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .game-option {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .game-option:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+        
+        .question {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .option {
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .message-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .message {
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .message.sent {
+            text-align: right;
+            background: rgba(255, 75, 144, 0.3);
+        }
+        
+        .message.received {
+            text-align: left;
+            background: rgba(37, 117, 252, 0.3);
+        }
+        
+        .countdown {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 10px;
         }
         
         @media (max-width: 600px) {
@@ -277,6 +365,14 @@
                 padding: 8px 12px;
                 font-size: 0.9rem;
             }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -292,6 +388,9 @@
             <div class="tab" onclick="switchTab('mood')">Mood</div>
             <div class="tab" onclick="switchTab('location')">Location</div>
             <div class="tab" onclick="switchTab('activities')">Activities</div>
+            <div class="tab" onclick="switchTab('stats')">Statistics</div>
+            <div class="tab" onclick="switchTab('games')">Games</div>
+            <div class="tab" onclick="switchTab('messages')">Messages</div>
         </div>
         
         <div id="profile-tab" class="tab-content active">
@@ -332,6 +431,11 @@
                     <div class="mood-btn" onclick="setMood('tired')">😴 Tired</div>
                     <div class="mood-btn" onclick="setMood('excited')">🤩 Excited</div>
                     <div class="mood-btn" onclick="setMood('romantic')">😍 Romantic</div>
+                    <div class="mood-btn" onclick="setMood('playful')">😜 Playful</div>
+                    <div class="mood-btn" onclick="setMood('grateful')">🙏 Grateful</div>
+                    <div class="mood-btn" onclick="setMood('nostalgic')">📸 Nostalgic</div>
+                    <div class="mood-btn" onclick="setMood('flirty')">😘 Flirty</div>
+                    <div class="mood-btn" onclick="setMood('cozy')">🛋️ Cozy</div>
                 </div>
                 
                 <button class="btn" onclick="updateMood()">
@@ -345,6 +449,7 @@
                 <h2 class="card-title"><i class="fas fa-map-marker-alt"></i> Distance Tracker</h2>
                 <p>Current distance: <span id="currentDistance">Calculating...</span></p>
                 <p>Closest you've been: <span id="closestDistance">Not calculated yet</span></p>
+                <p>Furthest you've been: <span id="furthestDistance">Not calculated yet</span></p>
                 
                 <div class="stats">
                     <div class="stat-item">
@@ -355,6 +460,11 @@
                         <div class="stat-value" id="kmTraveled">0</div>
                         <div class="stat-label">KM Traveled</div>
                     </div>
+                </div>
+                
+                <div id="locationHistory" style="margin-top: 20px;">
+                    <h3>Location History</h3>
+                    <div id="locationHistoryList"></div>
                 </div>
                 
                 <button class="btn" onclick="updateLocation()">
@@ -430,6 +540,75 @@
             </div>
         </div>
         
+        <div id="stats-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-chart-pie"></i> Activity Statistics</h2>
+                
+                <div class="input-group">
+                    <label for="statsPeriod">Select Time Period</label>
+                    <select id="statsPeriod" onchange="updateActivityStats()">
+                        <option value="day">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="year">This Year</option>
+                        <option value="all">All Time</option>
+                    </select>
+                </div>
+                
+                <div id="activityStats">
+                    <p>Select a time period to view statistics</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="games-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-gamepad"></i> Games</h2>
+                
+                <div class="game-option" onclick="startGame('loveQuiz')">
+                    <h3><i class="fas fa-question-circle"></i> Love Quiz</h3>
+                    <p>Test how well you know your partner</p>
+                </div>
+                
+                <div class="game-option" onclick="startGame('truthDare')">
+                    <h3><i class="fas fa-theater-masks"></i> Truth or Dare</h3>
+                    <p>Romantic and fun challenges</p>
+                </div>
+                
+                <div class="game-option" onclick="startGame('memoryGame')">
+                    <h3><i class="fas fa-brain"></i> Memory Game</h3>
+                    <p>Match pairs of cards with couple themes</p>
+                </div>
+                
+                <div id="gameContainer" class="game-container" style="display: none;">
+                    <!-- Game content will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <div id="messages-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-envelope"></i> Daily Messages</h2>
+                <p>Send one special message to your partner each day</p>
+                
+                <div class="input-group">
+                    <label for="dailyMessage">Your Message for Today</label>
+                    <textarea id="dailyMessage" rows="4" placeholder="Write your message here..."></textarea>
+                </div>
+                
+                <button class="btn" onclick="sendDailyMessage()">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+                
+                <div class="countdown" id="messageCountdown"></div>
+                
+                <div id="messageHistory" style="margin-top: 20px;">
+                    <h3>Message History</h3>
+                    <div id="messageHistoryList"></div>
+                </div>
+            </div>
+        </div>
+        
         <div class="notification" id="notification">
             <span id="notificationText"></span>
         </div>
@@ -446,7 +625,8 @@
             mood: 'https://gist.githubusercontent.com/Preasx24/880b2b385a8b11b91e4a7abe58257a14/raw/gistfile1.txt',
             location: 'https://gist.githubusercontent.com/Preasx24/c257b4b817361f2ccc22a60388784986/raw/gistfile1.txt',
             activities: 'https://gist.githubusercontent.com/Preasx24/4f0b769f591da88eb60147bd5a3d044c/raw/gistfile1.txt',
-            token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt'
+            token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt',
+            messages: 'https://gist.githubusercontent.com/Preasx24/7c024dffd3ab26c772ffd786885e66e6/raw/gistfile1.txt'
         };
         
         // Gist IDs for updating
@@ -454,7 +634,8 @@
             profile: '7c024dffd3ab26c772ffd786885e66e6',
             mood: '880b2b385a8b11b91e4a7abe58257a14',
             location: 'c257b4b817361f2ccc22a60388784986',
-            activities: '4f0b769f591da88eb60147bd5a3d044c'
+            activities: '4f0b769f591da88eb60147bd5a3d044c',
+            messages: '7c024dffd3ab26c772ffd786885e66e6'
         };
         
         // User data
@@ -466,14 +647,58 @@
             mood: '',
             location: null,
             activities: [],
-            gistToken: ''
+            messages: [],
+            gistToken: '',
+            closestDistance: null,
+            furthestDistance: null,
+            locationHistory: []
         };
         
         // Partner data
         let partnerData = {
             mood: '',
             location: null,
-            activities: []
+            activities: [],
+            messages: []
+        };
+        
+        // Games data
+        const games = {
+            loveQuiz: {
+                questions: [
+                    {
+                        question: "What is your partner's favorite food?",
+                        options: ["Pizza", "Sushi", "Pasta", "Burger"],
+                        answer: 1
+                    },
+                    {
+                        question: "Where did you first meet your partner?",
+                        options: ["School", "Work", "Party", "Online"],
+                        answer: 2
+                    },
+                    {
+                        question: "What is your partner's dream vacation?",
+                        options: ["Beach", "Mountains", "City", "Countryside"],
+                        answer: 0
+                    }
+                ],
+                currentQuestion: 0,
+                score: 0
+            },
+            truthDare: {
+                truths: [
+                    "What's the most embarrassing thing you've done in front of your partner?",
+                    "When did you know you were in love with your partner?",
+                    "What's your partner's most annoying habit?",
+                    "What's the sweetest thing your partner has done for you?"
+                ],
+                dares: [
+                    "Send a voice message saying 'I love you' in a funny voice",
+                    "Plan a surprise virtual date for your partner",
+                    "Write a short poem about your partner and share it",
+                    "Share a childhood photo with your partner"
+                ]
+            }
         };
         
         // Initialize the app
@@ -495,6 +720,12 @@
                 
                 // Load partner data from Gists
                 loadPartnerData();
+                
+                // Update location history
+                updateLocationHistory();
+                
+                // Update message countdown
+                updateMessageCountdown();
             } else {
                 // Load GitHub token for new users
                 await loadGithubToken();
@@ -522,6 +753,10 @@
             // If switching to activities tab, refresh activities
             if (tabName === 'activities') {
                 checkPartnerActivity();
+            } else if (tabName === 'stats') {
+                updateActivityStats();
+            } else if (tabName === 'messages') {
+                loadMessageHistory();
             }
         }
         
@@ -618,11 +853,19 @@
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     async position => {
-                        userData.location = {
+                        const newLocation = {
                             lat: position.coords.latitude,
                             lng: position.coords.longitude,
                             timestamp: new Date().toISOString()
                         };
+                        
+                        userData.location = newLocation;
+                        userData.locationHistory.push(newLocation);
+                        
+                        // Keep only the last 50 location records
+                        if (userData.locationHistory.length > 50) {
+                            userData.locationHistory = userData.locationHistory.slice(-50);
+                        }
                         
                         // Save to localStorage
                         localStorage.setItem('togetherProfile', JSON.stringify(userData));
@@ -631,6 +874,7 @@
                         await updateGistData('location', {
                             [userData.userKey]: {
                                 location: userData.location,
+                                locationHistory: userData.locationHistory,
                                 updated: new Date().toISOString()
                             }
                         });
@@ -639,6 +883,9 @@
                         if (partnerData.location) {
                             calculateDistance();
                         }
+                        
+                        // Update location history display
+                        updateLocationHistory();
                         
                         showNotification('Location updated');
                     },
@@ -672,16 +919,57 @@
             
             // Update closest distance
             if (!userData.closestDistance || distance < userData.closestDistance) {
+                const previousClosest = userData.closestDistance;
                 userData.closestDistance = distance;
                 document.getElementById('closestDistance').textContent = distance.toFixed(2) + ' km';
+                
+                // Check if we're 10km closer than previous closest
+                if (previousClosest && (previousClosest - distance) >= 10) {
+                    showNotification(`You're ${previousClosest - distance}km closer than before! ❤️`);
+                }
                 
                 // Update stats
                 document.getElementById('timesTogether').textContent = 
                     parseInt(document.getElementById('timesTogether').textContent) + 1;
             }
             
+            // Update furthest distance
+            if (!userData.furthestDistance || distance > userData.furthestDistance) {
+                userData.furthestDistance = distance;
+                document.getElementById('furthestDistance').textContent = distance.toFixed(2) + ' km';
+            }
+            
             // Save updated data
             localStorage.setItem('togetherProfile', JSON.stringify(userData));
+        }
+        
+        // Update location history display
+        function updateLocationHistory() {
+            const historyList = document.getElementById('locationHistoryList');
+            historyList.innerHTML = '';
+            
+            if (userData.locationHistory && userData.locationHistory.length > 0) {
+                // Show only the last 5 locations
+                const recentLocations = userData.locationHistory.slice(-5).reverse();
+                
+                recentLocations.forEach(location => {
+                    const locationEl = document.createElement('div');
+                    locationEl.style.padding = '10px';
+                    locationEl.style.marginBottom = '5px';
+                    locationEl.style.background = 'rgba(255, 255, 255, 0.1)';
+                    locationEl.style.borderRadius = '8px';
+                    
+                    const date = new Date(location.timestamp);
+                    locationEl.innerHTML = `
+                        <div>Lat: ${location.lat.toFixed(4)}, Lng: ${location.lng.toFixed(4)}</div>
+                        <small>${date.toLocaleString()}</small>
+                    `;
+                    
+                    historyList.appendChild(locationEl);
+                });
+            } else {
+                historyList.innerHTML = '<p>No location history yet</p>';
+            }
         }
         
         function deg2rad(deg) {
@@ -695,9 +983,9 @@
                 timestamp: new Date().toISOString()
             });
             
-            // Keep only the last 10 activities
-            if (userData.activities.length > 10) {
-                userData.activities = userData.activities.slice(-10);
+            // Keep only the last 50 activities
+            if (userData.activities.length > 50) {
+                userData.activities = userData.activities.slice(-50);
             }
             
             // Save to localStorage
@@ -711,7 +999,7 @@
                 }
             });
             
-            showNotification('Activity shared with partner: ' + activity);
+            showNotification('Activity shared with partner: ' + formatActivityType(activity));
         }
         
         // Check partner's activity
@@ -760,6 +1048,340 @@
             }
         }
         
+        // Update activity statistics
+        function updateActivityStats() {
+            const period = document.getElementById('statsPeriod').value;
+            const statsContainer = document.getElementById('activityStats');
+            statsContainer.innerHTML = '';
+            
+            if (!partnerData.activities || partnerData.activities.length === 0) {
+                statsContainer.innerHTML = '<p>No activity data available for your partner</p>';
+                return;
+            }
+            
+            // Filter activities by selected period
+            const now = new Date();
+            let filteredActivities = [];
+            
+            switch(period) {
+                case 'day':
+                    filteredActivities = partnerData.activities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate.toDateString() === now.toDateString();
+                    });
+                    break;
+                case 'week':
+                    const weekStart = new Date(now);
+                    weekStart.setDate(now.getDate() - now.getDay());
+                    weekStart.setHours(0, 0, 0, 0);
+                    
+                    filteredActivities = partnerData.activities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate >= weekStart;
+                    });
+                    break;
+                case 'month':
+                    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+                    
+                    filteredActivities = partnerData.activities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate >= monthStart;
+                    });
+                    break;
+                case 'year':
+                    const yearStart = new Date(now.getFullYear(), 0, 1);
+                    
+                    filteredActivities = partnerData.activities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate >= yearStart;
+                    });
+                    break;
+                case 'all':
+                    filteredActivities = partnerData.activities;
+                    break;
+            }
+            
+            // Count activities by type
+            const activityCounts = {};
+            filteredActivities.forEach(activity => {
+                if (!activityCounts[activity.type]) {
+                    activityCounts[activity.type] = 0;
+                }
+                activityCounts[activity.type]++;
+            });
+            
+            // Display statistics
+            if (Object.keys(activityCounts).length === 0) {
+                statsContainer.innerHTML = `<p>No activities found for the selected period</p>`;
+                return;
+            }
+            
+            const statsGrid = document.createElement('div');
+            statsGrid.className = 'stats-grid';
+            
+            for (const [activityType, count] of Object.entries(activityCounts)) {
+                const statCard = document.createElement('div');
+                statCard.className = 'stat-card';
+                statCard.innerHTML = `
+                    <div class="stat-value">${count}</div>
+                    <div class="stat-label">${formatActivityType(activityType)}</div>
+                `;
+                statsGrid.appendChild(statCard);
+            }
+            
+            statsContainer.appendChild(statsGrid);
+        }
+        
+        // Start a game
+        function startGame(gameType) {
+            const gameContainer = document.getElementById('gameContainer');
+            gameContainer.style.display = 'block';
+            gameContainer.innerHTML = '';
+            
+            switch(gameType) {
+                case 'loveQuiz':
+                    startLoveQuiz();
+                    break;
+                case 'truthDare':
+                    startTruthDare();
+                    break;
+                case 'memoryGame':
+                    startMemoryGame();
+                    break;
+            }
+        }
+        
+        // Start Love Quiz game
+        function startLoveQuiz() {
+            const gameContainer = document.getElementById('gameContainer');
+            games.loveQuiz.currentQuestion = 0;
+            games.loveQuiz.score = 0;
+            
+            showQuestion();
+            
+            function showQuestion() {
+                if (games.loveQuiz.currentQuestion >= games.loveQuiz.questions.length) {
+                    // End of quiz
+                    gameContainer.innerHTML = `
+                        <h3>Quiz Completed!</h3>
+                        <p>Your score: ${games.loveQuiz.score} out of ${games.loveQuiz.questions.length}</p>
+                        <button class="btn" onclick="startGame('loveQuiz')">Play Again</button>
+                    `;
+                    return;
+                }
+                
+                const question = games.loveQuiz.questions[games.loveQuiz.currentQuestion];
+                
+                const questionEl = document.createElement('div');
+                questionEl.className = 'question';
+                questionEl.textContent = question.question;
+                
+                const optionsEl = document.createElement('div');
+                optionsEl.className = 'options';
+                
+                question.options.forEach((option, index) => {
+                    const optionEl = document.createElement('div');
+                    optionEl.className = 'option';
+                    optionEl.textContent = option;
+                    optionEl.onclick = () => checkAnswer(index);
+                    optionsEl.appendChild(optionEl);
+                });
+                
+                gameContainer.innerHTML = '';
+                gameContainer.appendChild(questionEl);
+                gameContainer.appendChild(optionsEl);
+            }
+            
+            function checkAnswer(selectedIndex) {
+                const question = games.loveQuiz.questions[games.loveQuiz.currentQuestion];
+                
+                if (selectedIndex === question.answer) {
+                    games.loveQuiz.score++;
+                    showNotification('Correct! 🎉');
+                } else {
+                    showNotification('Wrong answer 😢');
+                }
+                
+                games.loveQuiz.currentQuestion++;
+                showQuestion();
+            }
+        }
+        
+        // Start Truth or Dare game
+        function startTruthDare() {
+            const gameContainer = document.getElementById('gameContainer');
+            
+            gameContainer.innerHTML = `
+                <h3>Truth or Dare</h3>
+                <p>Choose your challenge:</p>
+                <div class="options">
+                    <div class="option" onclick="showTruth()">Truth</div>
+                    <div class="option" onclick="showDare()">Dare</div>
+                </div>
+                <div id="challengeResult" style="margin-top: 20px;"></div>
+            `;
+        }
+        
+        function showTruth() {
+            const challengeResult = document.getElementById('challengeResult');
+            const randomTruth = games.truthDare.truths[Math.floor(Math.random() * games.truthDare.truths.length)];
+            
+            challengeResult.innerHTML = `
+                <div class="question">${randomTruth}</div>
+                <button class="btn" onclick="startTruthDare()">New Challenge</button>
+            `;
+        }
+        
+        function showDare() {
+            const challengeResult = document.getElementById('challengeResult');
+            const randomDare = games.truthDare.dares[Math.floor(Math.random() * games.truthDare.dares.length)];
+            
+            challengeResult.innerHTML = `
+                <div class="question">${randomDare}</div>
+                <button class="btn" onclick="startTruthDare()">New Challenge</button>
+            `;
+        }
+        
+        // Start Memory Game (simplified version)
+        function startMemoryGame() {
+            const gameContainer = document.getElementById('gameContainer');
+            
+            gameContainer.innerHTML = `
+                <h3>Memory Game</h3>
+                <p>This game would require a more complex implementation with card matching.</p>
+                <p>For now, enjoy this placeholder and imagine matching cute couple-themed cards! 💕</p>
+                <button class="btn" onclick="startGame('memoryGame')">Play Anyway</button>
+            `;
+        }
+        
+        // Send daily message
+        async function sendDailyMessage() {
+            const messageText = document.getElementById('dailyMessage').value;
+            
+            if (!messageText) {
+                showNotification('Please enter a message');
+                return;
+            }
+            
+            // Check if already sent a message today
+            const today = new Date().toDateString();
+            const lastMessageDate = userData.lastMessageDate ? new Date(userData.lastMessageDate).toDateString() : null;
+            
+            if (lastMessageDate === today) {
+                showNotification('You can only send one message per day');
+                return;
+            }
+            
+            const newMessage = {
+                text: messageText,
+                timestamp: new Date().toISOString(),
+                sender: userData.userKey
+            };
+            
+            userData.messages.push(newMessage);
+            userData.lastMessageDate = new Date().toISOString();
+            
+            // Keep only the last 50 messages
+            if (userData.messages.length > 50) {
+                userData.messages = userData.messages.slice(-50);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('togetherProfile', JSON.stringify(userData));
+            
+            // Update Gist
+            await updateGistData('messages', {
+                [userData.userKey]: {
+                    messages: userData.messages,
+                    lastMessageDate: userData.lastMessageDate,
+                    updated: new Date().toISOString()
+                }
+            });
+            
+            // Clear message input
+            document.getElementById('dailyMessage').value = '';
+            
+            // Update message countdown
+            updateMessageCountdown();
+            
+            // Reload message history
+            loadMessageHistory();
+            
+            showNotification('Message sent to your partner! 💌');
+        }
+        
+        // Update message countdown
+        function updateMessageCountdown() {
+            const countdownEl = document.getElementById('messageCountdown');
+            
+            if (!userData.lastMessageDate) {
+                countdownEl.textContent = 'You can send a message now!';
+                return;
+            }
+            
+            const lastMessageDate = new Date(userData.lastMessageDate);
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0);
+            
+            const timeRemaining = tomorrow - now;
+            const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+            
+            countdownEl.textContent = `Next message available in: ${hours}h ${minutes}m`;
+        }
+        
+        // Load message history
+        async function loadMessageHistory() {
+            try {
+                const response = await fetch(gistUrls.messages + '?t=' + new Date().getTime());
+                const data = await response.json();
+                
+                const messageHistoryList = document.getElementById('messageHistoryList');
+                messageHistoryList.innerHTML = '';
+                
+                // Combine user and partner messages
+                let allMessages = [];
+                
+                if (data && data[userData.userKey] && data[userData.userKey].messages) {
+                    allMessages = allMessages.concat(data[userData.userKey].messages.map(msg => ({...msg, isOwn: true})));
+                }
+                
+                if (data && data[userData.partnerKey] && data[userData.partnerKey].messages) {
+                    allMessages = allMessages.concat(data[userData.partnerKey].messages.map(msg => ({...msg, isOwn: false})));
+                }
+                
+                // Sort messages by timestamp
+                allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                
+                // Display messages
+                if (allMessages.length === 0) {
+                    messageHistoryList.innerHTML = '<p>No messages yet</p>';
+                    return;
+                }
+                
+                // Show only the last 10 messages
+                const recentMessages = allMessages.slice(-10);
+                
+                recentMessages.forEach(message => {
+                    const messageEl = document.createElement('div');
+                    messageEl.className = `message ${message.isOwn ? 'sent' : 'received'}`;
+                    
+                    const date = new Date(message.timestamp);
+                    messageEl.innerHTML = `
+                        <div>${message.text}</div>
+                        <small>${date.toLocaleString()}</small>
+                    `;
+                    
+                    messageHistoryList.appendChild(messageEl);
+                });
+            } catch (error) {
+                console.error('Error loading message history:', error);
+                showNotification('Error loading message history');
+            }
+        }
+        
         // Format activity type for display
         function formatActivityType(type) {
             const activityMap = {
@@ -803,6 +1425,14 @@
                     if (userData.location) {
                         calculateDistance();
                     }
+                }
+                
+                // Load partner activities
+                const activitiesResponse = await fetch(gistUrls.activities + '?t=' + new Date().getTime());
+                const activitiesData = await activitiesResponse.json();
+                
+                if (activitiesData && activitiesData[userData.partnerKey] && activitiesData[userData.partnerKey].activities) {
+                    partnerData.activities = activitiesData[userData.partnerKey].activities;
                 }
                 
                 showNotification('Partner data loaded');
