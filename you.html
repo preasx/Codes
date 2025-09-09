@@ -1,510 +1,695 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Love Activity App 💕 (Gist‑backed)</title>
-  <style>
-    :root { --bg:#0f172a; --card:#111827; --muted:#94a3b8; --text:#e5e7eb; --accent:#22d3ee; --good:#34d399; --warn:#f59e0b; --bad:#ef4444; }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; background: linear-gradient(180deg, #0b1220, #0f172a 40%, #0b1220); color: var(--text); }
-    header { padding: 18px 20px; display:flex; gap:12px; align-items:center; justify-content:space-between; border-bottom:1px solid #1f2937; }
-    header h1 { margin:0; font-size: 20px; letter-spacing:.3px; }
-    .container { max-width: 1120px; margin: 20px auto; padding: 0 16px 40px; }
-    .grid { display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-    .card { background: rgba(17,24,39,.75); border:1px solid #1f2937; border-radius: 16px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.25); backdrop-filter: blur(6px); }
-    .card h2 { margin: 4px 0 12px; font-size: 18px; }
-    label { display:block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-    input[type="text"], input[type="password"], select { width:100%; padding:10px 12px; border-radius: 10px; border:1px solid #233046; background:#0b1220; color:var(--text); outline:none; }
-    input::placeholder { color:#475569; }
-    .row { display:flex; gap:10px; }
-    .row > * { flex:1; }
-    .btn { appearance:none; border:none; border-radius: 12px; padding:10px 14px; background: linear-gradient(90deg, #06b6d4, #22d3ee); color:#02121d; font-weight:700; cursor:pointer; box-shadow:0 8px 20px rgba(34,211,238,.25); }
-    .btn.secondary { background:#0b1220; color:#e2e8f0; border:1px solid #233046; box-shadow:none; }
-    .btn.warn { background: linear-gradient(90deg, #f59e0b, #fbbf24); color:#0b1220; }
-    .btn:disabled { opacity:.6; cursor:not-allowed; }
-    .muted { color: var(--muted); font-size: 12px; }
-    .stat { font-size: 28px; font-weight: 800; }
-    .pill { display:inline-block; padding:6px 10px; border-radius:999px; border:1px solid #233046; background:#0b1220; font-size:12px; color:#a5b4fc; }
-    .divider { height:1px; background:#1f2937; margin:12px 0; }
-    .small { font-size: 12px; }
-    code.inline { background:#0b1220; border:1px solid #233046; padding:2px 6px; border-radius:6px; }
-    .ok { color: var(--good); }
-    .bad { color: var(--bad); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Together - Couple Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+        }
+        
+        .btn {
+            background: #ff4b90;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn:hover {
+            background: #ff2d78;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            background: #2575fc;
+        }
+        
+        .btn-secondary:hover {
+            background: #1a5fd0;
+        }
+        
+        .mood-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .mood-btn {
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mood-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .mood-btn.active {
+            background: #ff4b90;
+            box-shadow: 0 0 10px rgba(255, 75, 144, 0.5);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online {
+            background: #4caf50;
+        }
+        
+        .status-offline {
+            background: #f44336;
+        }
+        
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .activity-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .activity-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff4b90;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+        
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 600px) {
+            .activity-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Love Activity App 💕 <span class="muted">(Gist‑backed realtime-ish)</span></h1>
-    <button class="btn secondary" id="btnSaveConfig">Save Config</button>
-  </header>  <div class="container">
-    <div class="grid">
-      <!-- CONFIG -->
-      <section class="card" id="configCard">
-        <h2>Configuration</h2>
-        <p class="muted">Store your GitHub token locally (never hardcode it), your username + partner username, and each Gist <em>ID</em>. Use canonical raw URLs without commit hashes.</p>
-        <div class="row">
-          <div>
-            <label>Your GitHub Token</label>
-            <input type="password" id="token" placeholder="ghp_... (scope: gist)" />
-          </div>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-heart"></i> Together</h1>
+            <p class="subtitle">Stay connected with your partner throughout the day</p>
+        </header>
+        
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-user"></i> Profile Setup</h2>
+            <div class="input-group">
+                <label for="username">Your Name</label>
+                <input type="text" id="username" placeholder="Enter your name">
+            </div>
+            <div class="input-group">
+                <label for="partner">Partner's Name</label>
+                <input type="text" id="partner" placeholder="Enter your partner's name">
+            </div>
+            <button class="btn" onclick="saveProfile()">
+                <i class="fas fa-save"></i> Save Profile
+            </button>
         </div>
-        <div class="row" style="margin-top:8px;">
-          <div>
-            <label>Your username</label>
-            <input type="text" id="me" placeholder="e.g. preasx24" />
-          </div>
-          <div>
-            <label>Partner username</label>
-            <input type="text" id="partner" placeholder="e.g. her_username" />
-          </div>
+        
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-heartbeat"></i> Mood Tracker</h2>
+            <p>Your current mood: <span id="currentMood">Not set yet</span></p>
+            <p>Partner's mood: <span id="partnerMood">Unknown</span></p>
+            
+            <div class="mood-options">
+                <div class="mood-btn" onclick="setMood('happy')">😊 Happy</div>
+                <div class="mood-btn" onclick="setMood('sad')">😢 Sad</div>
+                <div class="mood-btn" onclick="setMood('tired')">😴 Tired</div>
+                <div class="mood-btn" onclick="setMood('excited')">🤩 Excited</div>
+                <div class="mood-btn" onclick="setMood('romantic')">😍 Romantic</div>
+            </div>
+            
+            <button class="btn" onclick="updateMood()">
+                <i class="fas fa-sync"></i> Update Mood
+            </button>
         </div>
-        <div class="divider"></div>
-        <div class="row">
-          <div>
-            <label>Mood Gist ID</label>
-            <input type="text" id="gistMood" placeholder="e.g. 27094716b6704859ce4cc20e9b04478a" />
-          </div>
-          <div>
-            <label>Poop Gist ID</label>
-            <input type="text" id="gistPoop" placeholder="e.g. 2b50e24c6bc2ef379353258a259abf3a" />
-          </div>
+        
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-map-marker-alt"></i> Distance Tracker</h2>
+            <p>Current distance: <span id="currentDistance">Calculating...</span></p>
+            <p>Closest you've been: <span id="closestDistance">Not calculated yet</span></p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="timesTogether">0</div>
+                    <div class="stat-label">Times Together</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="kmTraveled">0</div>
+                    <div class="stat-label">KM Traveled</div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="updateLocation()">
+                <i class="fas fa-location-arrow"></i> Update Location
+            </button>
         </div>
-        <div class="row" style="margin-top:8px;">
-          <div>
-            <label>Location Gist ID</label>
-            <input type="text" id="gistLoc" placeholder="e.g. 3fe3d71cc05140da321b11e98c6015bf" />
-          </div>
-          <div>
-            <label>Notes/Popups Gist ID (optional)</label>
-            <input type="text" id="gistNotes" placeholder="e.g. 75ff822fb217e937be49b147edfbf992" />
-          </div>
+        
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-bell"></i> Activities</h2>
+            <p>Notify your partner about your current activity</p>
+            
+            <div class="activity-grid">
+                <div class="activity-item" onclick="sendActivity('pooping')">
+                    <i class="fas fa-poop fa-2x"></i>
+                    <p>Pooping</p>
+                </div>
+                <div class="activity-item" onclick="sendActivity('eating')">
+                    <i class="fas fa-utensils fa-2x"></i>
+                    <p>Eating</p>
+                </div>
+                <div class="activity-item" onclick="sendActivity('working')">
+                    <i class="fas fa-laptop fa-2x"></i>
+                    <p>Working</p>
+                </div>
+                <div class="activity-item" onclick="sendActivity('sleeping')">
+                    <i class="fas fa-bed fa-2x"></i>
+                    <p>Sleeping</p>
+                </div>
+                <div class="activity-item" onclick="sendActivity('exercising')">
+                    <i class="fas fa-running fa-2x"></i>
+                    <p>Exercising</p>
+                </div>
+                <div class="activity-item" onclick="sendActivity('thinking')">
+                    <i class="fas fa-brain fa-2x"></i>
+                    <p>Thinking of You</p>
+                </div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="checkPartnerActivity()">
+                <i class="fas fa-check"></i> Check Partner's Activity
+            </button>
         </div>
-        <div class="row" style="margin-top:8px;">
-          <div>
-            <label>Extra 1 Gist ID</label>
-            <input type="text" id="gistX1" placeholder="7c024dffd3ab26c772ffd786885e66e6" />
-          </div>
-          <div>
-            <label>Extra 2 Gist ID</label>
-            <input type="text" id="gistX2" placeholder="880b2b385a8b11b91e4a7abe58257a14" />
-          </div>
+        
+        <div class="notification" id="notification">
+            <span id="notificationText"></span>
         </div>
-        <div class="row" style="margin-top:8px;">
-          <div>
-            <label>Extra 3 Gist ID</label>
-            <input type="text" id="gistX3" placeholder="c257b4b817361f2ccc22a60388784986" />
-          </div>
-          <div>
-            <label>Extra 4 Gist ID</label>
-            <input type="text" id="gistX4" placeholder="4f0b769f591da88eb60147bd5a3d044c" />
-          </div>
-        </div>
-        <p class="muted small" style="margin-top:8px;">Canonical raw url pattern (no commit hash): <code class="inline">https://gist.githubusercontent.com/&lt;user&gt;/&lt;gist_id&gt;/raw/&lt;filename&gt;</code></p>
-      </section><!-- MOOD -->
-  <section class="card">
-    <h2>Mood / Status</h2>
-    <label>Set my mood</label>
-    <div class="row">
-      <select id="moodSelect">
-        <option value="happy">😀 happy</option>
-        <option value="excited">🤩 excited</option>
-        <option value="romantic">💘 romantic</option>
-        <option value="chilled">😌 chilled</option>
-        <option value="tired">🥱 tired</option>
-        <option value="sad">😔 sad</option>
-      </select>
-      <button class="btn" id="btnSetMood">Update</button>
+        
+        <footer>
+            <p>Together App &copy; 2023 | Built with <i class="fas fa-heart"></i> for couples</p>
+        </footer>
     </div>
-    <div class="divider"></div>
-    <p class="muted">Partner mood</p>
-    <div class="stat" id="partnerMood">—</div>
-    <div class="small muted" id="partnerMoodTime">—</div>
-  </section>
 
-  <!-- POOPING -->
-  <section class="card">
-    <h2>Pooping 🚽</h2>
-    <div class="row">
-      <button class="btn" id="btnPoopingNow">I'm pooping now</button>
-      <button class="btn secondary" id="btnAddPoop">Add poop count</button>
-    </div>
-    <div class="divider"></div>
-    <div class="row">
-      <div>
-        <p class="muted">My total</p>
-        <div class="stat" id="myPoopCount">0</div>
-      </div>
-      <div>
-        <p class="muted">Partner total</p>
-        <div class="stat" id="partnerPoopCount">0</div>
-      </div>
-    </div>
-    <p class="small muted" id="poopStatus">—</p>
-  </section>
-
-  <!-- LOCATION -->
-  <section class="card">
-    <h2>Location & Distance 📍</h2>
-    <div class="row">
-      <button class="btn" id="btnUpdateLoc">Update my location</button>
-      <button class="btn secondary" id="btnWatchLoc">Start background watch</button>
-    </div>
-    <div class="divider"></div>
-    <p class="muted">Current distance</p>
-    <div class="stat" id="distanceNow">—</div>
-    <p class="muted">Closest ever</p>
-    <div class="stat" id="closestEver">—</div>
-    <div class="small muted" id="locMeta">—</div>
-  </section>
-
-  <!-- NOTES / POPUPS (Optional) -->
-  <section class="card">
-    <h2>Pop-up Notes 💌</h2>
-    <div class="row">
-      <input type="text" id="noteText" placeholder="A little surprise note…" />
-      <button class="btn" id="btnSendNote">Send</button>
-    </div>
-    <div class="divider"></div>
-    <div id="notesList" class="small"></div>
-  </section>
-</div>
-
-<p class="muted small" style="margin-top:20px;">This app polls your gists every 30s. Token is stored only in your browser <em>localStorage</em>. For private gists, your token must have <code class="inline">gist</code> scope. Avoid hardcoding the token in public builds.</p>
-
-  </div>  <script>
-    // ---------- Utils ----------
-    const qs = sel => document.querySelector(sel);
-    const fmtTime = ts => new Date(ts).toLocaleString();
-
-    function kmBetween(a, b) { // Haversine
-      const R = 6371; // km
-      const dLat = (b.lat - a.lat) * Math.PI/180;
-      const dLon = (b.lon - a.lon) * Math.PI/180;
-      const lat1 = a.lat * Math.PI/180;
-      const lat2 = b.lat * Math.PI/180;
-      const x = Math.sin(dLat/2)**2 + Math.sin(dLon/2)**2 * Math.cos(lat1) * Math.cos(lat2);
-      const d = 2 * R * Math.asin(Math.sqrt(x));
-      return d;
-    }
-
-    function canonicalRaw(user, gistId, filename) {
-      return `https://gist.githubusercontent.com/${user}/${gistId}/raw/${filename}`; // no commit hash
-    }
-
-    function api(url, method='GET', token, body) {
-      return fetch(url, {
-        method,
-        headers: {
-          'Accept': 'application/vnd.github+json',
-          'Authorization': token ? `token ${token}` : undefined,
-          'Content-Type': 'application/json'
-        },
-        body: body ? JSON.stringify(body) : undefined
-      }).then(r => {
-        if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
-        return r.json();
-      });
-    }
-
-    async function getGist(gistId, token) {
-      return api(`https://api.github.com/gists/${gistId}`, 'GET', token);
-    }
-
-    async function putGistFile(gistId, filename, content, token) {
-      // PATCH /gists/:gist_id
-      return api(`https://api.github.com/gists/${gistId}`, 'PATCH', token, {
-        files: { [filename]: { content } }
-      });
-    }
-
-    // ---------- State ----------
-    const state = {
-      token: '', me: '', partner: '',
-      moodGist:'', poopGist:'', locGist:'', notesGist:'',
-      x1:'', x2:'', x3:'', x4:'',
-      pollMs: 30000,
-      watchId: null,
-      cache: { mood:null, poop:null, loc:null, notes:null }
-    };
-
-    function loadConfig() {
-      const cfg = JSON.parse(localStorage.getItem('loveapp_cfg')||'{}');
-      Object.assign(state, cfg);
-      // fill inputs
-      qs('#token').value = state.token||'';
-      qs('#me').value = state.me||'';
-      qs('#partner').value = state.partner||'';
-      qs('#gistMood').value = state.moodGist||'';
-      qs('#gistPoop').value = state.poopGist||'';
-      qs('#gistLoc').value = state.locGist||'';
-      qs('#gistNotes').value = state.notesGist||'';
-      qs('#gistX1').value = state.x1||'';
-      qs('#gistX2').value = state.x2||'';
-      qs('#gistX3').value = state.x3||'';
-      qs('#gistX4').value = state.x4||'';
-    }
-
-    function saveConfig() {
-      state.token = qs('#token').value.trim();
-      state.me = qs('#me').value.trim();
-      state.partner = qs('#partner').value.trim();
-      state.moodGist = qs('#gistMood').value.trim();
-      state.poopGist = qs('#gistPoop').value.trim();
-      state.locGist = qs('#gistLoc').value.trim();
-      state.notesGist = qs('#gistNotes').value.trim();
-      state.x1 = qs('#gistX1').value.trim();
-      state.x2 = qs('#gistX2').value.trim();
-      state.x3 = qs('#gistX3').value.trim();
-      state.x4 = qs('#gistX4').value.trim();
-      localStorage.setItem('loveapp_cfg', JSON.stringify({
-        token: state.token, me:state.me, partner:state.partner,
-        moodGist:state.moodGist, poopGist:state.poopGist, locGist:state.locGist, notesGist:state.notesGist,
-        x1:state.x1, x2:state.x2, x3:state.x3, x4:state.x4
-      }));
-      alert('Saved ✅');
-    }
-
-    // ---------- Schemas (default empty) ----------
-    function emptyMood(me, partner){ return { [me]: { mood:'', updated:0 }, [partner]: { mood:'', updated:0 } }; }
-    function emptyPoop(me, partner){ return { [me]: { count:0, isPooping:false, last:0 }, [partner]: { count:0, isPooping:false, last:0 } }; }
-    function emptyLoc(me, partner){ return { [me]: { lat:0, lon:0, updated:0 }, [partner]: { lat:0, lon:0, updated:0 }, closestEverKm:null }; }
-    function emptyNotes(){ return []; }
-
-    // ---------- Mood ----------
-    async function setMyMood() {
-      const mood = qs('#moodSelect').value;
-      if (!state.moodGist) return alert('Set Mood Gist ID in config');
-      const filename = 'gist_mood.json';
-      let data;
-      try {
-        const g = await getGist(state.moodGist, state.token);
-        const file = g.files[filename] || Object.values(g.files)[0];
-        data = file && file.content ? JSON.parse(file.content) : emptyMood(state.me, state.partner);
-      } catch (e) {
-        data = emptyMood(state.me, state.partner);
-      }
-      if (!data[state.me]) data[state.me] = { mood:'', updated:0 };
-      data[state.me].mood = mood;
-      data[state.me].updated = Date.now();
-      await putGistFile(state.moodGist, filename, JSON.stringify(data, null, 2), state.token);
-      await refreshAll();
-    }
-
-    function renderMood(data){
-      if (!data) return;
-      const p = data[state.partner];
-      if (p) {
-        qs('#partnerMood').textContent = p.mood || '—';
-        qs('#partnerMoodTime').textContent = p.updated ? `updated ${fmtTime(p.updated)}` : '—';
-      }
-    }
-
-    // ---------- Poop ----------
-    async function poopingNow() {
-      if (!state.poopGist) return alert('Set Poop Gist ID in config');
-      const filename = 'gist_poop.json';
-      let data;
-      try {
-        const g = await getGist(state.poopGist, state.token);
-        const file = g.files[filename] || Object.values(g.files)[0];
-        data = file && file.content ? JSON.parse(file.content) : emptyPoop(state.me, state.partner);
-      } catch (e) {
-        data = emptyPoop(state.me, state.partner);
-      }
-      if (!data[state.me]) data[state.me] = { count:0, isPooping:false, last:0 };
-      // flip state to true for a short period (5 minutes window)
-      data[state.me].isPooping = true;
-      data[state.me].last = Date.now();
-      await putGistFile(state.poopGist, filename, JSON.stringify(data, null, 2), state.token);
-      setTimeout(async ()=>{
-        try {
-          data[state.me].isPooping = false;
-          await putGistFile(state.poopGist, filename, JSON.stringify(data, null, 2), state.token);
-          await refreshAll();
-        } catch {}
-      }, 5*60*1000);
-      await refreshAll();
-    }
-
-    async function addPoopCount(){
-      if (!state.poopGist) return alert('Set Poop Gist ID in config');
-      const filename = 'gist_poop.json';
-      let data;
-      try {
-        const g = await getGist(state.poopGist, state.token);
-        const file = g.files[filename] || Object.values(g.files)[0];
-        data = file && file.content ? JSON.parse(file.content) : emptyPoop(state.me, state.partner);
-      } catch (e) {
-        data = emptyPoop(state.me, state.partner);
-      }
-      if (!data[state.me]) data[state.me] = { count:0, isPooping:false, last:0 };
-      data[state.me].count += 1;
-      data[state.me].last = Date.now();
-      await putGistFile(state.poopGist, filename, JSON.stringify(data, null, 2), state.token);
-      await refreshAll();
-    }
-
-    function renderPoop(data){
-      if (!data) return;
-      const me = data[state.me] || {count:0};
-      const p = data[state.partner] || {count:0};
-      qs('#myPoopCount').textContent = me.count ?? 0;
-      qs('#partnerPoopCount').textContent = p.count ?? 0;
-      const nowFlag = p.isPooping ? '🚽 currently pooping' : '—';
-      qs('#poopStatus').textContent = nowFlag;
-    }
-
-    // ---------- Location ----------
-    async function updateMyLocation(manual=false){
-      if (!navigator.geolocation) return alert('Geolocation not available');
-      if (!state.locGist) return alert('Set Location Gist ID in config');
-      const filename = 'gist_location.json';
-      navigator.geolocation.getCurrentPosition(async pos => {
-        const { latitude:lat, longitude:lon } = pos.coords;
-        let data;
-        try {
-          const g = await getGist(state.locGist, state.token);
-          const file = g.files[filename] || Object.values(g.files)[0];
-          data = file && file.content ? JSON.parse(file.content) : emptyLoc(state.me, state.partner);
-        } catch (e) { data = emptyLoc(state.me, state.partner); }
-        if (!data[state.me]) data[state.me] = { lat:0, lon:0, updated:0 };
-        const prev = { lat: data[state.me].lat, lon: data[state.me].lon };
-        const cur = { lat, lon };
-        let shouldLog = true;
-        if (prev.lat && prev.lon) {
-          const movedKm = kmBetween(prev, cur);
-          shouldLog = movedKm >= 5; // only log if moved >= 5km
-        }
-        if (shouldLog || manual) {
-          data[state.me] = { lat, lon, updated: Date.now() };
-          const meLoc = data[state.me];
-          const partnerLoc = data[state.partner];
-          if (partnerLoc && partnerLoc.lat && partnerLoc.lon) {
-            const d = kmBetween(meLoc, partnerLoc);
-            if (data.closestEverKm == null || d < data.closestEverKm) {
-              data.closestEverKm = Number(d.toFixed(2));
+    <script>
+        // Gist URLs for different activities (using Gists 5-8)
+        const gistUrls = {
+            profile: 'https://gist.githubusercontent.com/Preasx24/7c024dffd3ab26c772ffd786885e66e6/raw/gistfile1.txt',
+            mood: 'https://gist.githubusercontent.com/Preasx24/880b2b385a8b11b91e4a7abe58257a14/raw/gistfile1.txt',
+            location: 'https://gist.githubusercontent.com/Preasx24/c257b4b817361f2ccc22a60388784986/raw/gistfile1.txt',
+            activities: 'https://gist.githubusercontent.com/Preasx24/4f0b769f591da88eb60147bd5a3d044c/raw/gistfile1.txt',
+            token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt'
+        };
+        
+        // Gist IDs for updating
+        const gistIds = {
+            profile: '7c024dffd3ab26c772ffd786885e66e6',
+            mood: '880b2b385a8b11b91e4a7abe58257a14',
+            location: 'c257b4b817361f2ccc22a60388784986',
+            activities: '4f0b769f591da88eb60147bd5a3d044c'
+        };
+        
+        // User data
+        let userData = {
+            username: '',
+            partner: '',
+            mood: '',
+            location: null,
+            activities: [],
+            gistToken: ''
+        };
+        
+        // Partner data
+        let partnerData = {
+            mood: '',
+            location: null,
+            activities: []
+        };
+        
+        // Initialize the app
+        async function initApp() {
+            // Try to load saved profile
+            const savedProfile = localStorage.getItem('togetherProfile');
+            if (savedProfile) {
+                userData = JSON.parse(savedProfile);
+                document.getElementById('username').value = userData.username;
+                document.getElementById('partner').value = userData.partner;
+                
+                // Update UI
+                document.getElementById('currentMood').textContent = userData.mood || 'Not set yet';
+                
+                // Load GitHub token
+                await loadGithubToken();
+                
+                // Load partner data from Gists
+                loadPartnerData();
+            } else {
+                // Load GitHub token for new users
+                await loadGithubToken();
             }
-          }
-          await putGistFile(state.locGist, filename, JSON.stringify(data, null, 2), state.token);
-          await refreshAll();
         }
-      }, err => alert('Location error: ' + err.message), { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 });
-    }
-
-    function renderLocation(data){
-      if (!data) return;
-      const me = data[state.me];
-      const p = data[state.partner];
-      if (me && p && me.lat && p.lat) {
-        const d = kmBetween(me, p);
-        qs('#distanceNow').textContent = d.toFixed(2) + ' km';
-      } else {
-        qs('#distanceNow').textContent = '—';
-      }
-      qs('#closestEver').textContent = data.closestEverKm != null ? `${data.closestEverKm} km` : '—';
-      const meta = [
-        me?.updated ? `me: ${fmtTime(me.updated)}` : null,
-        p?.updated ? `partner: ${fmtTime(p.updated)}` : null
-      ].filter(Boolean).join(' • ');
-      qs('#locMeta').textContent = meta || '—';
-    }
-
-    function startWatch(){
-      if (state.watchId != null) return;
-      state.watchId = navigator.geolocation?.watchPosition?.(p => {
-        // try to log if >=5km difference
-        updateMyLocation(false);
-      }, err => console.warn('watch err', err), { enableHighAccuracy:true, maximumAge: 60000, timeout: 20000 });
-      alert('Background watch started (browser dependent).');
-    }
-
-    // ---------- Notes ----------
-    async function sendNote(){
-      if (!state.notesGist) return alert('Set Notes Gist ID in config');
-      const text = qs('#noteText').value.trim();
-      if (!text) return;
-      const filename = 'gist_notes.json';
-      let arr;
-      try {
-        const g = await getGist(state.notesGist, state.token);
-        const file = g.files[filename] || Object.values(g.files)[0];
-        arr = file && file.content ? JSON.parse(file.content) : emptyNotes();
-      } catch (e) { arr = emptyNotes(); }
-      arr.unshift({ sender: state.me, text, ts: Date.now() });
-      await putGistFile(state.notesGist, filename, JSON.stringify(arr, null, 2), state.token);
-      qs('#noteText').value = '';
-      await refreshAll();
-    }
-
-    function renderNotes(arr){
-      const el = qs('#notesList');
-      if (!arr || !Array.isArray(arr)) { el.innerHTML = '<span class="muted">—</span>'; return; }
-      el.innerHTML = arr.slice(0,10).map(n => `
-        <div class="row" style="align-items:center; margin:6px 0;">
-          <span class="pill">${n.sender}</span>
-          <span style="flex:1"></span>
-          <span class="small muted">${fmtTime(n.ts)}</span>
-        </div>
-        <div style="margin-bottom:10px;">${escapeHtml(n.text)}</div>
-      `).join('');
-    }
-
-    function escapeHtml(s){
-      return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-    }
-
-    // ---------- Polling ----------
-    async function refreshAll(){
-      if (state.moodGist) {
-        try {
-          const g = await getGist(state.moodGist, state.token);
-          const file = g.files['gist_mood.json'] || Object.values(g.files)[0];
-          const data = file && file.content ? JSON.parse(file.content) : null;
-          renderMood(data); state.cache.mood = data;
-        } catch(e){ console.warn('mood fetch', e); }
-      }
-      if (state.poopGist) {
-        try {
-          const g = await getGist(state.poopGist, state.token);
-          const file = g.files['gist_poop.json'] || Object.values(g.files)[0];
-          const data = file && file.content ? JSON.parse(file.content) : null;
-          renderPoop(data); state.cache.poop = data;
-        } catch(e){ console.warn('poop fetch', e); }
-      }
-      if (state.locGist) {
-        try {
-          const g = await getGist(state.locGist, state.token);
-          const file = g.files['gist_location.json'] || Object.values(g.files)[0];
-          const data = file && file.content ? JSON.parse(file.content) : null;
-          renderLocation(data); state.cache.loc = data;
-        } catch(e){ console.warn('loc fetch', e); }
-      }
-      if (state.notesGist) {
-        try {
-          const g = await getGist(state.notesGist, state.token);
-          const file = g.files['gist_notes.json'] || Object.values(g.files)[0];
-          const data = file && file.content ? JSON.parse(file.content) : [];
-          renderNotes(data); state.cache.notes = data;
-        } catch(e){ console.warn('notes fetch', e); }
-      }
-    }
-
-    function startPolling(){
-      setInterval(refreshAll, state.pollMs);
-      refreshAll();
-    }
-
-    // ---------- Events ----------
-    document.addEventListener('DOMContentLoaded', () => {
-      loadConfig();
-      startPolling();
-      qs('#btnSaveConfig').addEventListener('click', saveConfig);
-      qs('#btnSetMood').addEventListener('click', setMyMood);
-      qs('#btnPoopingNow').addEventListener('click', poopingNow);
-      qs('#btnAddPoop').addEventListener('click', addPoopCount);
-      qs('#btnUpdateLoc').addEventListener('click', () => updateMyLocation(true));
-      qs('#btnWatchLoc').addEventListener('click', startWatch);
-      qs('#btnSendNote').addEventListener('click', sendNote);
-    });
-  </script></body>
+        
+        // Load GitHub token from Gist
+        async function loadGithubToken() {
+            try {
+                const response = await fetch(gistUrls.token + '?t=' + new Date().getTime());
+                const token = await response.text();
+                userData.gistToken = token.trim();
+                showNotification('GitHub token loaded successfully');
+            } catch (error) {
+                console.error('Error loading GitHub token:', error);
+                showNotification('Error loading GitHub token. Using fallback method.');
+                
+                // Fallback: try to get token from localStorage
+                if (localStorage.getItem('githubToken')) {
+                    userData.gistToken = localStorage.getItem('githubToken');
+                }
+            }
+        }
+        
+        // Save user profile
+        async function saveProfile() {
+            userData.username = document.getElementById('username').value;
+            userData.partner = document.getElementById('partner').value;
+            
+            if (!userData.username || !userData.partner) {
+                showNotification('Please enter both names');
+                return;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('togetherProfile', JSON.stringify(userData));
+            
+            // Save to Gist
+            await updateGistData('profile', {
+                username: userData.username,
+                partner: userData.partner,
+                updated: new Date().toISOString()
+            });
+            
+            showNotification('Profile saved successfully!');
+        }
+        
+        // Set user's mood
+        async function setMood(mood) {
+            userData.mood = mood;
+            document.getElementById('currentMood').textContent = mood;
+            
+            // Save to localStorage
+            localStorage.setItem('togetherProfile', JSON.stringify(userData));
+            
+            // Update Gist
+            await updateGistData('mood', {
+                mood: userData.mood,
+                updated: new Date().toISOString()
+            });
+            
+            showNotification('Mood set to ' + mood);
+        }
+        
+        // Update mood from partner
+        async function updateMood() {
+            try {
+                const response = await fetch(gistUrls.mood + '?t=' + new Date().getTime());
+                const data = await response.json();
+                
+                if (data && data.mood) {
+                    partnerData.mood = data.mood;
+                    document.getElementById('partnerMood').textContent = data.mood;
+                    showNotification('Updated partner\'s mood: ' + data.mood);
+                } else {
+                    showNotification('No mood data found for partner');
+                }
+            } catch (error) {
+                console.error('Error fetching partner mood:', error);
+                showNotification('Error fetching partner mood');
+            }
+        }
+        
+        // Update location
+        function updateLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async position => {
+                        userData.location = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                            timestamp: new Date().toISOString()
+                        };
+                        
+                        // Save to localStorage
+                        localStorage.setItem('togetherProfile', JSON.stringify(userData));
+                        
+                        // Update Gist
+                        await updateGistData('location', {
+                            location: userData.location,
+                            updated: new Date().toISOString()
+                        });
+                        
+                        // Calculate distance if partner location is available
+                        if (partnerData.location) {
+                            calculateDistance();
+                        }
+                        
+                        showNotification('Location updated');
+                    },
+                    error => {
+                        showNotification('Error getting location: ' + error.message);
+                    }
+                );
+            } else {
+                showNotification('Geolocation is not supported by this browser');
+            }
+        }
+        
+        // Calculate distance between users
+        function calculateDistance() {
+            if (!userData.location || !partnerData.location) return;
+            
+            // Haversine formula to calculate distance between two coordinates
+            const R = 6371; // Earth's radius in km
+            const dLat = deg2rad(partnerData.location.lat - userData.location.lat);
+            const dLon = deg2rad(partnerData.location.lng - userData.location.lng);
+            
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(deg2rad(userData.location.lat)) * Math.cos(deg2rad(partnerData.location.lat)) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+                
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            const distance = R * c; // Distance in km
+            
+            document.getElementById('currentDistance').textContent = distance.toFixed(2) + ' km apart';
+            
+            // Update closest distance
+            if (!userData.closestDistance || distance < userData.closestDistance) {
+                userData.closestDistance = distance;
+                document.getElementById('closestDistance').textContent = distance.toFixed(2) + ' km';
+                
+                // Update stats
+                document.getElementById('timesTogether').textContent = 
+                    parseInt(document.getElementById('timesTogether').textContent) + 1;
+            }
+            
+            // Save updated data
+            localStorage.setItem('togetherProfile', JSON.stringify(userData));
+        }
+        
+        function deg2rad(deg) {
+            return deg * (Math.PI/180);
+        }
+        
+        // Send activity notification
+        async function sendActivity(activity) {
+            userData.activities.push({
+                type: activity,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('togetherProfile', JSON.stringify(userData));
+            
+            // Update Gist
+            await updateGistData('activities', {
+                activities: userData.activities,
+                updated: new Date().toISOString()
+            });
+            
+            showNotification('Activity shared with partner: ' + activity);
+        }
+        
+        // Check partner's activity
+        async function checkPartnerActivity() {
+            try {
+                const response = await fetch(gistUrls.activities + '?t=' + new Date().getTime());
+                const data = await response.json();
+                
+                if (data && data.activities && data.activities.length > 0) {
+                    const latestActivity = data.activities[data.activities.length - 1];
+                    const timeDiff = Math.floor((new Date() - new Date(latestActivity.timestamp)) / 60000);
+                    
+                    let timeText = '';
+                    if (timeDiff < 1) timeText = 'just now';
+                    else if (timeDiff < 60) timeText = `${timeDiff} minutes ago`;
+                    else timeText = `${Math.floor(timeDiff/60)} hours ago`;
+                    
+                    showNotification(`Your partner was ${latestActivity.type} ${timeText}`);
+                } else {
+                    showNotification('No recent activities from your partner');
+                }
+            } catch (error) {
+                console.error('Error fetching partner activities:', error);
+                showNotification('Error fetching partner activities');
+            }
+        }
+        
+        // Load partner data from Gists
+        async function loadPartnerData() {
+            try {
+                // Load partner mood
+                const moodResponse = await fetch(gistUrls.mood + '?t=' + new Date().getTime());
+                const moodData = await moodResponse.json();
+                
+                if (moodData && moodData.mood) {
+                    partnerData.mood = moodData.mood;
+                    document.getElementById('partnerMood').textContent = moodData.mood;
+                }
+                
+                // Load partner location
+                const locationResponse = await fetch(gistUrls.location + '?t=' + new Date().getTime());
+                const locationData = await locationResponse.json();
+                
+                if (locationData && locationData.location) {
+                    partnerData.location = locationData.location;
+                    
+                    // Calculate distance if user location is available
+                    if (userData.location) {
+                        calculateDistance();
+                    }
+                }
+                
+                showNotification('Partner data loaded');
+            } catch (error) {
+                console.error('Error loading partner data:', error);
+                showNotification('Error loading partner data');
+            }
+        }
+        
+        // Update Gist data
+        async function updateGistData(dataType, data) {
+            if (!userData.gistToken) {
+                showNotification('GitHub token is required to update Gists');
+                return;
+            }
+            
+            try {
+                const gistId = gistIds[dataType];
+                
+                const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `token ${userData.gistToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        files: {
+                            'gistfile1.txt': {
+                                content: JSON.stringify(data, null, 2)
+                            }
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                showNotification('Data synced with Gist');
+            } catch (error) {
+                console.error('Error updating Gist:', error);
+                showNotification('Error updating Gist: ' + error.message);
+            }
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Initialize the app when page loads
+        window.onload = initApp;
+    </script>
+</body>
 </html>
