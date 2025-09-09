@@ -237,6 +237,32 @@
             to { transform: rotate(360deg); }
         }
         
+        .tab-container {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            opacity: 1;
+            border-bottom: 2px solid #ff4b90;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
         @media (max-width: 600px) {
             .activity-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -245,6 +271,11 @@
             .stats {
                 flex-direction: column;
                 gap: 20px;
+            }
+            
+            .tab {
+                padding: 8px 12px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -256,94 +287,147 @@
             <p class="subtitle">Stay connected with your partner throughout the day</p>
         </header>
         
-        <div class="card">
-            <h2 class="card-title"><i class="fas fa-user"></i> Profile Setup</h2>
-            <div class="input-group">
-                <label for="username">Your Name</label>
-                <input type="text" id="username" placeholder="Enter your name">
-            </div>
-            <div class="input-group">
-                <label for="partner">Partner's Name</label>
-                <input type="text" id="partner" placeholder="Enter your partner's name">
-            </div>
-            <button class="btn" onclick="saveProfile()">
-                <i class="fas fa-save"></i> Save Profile
-            </button>
+        <div class="tab-container">
+            <div class="tab active" onclick="switchTab('profile')">Profile</div>
+            <div class="tab" onclick="switchTab('mood')">Mood</div>
+            <div class="tab" onclick="switchTab('location')">Location</div>
+            <div class="tab" onclick="switchTab('activities')">Activities</div>
         </div>
         
-        <div class="card">
-            <h2 class="card-title"><i class="fas fa-heartbeat"></i> Mood Tracker</h2>
-            <p>Your current mood: <span id="currentMood">Not set yet</span></p>
-            <p>Partner's mood: <span id="partnerMood">Unknown</span></p>
-            
-            <div class="mood-options">
-                <div class="mood-btn" onclick="setMood('happy')">😊 Happy</div>
-                <div class="mood-btn" onclick="setMood('sad')">😢 Sad</div>
-                <div class="mood-btn" onclick="setMood('tired')">😴 Tired</div>
-                <div class="mood-btn" onclick="setMood('excited')">🤩 Excited</div>
-                <div class="mood-btn" onclick="setMood('romantic')">😍 Romantic</div>
+        <div id="profile-tab" class="tab-content active">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-user"></i> Profile Setup</h2>
+                <div class="input-group">
+                    <label for="username">Your Name</label>
+                    <input type="text" id="username" placeholder="Enter your name">
+                </div>
+                <div class="input-group">
+                    <label for="partner">Partner's Name</label>
+                    <input type="text" id="partner" placeholder="Enter your partner's name">
+                </div>
+                <div class="input-group">
+                    <label for="userKey">Your Unique Key</label>
+                    <input type="text" id="userKey" placeholder="Create a unique key (e.g., user1)">
+                    <small>This will identify you in the system. Both partners need to know each other's keys.</small>
+                </div>
+                <div class="input-group">
+                    <label for="partnerKey">Partner's Unique Key</label>
+                    <input type="text" id="partnerKey" placeholder="Enter your partner's key">
+                </div>
+                <button class="btn" onclick="saveProfile()">
+                    <i class="fas fa-save"></i> Save Profile
+                </button>
             </div>
-            
-            <button class="btn" onclick="updateMood()">
-                <i class="fas fa-sync"></i> Update Mood
-            </button>
         </div>
         
-        <div class="card">
-            <h2 class="card-title"><i class="fas fa-map-marker-alt"></i> Distance Tracker</h2>
-            <p>Current distance: <span id="currentDistance">Calculating...</span></p>
-            <p>Closest you've been: <span id="closestDistance">Not calculated yet</span></p>
-            
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-value" id="timesTogether">0</div>
-                    <div class="stat-label">Times Together</div>
+        <div id="mood-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-heartbeat"></i> Mood Tracker</h2>
+                <p>Your current mood: <span id="currentMood">Not set yet</span></p>
+                <p>Partner's mood: <span id="partnerMood">Unknown</span></p>
+                
+                <div class="mood-options">
+                    <div class="mood-btn" onclick="setMood('happy')">😊 Happy</div>
+                    <div class="mood-btn" onclick="setMood('sad')">😢 Sad</div>
+                    <div class="mood-btn" onclick="setMood('tired')">😴 Tired</div>
+                    <div class="mood-btn" onclick="setMood('excited')">🤩 Excited</div>
+                    <div class="mood-btn" onclick="setMood('romantic')">😍 Romantic</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="kmTraveled">0</div>
-                    <div class="stat-label">KM Traveled</div>
-                </div>
+                
+                <button class="btn" onclick="updateMood()">
+                    <i class="fas fa-sync"></i> Update Mood
+                </button>
             </div>
-            
-            <button class="btn" onclick="updateLocation()">
-                <i class="fas fa-location-arrow"></i> Update Location
-            </button>
         </div>
         
-        <div class="card">
-            <h2 class="card-title"><i class="fas fa-bell"></i> Activities</h2>
-            <p>Notify your partner about your current activity</p>
-            
-            <div class="activity-grid">
-                <div class="activity-item" onclick="sendActivity('pooping')">
-                    <i class="fas fa-poop fa-2x"></i>
-                    <p>Pooping</p>
+        <div id="location-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-map-marker-alt"></i> Distance Tracker</h2>
+                <p>Current distance: <span id="currentDistance">Calculating...</span></p>
+                <p>Closest you've been: <span id="closestDistance">Not calculated yet</span></p>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="timesTogether">0</div>
+                        <div class="stat-label">Times Together</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="kmTraveled">0</div>
+                        <div class="stat-label">KM Traveled</div>
+                    </div>
                 </div>
-                <div class="activity-item" onclick="sendActivity('eating')">
-                    <i class="fas fa-utensils fa-2x"></i>
-                    <p>Eating</p>
-                </div>
-                <div class="activity-item" onclick="sendActivity('working')">
-                    <i class="fas fa-laptop fa-2x"></i>
-                    <p>Working</p>
-                </div>
-                <div class="activity-item" onclick="sendActivity('sleeping')">
-                    <i class="fas fa-bed fa-2x"></i>
-                    <p>Sleeping</p>
-                </div>
-                <div class="activity-item" onclick="sendActivity('exercising')">
-                    <i class="fas fa-running fa-2x"></i>
-                    <p>Exercising</p>
-                </div>
-                <div class="activity-item" onclick="sendActivity('thinking')">
-                    <i class="fas fa-brain fa-2x"></i>
-                    <p>Thinking of You</p>
-                </div>
+                
+                <button class="btn" onclick="updateLocation()">
+                    <i class="fas fa-location-arrow"></i> Update Location
+                </button>
             </div>
-            
-            <button class="btn btn-secondary" onclick="checkPartnerActivity()">
-                <i class="fas fa-check"></i> Check Partner's Activity
-            </button>
+        </div>
+        
+        <div id="activities-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-bell"></i> Activities</h2>
+                <p>Notify your partner about your current activity</p>
+                
+                <div class="activity-grid">
+                    <div class="activity-item" onclick="sendActivity('pooping')">
+                        <i class="fas fa-poop fa-2x"></i>
+                        <p>Pooping</p>
+                    </div>
+                    <div class="activity-item" onclick="sendActivity('eating')">
+                        <i class="fas fa-utensils fa-2x"></i>
+                        <p>Eating</p>
+                    </div>
+                    <div class="activity-item" onclick="sendActivity('working')">
+                        <i class="fas fa-laptop fa-2x"></i>
+                        <p>Working</p>
+                    </div>
+                    <div class="activity-item" onclick="sendActivity('sleeping')">
+                        <i class="fas fa-bed fa-2x"></i>
+                        <p>Sleeping</p>
+                    </div>
+                    <div class="activity-item" onclick="sendActivity('exercising')">
+                        <i class="fas fa-running fa-2x"></i>
+                        <p>Exercising</p>
+                    </div>
+                    <div class="activity-item" onclick="sendActivity('thinking')">
+                        <i class="fas fa-brain fa-2x"></i>
+                        <p>Thinking of You</p>
+                    </div>
+                    <div class="activity-item" onclick="sendActivity('shopping')">
+                        <i class="fas fa-shopping-cart fa-2x"></i>
+                        <p>Shopping</p>
+                    </div>
+                    <div class="activity-item" onclick="sendActivity('watching')">
+                        <i class="fas fa-tv fa-2x"></i>
+                        <p>Watching TV</p>
+                    </div>
+                    <div class="activity-item" onclick="sendActivity('cooking')">
+                        <i class="fas fa-utensil-spoon fa-2x"></i>
+                        <p>Cooking</p>
+                    </div>
+                    <div class="activity-item" onclick="sendActivity('driving')">
+                        <i class="fas fa-car fa-2x"></i>
+                        <p>Driving</p>
+                    </div>
+                    <div class="activity-item" onclick="sendActivity('missing')">
+                        <i class="fas fa-heart fa-2x"></i>
+                        <p>Missing You</p>
+                    </div>
+                    <div class="activity-item" onclick="sendActivity('celebrating')">
+                        <i class="fas fa-glass-cheers fa-2x"></i>
+                        <p>Celebrating</p>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Partner's Recent Activities</h3>
+                <div id="partnerActivities" style="margin-top: 10px;">
+                    <p>No recent activities from your partner</p>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="checkPartnerActivity()">
+                    <i class="fas fa-sync"></i> Refresh Activities
+                </button>
+            </div>
         </div>
         
         <div class="notification" id="notification">
@@ -377,6 +461,8 @@
         let userData = {
             username: '',
             partner: '',
+            userKey: '',
+            partnerKey: '',
             mood: '',
             location: null,
             activities: [],
@@ -398,6 +484,8 @@
                 userData = JSON.parse(savedProfile);
                 document.getElementById('username').value = userData.username;
                 document.getElementById('partner').value = userData.partner;
+                document.getElementById('userKey').value = userData.userKey;
+                document.getElementById('partnerKey').value = userData.partnerKey;
                 
                 // Update UI
                 document.getElementById('currentMood').textContent = userData.mood || 'Not set yet';
@@ -410,6 +498,30 @@
             } else {
                 // Load GitHub token for new users
                 await loadGithubToken();
+            }
+        }
+        
+        // Switch between tabs
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Activate selected tab button
+            document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            
+            // If switching to activities tab, refresh activities
+            if (tabName === 'activities') {
+                checkPartnerActivity();
             }
         }
         
@@ -435,9 +547,16 @@
         async function saveProfile() {
             userData.username = document.getElementById('username').value;
             userData.partner = document.getElementById('partner').value;
+            userData.userKey = document.getElementById('userKey').value;
+            userData.partnerKey = document.getElementById('partnerKey').value;
             
-            if (!userData.username || !userData.partner) {
-                showNotification('Please enter both names');
+            if (!userData.username || !userData.partner || !userData.userKey || !userData.partnerKey) {
+                showNotification('Please fill all fields');
+                return;
+            }
+            
+            if (userData.userKey === userData.partnerKey) {
+                showNotification('Your key and partner key cannot be the same');
                 return;
             }
             
@@ -446,9 +565,11 @@
             
             // Save to Gist
             await updateGistData('profile', {
-                username: userData.username,
-                partner: userData.partner,
-                updated: new Date().toISOString()
+                [userData.userKey]: {
+                    username: userData.username,
+                    partner: userData.partner,
+                    updated: new Date().toISOString()
+                }
             });
             
             showNotification('Profile saved successfully!');
@@ -464,8 +585,10 @@
             
             // Update Gist
             await updateGistData('mood', {
-                mood: userData.mood,
-                updated: new Date().toISOString()
+                [userData.userKey]: {
+                    mood: userData.mood,
+                    updated: new Date().toISOString()
+                }
             });
             
             showNotification('Mood set to ' + mood);
@@ -477,10 +600,10 @@
                 const response = await fetch(gistUrls.mood + '?t=' + new Date().getTime());
                 const data = await response.json();
                 
-                if (data && data.mood) {
-                    partnerData.mood = data.mood;
-                    document.getElementById('partnerMood').textContent = data.mood;
-                    showNotification('Updated partner\'s mood: ' + data.mood);
+                if (data && data[userData.partnerKey] && data[userData.partnerKey].mood) {
+                    partnerData.mood = data[userData.partnerKey].mood;
+                    document.getElementById('partnerMood').textContent = data[userData.partnerKey].mood;
+                    showNotification('Updated partner\'s mood: ' + data[userData.partnerKey].mood);
                 } else {
                     showNotification('No mood data found for partner');
                 }
@@ -506,8 +629,10 @@
                         
                         // Update Gist
                         await updateGistData('location', {
-                            location: userData.location,
-                            updated: new Date().toISOString()
+                            [userData.userKey]: {
+                                location: userData.location,
+                                updated: new Date().toISOString()
+                            }
                         });
                         
                         // Calculate distance if partner location is available
@@ -570,13 +695,20 @@
                 timestamp: new Date().toISOString()
             });
             
+            // Keep only the last 10 activities
+            if (userData.activities.length > 10) {
+                userData.activities = userData.activities.slice(-10);
+            }
+            
             // Save to localStorage
             localStorage.setItem('togetherProfile', JSON.stringify(userData));
             
             // Update Gist
             await updateGistData('activities', {
-                activities: userData.activities,
-                updated: new Date().toISOString()
+                [userData.userKey]: {
+                    activities: userData.activities,
+                    updated: new Date().toISOString()
+                }
             });
             
             showNotification('Activity shared with partner: ' + activity);
@@ -588,23 +720,64 @@
                 const response = await fetch(gistUrls.activities + '?t=' + new Date().getTime());
                 const data = await response.json();
                 
-                if (data && data.activities && data.activities.length > 0) {
-                    const latestActivity = data.activities[data.activities.length - 1];
-                    const timeDiff = Math.floor((new Date() - new Date(latestActivity.timestamp)) / 60000);
+                const activitiesContainer = document.getElementById('partnerActivities');
+                activitiesContainer.innerHTML = '';
+                
+                if (data && data[userData.partnerKey] && data[userData.partnerKey].activities && data[userData.partnerKey].activities.length > 0) {
+                    const activities = data[userData.partnerKey].activities;
                     
-                    let timeText = '';
-                    if (timeDiff < 1) timeText = 'just now';
-                    else if (timeDiff < 60) timeText = `${timeDiff} minutes ago`;
-                    else timeText = `${Math.floor(timeDiff/60)} hours ago`;
+                    // Sort activities by timestamp (newest first)
+                    activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                     
-                    showNotification(`Your partner was ${latestActivity.type} ${timeText}`);
+                    // Display up to 5 most recent activities
+                    const recentActivities = activities.slice(0, 5);
+                    
+                    recentActivities.forEach(activity => {
+                        const timeDiff = Math.floor((new Date() - new Date(activity.timestamp)) / 60000);
+                        
+                        let timeText = '';
+                        if (timeDiff < 1) timeText = 'just now';
+                        else if (timeDiff < 60) timeText = `${timeDiff} minutes ago`;
+                        else timeText = `${Math.floor(timeDiff/60)} hours ago`;
+                        
+                        const activityEl = document.createElement('div');
+                        activityEl.style.padding = '10px';
+                        activityEl.style.marginBottom = '5px';
+                        activityEl.style.background = 'rgba(255, 255, 255, 0.1)';
+                        activityEl.style.borderRadius = '8px';
+                        activityEl.innerHTML = `
+                            <strong>${formatActivityType(activity.type)}</strong> - ${timeText}
+                        `;
+                        
+                        activitiesContainer.appendChild(activityEl);
+                    });
                 } else {
-                    showNotification('No recent activities from your partner');
+                    activitiesContainer.innerHTML = '<p>No recent activities from your partner</p>';
                 }
             } catch (error) {
                 console.error('Error fetching partner activities:', error);
                 showNotification('Error fetching partner activities');
             }
+        }
+        
+        // Format activity type for display
+        function formatActivityType(type) {
+            const activityMap = {
+                'pooping': 'Pooping 💩',
+                'eating': 'Eating 🍽️',
+                'working': 'Working 💼',
+                'sleeping': 'Sleeping 😴',
+                'exercising': 'Exercising 🏃',
+                'thinking': 'Thinking of You 💭',
+                'shopping': 'Shopping 🛍️',
+                'watching': 'Watching TV 📺',
+                'cooking': 'Cooking 👩‍🍳',
+                'driving': 'Driving 🚗',
+                'missing': 'Missing You 💔',
+                'celebrating': 'Celebrating 🎉'
+            };
+            
+            return activityMap[type] || type;
         }
         
         // Load partner data from Gists
@@ -614,17 +787,17 @@
                 const moodResponse = await fetch(gistUrls.mood + '?t=' + new Date().getTime());
                 const moodData = await moodResponse.json();
                 
-                if (moodData && moodData.mood) {
-                    partnerData.mood = moodData.mood;
-                    document.getElementById('partnerMood').textContent = moodData.mood;
+                if (moodData && moodData[userData.partnerKey] && moodData[userData.partnerKey].mood) {
+                    partnerData.mood = moodData[userData.partnerKey].mood;
+                    document.getElementById('partnerMood').textContent = moodData[userData.partnerKey].mood;
                 }
                 
                 // Load partner location
                 const locationResponse = await fetch(gistUrls.location + '?t=' + new Date().getTime());
                 const locationData = await locationResponse.json();
                 
-                if (locationData && locationData.location) {
-                    partnerData.location = locationData.location;
+                if (locationData && locationData[userData.partnerKey] && locationData[userData.partnerKey].location) {
+                    partnerData.location = locationData[userData.partnerKey].location;
                     
                     // Calculate distance if user location is available
                     if (userData.location) {
@@ -649,6 +822,30 @@
             try {
                 const gistId = gistIds[dataType];
                 
+                // First get the current Gist content
+                const currentResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
+                    headers: {
+                        'Authorization': `token ${userData.gistToken}`
+                    }
+                });
+                
+                if (!currentResponse.ok) {
+                    throw new Error(`HTTP error! status: ${currentResponse.status}`);
+                }
+                
+                const currentGist = await currentResponse.json();
+                let currentContent = {};
+                
+                try {
+                    currentContent = JSON.parse(currentGist.files['gistfile1.txt'].content);
+                } catch (e) {
+                    console.log('Gist content is empty or invalid JSON, starting fresh');
+                }
+                
+                // Merge new data with existing content
+                const newContent = {...currentContent, ...data};
+                
+                // Update the Gist
                 const response = await fetch(`https://api.github.com/gists/${gistId}`, {
                     method: 'PATCH',
                     headers: {
@@ -658,7 +855,7 @@
                     body: JSON.stringify({
                         files: {
                             'gistfile1.txt': {
-                                content: JSON.stringify(data, null, 2)
+                                content: JSON.stringify(newContent, null, 2)
                             }
                         }
                     })
