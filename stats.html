@@ -611,4 +611,154 @@
             }
         }
 
-        // Load relatio
+        // Load relationship stats
+        async function loadRelationshipStats() {
+            try {
+                const response = await fetch(gistUrls.location + '?t=' + new Date().getTime());
+                const data = await response.json();
+
+                if (data && data[userData.userKey]) {
+                    const userLocationData = data[userData.userKey];
+                    if (userLocationData.closestDistance) {
+                        document.getElementById('closestDistance').textContent = userLocationData.closestDistance.toFixed(2) + ' km';
+                    }
+                    if (userLocationData.furthestDistance) {
+                        document.getElementById('furthestDistance').textContent = userLocationData.furthestDistance.toFixed(2) + ' km';
+                    }
+                    if (userLocationData.timesTogether) {
+                        document.getElementById('timesTogether').textContent = userLocationData.timesTogether;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading relationship stats:', error);
+            }
+        }
+
+        // Update activity statistics
+        function updateActivityStats() {
+            const statsContainer = document.getElementById('activityStats');
+            statsContainer.innerHTML = '';
+
+            if (partnerActivities.length === 0) {
+                statsContainer.innerHTML = '<p>No shared activities yet. Every moment with you is special!</p>';
+                return;
+            }
+
+            // Filter activities by selected period
+            const now = new Date();
+            let filteredActivities = [];
+
+            switch(currentPeriod) {
+                case 'day':
+                    filteredActivities = partnerActivities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate.toDateString() === now.toDateString();
+                    });
+                    break;
+                case 'week':
+                    const weekStart = new Date(now);
+                    weekStart.setDate(now.getDate() - now.getDay());
+                    weekStart.setHours(0, 0, 0, 0);
+
+                    filteredActivities = partnerActivities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate >= weekStart;
+                    });
+                    break;
+                case 'month':
+                    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+                    filteredActivities = partnerActivities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate >= monthStart;
+                    });
+                    break;
+                case 'year':
+                    const yearStart = new Date(now.getFullYear(), 0, 1);
+
+                    filteredActivities = partnerActivities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate >= yearStart;
+                    });
+                    break;
+                case 'all':
+                    filteredActivities = partnerActivities;
+                    break;
+            }
+
+            // Update total activities count
+            document.getElementById('totalActivities').textContent = filteredActivities.length;
+
+            // Count activities by type
+            const activityCounts = {};
+            filteredActivities.forEach(activity => {
+                if (!activityCounts[activity.type]) {
+                    activityCounts[activity.type] = 0;
+                }
+                activityCounts[activity.type]++;
+            });
+
+            // Display statistics
+            if (Object.keys(activityCounts).length === 0) {
+                statsContainer.innerHTML = `<p>No activities found for this period, but my heart is always with you!</p>`;
+                return;
+            }
+
+            // Find maximum count for scaling
+            const maxCount = Math.max(...Object.values(activityCounts));
+
+            for (const [activityType, count] of Object.entries(activityCounts)) {
+                const percentage = (count / maxCount) * 100;
+
+                const activityBar = document.createElement('div');
+                activityBar.className = 'activity-bar';
+                activityBar.innerHTML = `
+                    <div class="activity-name">${formatActivityType(activityType)}</div>
+                    <div class="activity-bar-inner">
+                        <div class="activity-bar-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="activity-count">${count}</div>
+                `;
+
+                statsContainer.appendChild(activityBar);
+            }
+        }
+
+        // Format activity type for display
+        function formatActivityType(type) {
+            const activityMap = {
+                'pooping': 'Private Moments',
+                'eating': 'Shared Meals',
+                'working': 'Working Hard',
+                'sleeping': 'Dreaming of You',
+                'exercising': 'Staying Healthy',
+                'thinking': 'Thinking of You',
+                'shopping': 'Shopping Together',
+                'watching': 'Movie Nights',
+                'cooking': 'Cooking Together',
+                'driving': 'Road Trips',
+                'missing': 'Missing Each Other',
+                'celebrating': 'Celebrating Love'
+            };
+
+            return activityMap[type] || type;
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+
+            notificationText.textContent = message;
+            notification.style.display = 'block';
+
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize the app when page loads
+        window.onload = initApp;
+    </script>
+</body>
+</html>
