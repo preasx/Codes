@@ -14,9 +14,7 @@
         }
 
         body {
-            background: linear-gradient(-45deg, #ff4b90, #ff2d78, #6a11cb, #2575fc);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
+            background: linear-gradient(135deg, #ff4b90 0%, #6a11cb 100%);
             color: #fff;
             min-height: 100vh;
             padding: 20px;
@@ -36,18 +34,6 @@
             z-index: -1;
         }
 
-        @keyframes gradient {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -58,22 +44,16 @@
             text-align: center;
             margin-bottom: 30px;
             padding: 25px;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(10px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
         }
 
         h1 {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             margin-bottom: 10px;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(to right, #ff8a8a, #ff4b90, #ff2d78);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -81,57 +61,43 @@
 
         h1 i {
             margin-right: 15px;
-            background: linear-gradient(to right, #ff4b90, #6a11cb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ff4b90;
         }
 
         .subtitle {
             font-size: 1.2rem;
             opacity: 0.9;
-            font-style: italic;
         }
 
         .back-btn {
             position: absolute;
-            top: 25px;
-            left: 25px;
+            top: 30px;
+            left: 30px;
             background: rgba(255, 255, 255, 0.1);
             border: none;
             color: white;
-            width: 55px;
-            height: 55px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .back-btn:hover {
             background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             padding: 25px;
             margin-bottom: 25px;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(10px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
         }
 
         .card-title {
@@ -143,18 +109,16 @@
 
         .card-title i {
             margin-right: 12px;
-            background: linear-gradient(to right, #ff4b90, #6a11cb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ff4b90;
         }
 
         .btn {
-            background: linear-gradient(to right, #ff4b90, #ff2d78);
+            background: #ff4b90;
             color: white;
             border: none;
-            padding: 16px 25px;
+            padding: 14px 22px;
             border-radius: 50px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             display: inline-flex;
@@ -163,42 +127,24 @@
             margin-right: 15px;
             margin-bottom: 15px;
             font-weight: 600;
-            letter-spacing: 0.5px;
-            box-shadow: 0 5px 15px rgba(255, 75, 144, 0.4);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
         }
 
         .btn i {
-            margin-right: 10px;
+            margin-right: 8px;
         }
 
         .btn:hover {
+            background: #ff2d78;
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 75, 144, 0.6);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         .btn-secondary {
-            background: linear-gradient(to right, #2575fc, #6a11cb);
+            background: #6a11cb;
         }
 
         .btn-secondary:hover {
-            box-shadow: 0 8px 20px rgba(37, 117, 252, 0.6);
+            background: #5a0db8;
         }
 
         .distance-info {
@@ -209,7 +155,6 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .distance-info div {
@@ -222,9 +167,7 @@
             font-size: 1.8rem;
             font-weight: bold;
             margin-bottom: 8px;
-            background: linear-gradient(to right, #ff8a8a, #ff4b90);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ff8a8a;
         }
 
         .distance-info .label {
@@ -243,12 +186,6 @@
             border-radius: 12px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .history-item:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateX(5px);
         }
 
         .history-item .time {
@@ -261,78 +198,20 @@
             position: fixed;
             bottom: 25px;
             right: 25px;
-            background: linear-gradient(to right, #ff4b90, #6a11cb);
+            background: #ff4b90;
             color: white;
-            padding: 18px 28px;
+            padding: 16px 24px;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             display: none;
             z-index: 1000;
-            animation: notificationSlide 0.5s ease forwards;
-            max-width: 350px;
-            border-left: 5px solid rgba(255, 255, 255, 0.3);
         }
 
-        @keyframes notificationSlide {
-            from {
-                transform: translateX(100px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .hearts-container {
+        .heart-decoration {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.2);
             z-index: -1;
-        }
-
-        .heart {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: transparent;
-            opacity: 0;
-        }
-
-        .heart::before, .heart::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: #ff4b90;
-            border-radius: 50%;
-        }
-
-        .heart::before {
-            left: -50%;
-        }
-
-        .heart::after {
-            top: -50%;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            margin: 15px 0;
-            overflow: hidden;
-        }
-
-        .progress {
-            height: 100%;
-            background: linear-gradient(to right, #ff4b90, #6a11cb);
-            border-radius: 4px;
-            width: 0%;
-            transition: width 1s ease;
         }
 
         @media (max-width: 600px) {
@@ -347,13 +226,22 @@
             }
             
             h1 {
-                font-size: 2.2rem;
+                font-size: 2rem;
+            }
+            
+            .back-btn {
+                top: 20px;
+                left: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="hearts-container" id="hearts-container"></div>
+    <!-- Decorative hearts -->
+    <div class="heart-decoration" style="top: 10%; left: 5%;">❤</div>
+    <div class="heart-decoration" style="top: 20%; right: 10%;">❤</div>
+    <div class="heart-decoration" style="bottom: 15%; left: 15%;">❤</div>
+    <div class="heart-decoration" style="bottom: 25%; right: 5%;">❤</div>
     
     <button class="back-btn" onclick="goBack()">
         <i class="fas fa-arrow-left"></i>
@@ -362,16 +250,11 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-map-marker-alt"></i> Location Tracker</h1>
-            <p class="subtitle">Stay connected no matter the distance</p>
+            <p class="subtitle">Track your distance from your partner</p>
         </header>
 
         <div class="card">
             <h2 class="card-title"><i class="fas fa-road"></i> Distance Information</h2>
-            
-            <div class="progress-bar">
-                <div class="progress" id="distanceProgress"></div>
-            </div>
-            
             <div class="distance-info">
                 <div>
                     <div class="value" id="currentDistance">-- km</div>
@@ -399,7 +282,7 @@
         <div class="card">
             <h2 class="card-title"><i class="fas fa-history"></i> Location History</h2>
             <div id="locationHistory" class="location-history">
-                <p>No location history yet. Update your location to begin tracking!</p>
+                <p>No location history yet</p>
             </div>
         </div>
     </div>
@@ -416,55 +299,6 @@
         };
 
         let userData = null;
-
-        // Create floating hearts
-        function createHearts() {
-            const heartsContainer = document.getElementById('hearts-container');
-            const colors = ['#ff4b90', '#ff2d78', '#6a11cb', '#ff8a8a'];
-            
-            for (let i = 0; i < 15; i++) {
-                const heart = document.createElement('div');
-                heart.classList.add('heart');
-                
-                const size = Math.random() * 15 + 5;
-                heart.style.width = `${size}px`;
-                heart.style.height = `${size}px`;
-                heart.style.left = `${Math.random() * 100}%`;
-                heart.style.top = `${Math.random() * 100}%`;
-                heart.style.animation = `
-                    floatHeart ${Math.random() * 10 + 15}s ease-in-out infinite,
-                    fadeHeart ${Math.random() * 5 + 5}s ease-in-out infinite
-                `;
-                heart.style.animationDelay = `${Math.random() * 5}s`;
-                
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                heart.style.setProperty('--heart-color', color);
-                
-                heartsContainer.appendChild(heart);
-            }
-            
-            // Add the keyframes for heart animation
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes floatHeart {
-                    0% { transform: translate(0, 0) rotate(0deg); }
-                    25% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(90deg); }
-                    50% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(180deg); }
-                    75% { transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(270deg); }
-                    100% { transform: translate(0, 0) rotate(360deg); }
-                }
-                
-                @keyframes fadeHeart {
-                    0%, 100% { opacity: 0; }
-                    50% { opacity: 0.6; }
-                }
-                
-                .heart::before, .heart::after {
-                    background: var(--heart-color) !important;
-                }
-            `;
-            document.head.appendChild(style);
-        }
 
         // Initialize the app
         function initApp() {
@@ -483,20 +317,11 @@
 
             // Load location data
             loadLocationData();
-            
-            // Create floating hearts
-            createHearts();
         }
 
         // Go back to main page
         function goBack() {
-            // Add a romantic transition effect
-            document.querySelector('.container').style.opacity = '0';
-            document.querySelector('.container').style.transform = 'translateY(20px)';
-            
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 500);
+            window.location.href = 'index.html';
         }
 
         // Load GitHub token from Gist
@@ -558,9 +383,6 @@
         // Update user's location
         async function updateLocation() {
             if (navigator.geolocation) {
-                // Show a romantic notification
-                showNotification('Finding your location... 💖');
-                
                 navigator.geolocation.getCurrentPosition(
                     async position => {
                         const newLocation = {
@@ -604,10 +426,10 @@
                         // Update location history display
                         updateLocationHistory();
 
-                        showNotification('Location updated successfully! 💕');
+                        showNotification('Location updated successfully');
                     },
                     error => {
-                        showNotification('Error getting location: ' + error.message + ' 😢');
+                        showNotification('Error getting location: ' + error.message);
                     }
                 );
             } else {
@@ -618,8 +440,6 @@
         // Update partner's location
         async function updatePartnerLocation() {
             try {
-                showNotification('Updating partner location... 💑');
-                
                 const response = await fetch(gistUrls.location + '?t=' + new Date().getTime());
                 const data = await response.json();
 
@@ -631,7 +451,7 @@
                         calculateDistance();
                     }
 
-                    showNotification('Partner location updated! ❤️');
+                    showNotification('Partner location updated');
                 } else {
                     showNotification('No location data found for partner');
                 }
@@ -659,11 +479,6 @@
             const distance = R * c; // Distance in km
 
             document.getElementById('currentDistance').textContent = distance.toFixed(2) + ' km';
-            
-            // Update progress bar (assuming max distance is 1000km for visualization)
-            const progressBar = document.getElementById('distanceProgress');
-            const progressPercentage = Math.min(100, (distance / 1000) * 100);
-            progressBar.style.width = `${progressPercentage}%`;
 
             // Update closest distance
             if (!userData.closestDistance || distance < userData.closestDistance) {
@@ -716,14 +531,14 @@
 
                     const date = new Date(location.timestamp);
                     historyItem.innerHTML = `
-                        <div><i class="fas fa-map-pin" style="color: #ff4b90;"></i> Lat: ${location.lat.toFixed(4)}, Lng: ${location.lng.toFixed(4)}</div>
-                        <div class="time"><i class="far fa-clock"></i> ${date.toLocaleString()}</div>
+                        <div>Lat: ${location.lat.toFixed(4)}, Lng: ${location.lng.toFixed(4)}</div>
+                        <div class="time">${date.toLocaleString()}</div>
                     `;
 
                     historyContainer.appendChild(historyItem);
                 });
             } else {
-                historyContainer.innerHTML = '<p>No location history yet. Update your location to begin tracking!</p>';
+                historyContainer.innerHTML = '<p>No location history yet</p>';
             }
         }
 
@@ -794,7 +609,7 @@
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
 
-            notificationText.innerHTML = message;
+            notificationText.textContent = message;
             notification.style.display = 'block';
 
             setTimeout(() => {
