@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics - Together</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        h1 i {
+            margin-right: 15px;
+            color: #ff4b90;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            color: #ff4b90;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .period-selector {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .period-btn {
+            padding: 10px 15px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .period-btn.active {
+            background: #ff4b90;
+        }
+        
+        .activity-stats {
+            margin: 20px 0;
+        }
+        
+        .activity-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .activity-name {
+            width: 120px;
+            font-size: 0.9rem;
+        }
+        
+        .activity-bar-inner {
+            flex: 1;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .activity-bar-fill {
+            height: 100%;
+            background: #ff4b90;
+            border-radius: 10px;
+        }
+        
+        .activity-count {
+            width: 40px;
+            text-align: right;
+            margin-left: 10px;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff4b90;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+        }
+        
+        @media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .period-selector {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+    
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-pie"></i> Statistics</h1>
+            <p class="subtitle">View your activity history together</p>
+        </header>
+        
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-calendar"></i> Select Time Period</h2>
+            <div class="period-selector">
+                <div class="period-btn active" onclick="changePeriod('day', this)">Today</div>
+                <div class="period-btn" onclick="changePeriod('week', this)">This Week</div>
+                <div class="period-btn" onclick="changePeriod('month', this)">This Month</div>
+                <div class="period-btn" onclick="changePeriod('year', this)">This Year</div>
+                <div class="period-btn" onclick="changePeriod('all', this)">All Time</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-heart"></i> Relationship Stats</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="timesTogether">0</div>
+                    <div class="stat-label">Times Together</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="closestDistance">-- km</div>
+                    <div class="stat-label">Closest Distance</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="furthestDistance">-- km</div>
+                    <div class="stat-label">Furthest Distance</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalActivities">0</div>
+                    <div class="stat-label">Total Activities</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-chart-bar"></i> Activity Statistics</h2>
+            <div id="activityStats" class="activity-stats">
+                <p>Select a time period to view statistics</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <span id="notificationText"></span>
+    </div>
+
+    <script>
+        // Gist URLs
+        const gistUrls = {
+            activities: 'https://gist.githubusercontent.com/Preasx24/4f0b769f591da88eb60147bd5a3d044c/raw/gistfile1.txt',
+            location: 'https://gist.githubusercontent.com/Preasx24/c257b4b817361f2ccc22a60388784986/raw/gistfile1.txt',
+            token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt'
+        };
+        
+        let userData = null;
+        let currentPeriod = 'day';
+        let partnerActivities = [];
+        
+        // Initialize the app
+        function initApp() {
+            // Load user data
+            const savedProfile = localStorage.getItem('togetherProfile');
+            if (!savedProfile) {
+                showNotification('Please set up your profile first');
+                setTimeout(() => window.location.href = 'index.html', 2000);
+                return;
+            }
+            
+            userData = JSON.parse(savedProfile);
+            
+            // Load GitHub token
+            loadGithubToken();
+            
+            // Load partner activities
+            loadPartnerActivities();
+            
+            // Load relationship stats
+            loadRelationshipStats();
+        }
+        
+        // Go back to main page
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+        
+        // Load GitHub token from Gist
+        async function loadGithubToken() {
+            try {
+                const response = await fetch(gistUrls.token + '?t=' + new Date().getTime());
+                const token = await response.text();
+                userData.gistToken = token.trim();
+            } catch (error) {
+                console.error('Error loading GitHub token:', error);
+                showNotification('Error loading GitHub token');
+            }
+        }
+        
+        // Change time period
+        function changePeriod(period, element) {
+            currentPeriod = period;
+            
+            // Update active button
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            // Update statistics
+            updateActivityStats();
+        }
+        
+        // Load partner activities
+        async function loadPartnerActivities() {
+            try {
+                const response = await fetch(gistUrls.activities + '?t=' + new Date().getTime());
+                const data = await response.json();
+                
+                if (data && data[userData.partnerKey] && data[userData.partnerKey].activities) {
+                    partnerActivities = data[userData.partnerKey].activities;
+                    updateActivityStats();
+                }
+            } catch (error) {
+                console.error('Error fetching partner activities:', error);
+                showNotification('Error fetching partner activities');
+            }
+        }
+        
+        // Load relationship stats
+        async function loadRelationshipStats() {
+            try {
+                const response = await fetch(gistUrls.location + '?t=' + new Date().getTime());
+                const data = await response.json();
+                
+                if (data && data[userData.userKey]) {
+                    const userLocationData = data[userData.userKey];
+                    if (userLocationData.closestDistance) {
+                        document.getElementById('closestDistance').textContent = userLocationData.closestDistance.toFixed(2) + ' km';
+                    }
+                    if (userLocationData.furthestDistance) {
+                        document.getElementById('furthestDistance').textContent = userLocationData.furthestDistance.toFixed(2) + ' km';
+                    }
+                    if (userLocationData.timesTogether) {
+                        document.getElementById('timesTogether').textContent = userLocationData.timesTogether;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading relationship stats:', error);
+            }
+        }
+        
+        // Update activity statistics
+        function updateActivityStats() {
+            const statsContainer = document.getElementById('activityStats');
+            statsContainer.innerHTML = '';
+            
+            if (partnerActivities.length === 0) {
+                statsContainer.innerHTML = '<p>No activity data available</p>';
+                return;
+            }
+            
+            // Filter activities by selected period
+            const now = new Date();
+            let filteredActivities = [];
+            
+            switch(currentPeriod) {
+                case 'day':
+                    filteredActivities = partnerActivities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate.toDateString() === now.toDateString();
+                    });
+                    break;
+                case 'week':
+                    const weekStart = new Date(now);
+                    weekStart.setDate(now.getDate() - now.getDay());
+                    weekStart.setHours(0, 0, 0, 0);
+                    
+                    filteredActivities = partnerActivities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate >= weekStart;
+                    });
+                    break;
+                case 'month':
+                    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+                    
+                    filteredActivities = partnerActivities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate >= monthStart;
+                    });
+                    break;
+                case 'year':
+                    const yearStart = new Date(now.getFullYear(), 0, 1);
+                    
+                    filteredActivities = partnerActivities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate >= yearStart;
+                    });
+                    break;
+                case 'all':
+                    filteredActivities = partnerActivities;
+                    break;
+            }
+            
+            // Update total activities count
+            document.getElementById('totalActivities').textContent = filteredActivities.length;
+            
+            // Count activities by type
+            const activityCounts = {};
+            filteredActivities.forEach(activity => {
+                if (!activityCounts[activity.type]) {
+                    activityCounts[activity.type] = 0;
+                }
+                activityCounts[activity.type]++;
+            });
+            
+            // Display statistics
+            if (Object.keys(activityCounts).length === 0) {
+                statsContainer.innerHTML = `<p>No activities found for the selected period</p>`;
+                return;
+            }
+            
+            // Find maximum count for scaling
+            const maxCount = Math.max(...Object.values(activityCounts));
+            
+            for (const [activityType, count] of Object.entries(activityCounts)) {
+                const percentage = (count / maxCount) * 100;
+                
+                const activityBar = document.createElement('div');
+                activityBar.className = 'activity-bar';
+                activityBar.innerHTML = `
+                    <div class="activity-name">${formatActivityType(activityType)}</div>
+                    <div class="activity-bar-inner">
+                        <div class="activity-bar-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="activity-count">${count}</div>
+                `;
+                
+                statsContainer.appendChild(activityBar);
+            }
+        }
+        
+        // Format activity type for display
+        function formatActivityType(type) {
+            const activityMap = {
+                'pooping': 'Pooping',
+                'eating': 'Eating',
+                'working': 'Working',
+                'sleeping': 'Sleeping',
+                'exercising': 'Exercising',
+                'thinking': 'Thinking',
+                'shopping': 'Shopping',
+                'watching': 'Watching TV',
+                'cooking': 'Cooking',
+                'driving': 'Driving',
+                'missing': 'Missing You',
+                'celebrating': 'Celebrating'
+            };
+            
+            return activityMap[type] || type;
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Initialize the app when page loads
+        window.onload = initApp;
+    </script>
+</body>
+</html>
