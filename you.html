@@ -18,21 +18,39 @@
             color: #fff;
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
+            max-width: 800px;
+            width: 100%;
             padding: 20px;
         }
         
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
+        .app-card {
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            border-radius: 20px;
+            padding: 30px;
             backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .logo {
+            margin-bottom: 20px;
+        }
+        
+        .logo i {
+            font-size: 60px;
+            color: #ff4b90;
+            background: rgba(255, 255, 255, 0.2);
+            width: 120px;
+            height: 120px;
+            line-height: 120px;
+            border-radius: 50%;
+            margin-bottom: 15px;
         }
         
         h1 {
@@ -43,43 +61,56 @@
         .subtitle {
             font-size: 1.2rem;
             opacity: 0.9;
+            margin-bottom: 30px;
         }
         
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
+        .profile-form {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
             margin-bottom: 20px;
-            backdrop-filter: blur(10px);
         }
         
-        .card-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
         
-        .card-title i {
-            margin-right: 10px;
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 16px;
+        }
+        
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
         }
         
         .btn {
             background: #ff4b90;
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 16px 30px;
             border-radius: 50px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            margin-top: 10px;
+            width: 100%;
         }
         
         .btn i {
-            margin-right: 8px;
+            margin-right: 10px;
         }
         
         .btn:hover {
@@ -88,96 +119,45 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
-        .btn-secondary {
-            background: #2575fc;
+        .features-menu {
+            display: none;
+            margin-top: 30px;
         }
         
-        .btn-secondary:hover {
-            background: #1a5fd0;
-        }
-        
-        .mood-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        
-        .mood-btn {
-            flex: 1;
-            min-width: 100px;
-            text-align: center;
-            padding: 10px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.15);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .mood-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
-        
-        .mood-btn.active {
-            background: #ff4b90;
-            box-shadow: 0 0 10px rgba(255, 75, 144, 0.5);
-        }
-        
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-        
-        .status-online {
-            background: #4caf50;
-        }
-        
-        .status-offline {
-            background: #f44336;
-        }
-        
-        .activity-grid {
+        .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 15px 0;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
         }
         
-        .activity-item {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px;
-            border-radius: 10px;
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         
-        .activity-item:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
         }
         
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
+        .feature-card i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #ff4b90;
         }
         
-        .stat-item {
-            text-align: center;
+        .feature-card h3 {
+            margin-bottom: 10px;
         }
         
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
+        .feature-card p {
             opacity: 0.8;
+            font-size: 0.9rem;
         }
         
         .notification {
@@ -193,613 +173,163 @@
             z-index: 1000;
         }
         
-        .input-group {
-            margin-bottom: 15px;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        
-        .input-group input, .input-group textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-        }
-        
-        .input-group input::placeholder, .input-group textarea::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            opacity: 0.7;
-            font-size: 0.9rem;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .tab-container {
-            display: flex;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            overflow-x: auto;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-        
-        .tab.active {
-            opacity: 1;
-            border-bottom: 2px solid #ff4b90;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 15px 0;
-        }
-        
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        .game-container {
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .game-option {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 20px;
-            border-radius: 10px;
-            margin: 15px 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .game-option:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
-        }
-        
-        .question {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-        }
-        
-        .options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-        
-        .option {
-            padding: 10px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.15);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .option:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
-        
-        .message-container {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
-        }
-        
-        .message {
-            padding: 10px;
-            border-radius: 10px;
-            margin: 10px 0;
-            background: rgba(255, 255, 255, 0.15);
-        }
-        
-        .message.sent {
-            text-align: right;
-            background: rgba(255, 75, 144, 0.3);
-        }
-        
-        .message.received {
-            text-align: left;
-            background: rgba(37, 117, 252, 0.3);
-        }
-        
-        .countdown {
-            font-size: 0.9rem;
-            opacity: 0.7;
-            margin-top: 10px;
-        }
-        
         @media (max-width: 600px) {
-            .activity-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .stats {
-                flex-direction: column;
-                gap: 20px;
-            }
-            
-            .tab {
-                padding: 8px 12px;
-                font-size: 0.9rem;
-            }
-            
-            .options {
+            .features-grid {
                 grid-template-columns: 1fr;
             }
             
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .app-card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1><i class="fas fa-heart"></i> Together</h1>
-            <p class="subtitle">Stay connected with your partner throughout the day</p>
-        </header>
-        
-        <div class="tab-container">
-            <div class="tab active" onclick="switchTab('profile')">Profile</div>
-            <div class="tab" onclick="switchTab('mood')">Mood</div>
-            <div class="tab" onclick="switchTab('location')">Location</div>
-            <div class="tab" onclick="switchTab('activities')">Activities</div>
-            <div class="tab" onclick="switchTab('stats')">Statistics</div>
-            <div class="tab" onclick="switchTab('games')">Games</div>
-            <div class="tab" onclick="switchTab('messages')">Messages</div>
-        </div>
-        
-        <div id="profile-tab" class="tab-content active">
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-user"></i> Profile Setup</h2>
-                <div class="input-group">
-                    <label for="username">Your Name</label>
-                    <input type="text" id="username" placeholder="Enter your name">
+        <div class="app-card">
+            <div class="logo">
+                <i class="fas fa-heart"></i>
+                <h1>Together</h1>
+                <p class="subtitle">Your couple companion app</p>
+            </div>
+            
+            <div id="profile-section">
+                <div class="profile-form">
+                    <div class="input-group">
+                        <label for="username">Your Name</label>
+                        <input type="text" id="username" placeholder="Enter your name">
+                    </div>
+                    <div class="input-group">
+                        <label for="partner">Partner's Name</label>
+                        <input type="text" id="partner" placeholder="Enter your partner's name">
+                    </div>
+                    <div class="input-group">
+                        <label for="userKey">Your Unique Key</label>
+                        <input type="text" id="userKey" placeholder="Create a unique key (e.g., user1)">
+                        <small style="opacity: 0.7; display: block; margin-top: 5px;">This will identify you in the system. Both partners need to know each other's keys.</small>
+                    </div>
+                    <div class="input-group">
+                        <label for="partnerKey">Partner's Unique Key</label>
+                        <input type="text" id="partnerKey" placeholder="Enter your partner's key">
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label for="partner">Partner's Name</label>
-                    <input type="text" id="partner" placeholder="Enter your partner's name">
-                </div>
-                <div class="input-group">
-                    <label for="userKey">Your Unique Key</label>
-                    <input type="text" id="userKey" placeholder="Create a unique key (e.g., user1)">
-                    <small>This will identify you in the system. Both partners need to know each other's keys.</small>
-                </div>
-                <div class="input-group">
-                    <label for="partnerKey">Partner's Unique Key</label>
-                    <input type="text" id="partnerKey" placeholder="Enter your partner's key">
-                </div>
+                
                 <button class="btn" onclick="saveProfile()">
-                    <i class="fas fa-save"></i> Save Profile
+                    <i class="fas fa-save"></i> Save Profile & Continue
                 </button>
             </div>
-        </div>
-        
-        <div id="mood-tab" class="tab-content">
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-heartbeat"></i> Mood Tracker</h2>
-                <p>Your current mood: <span id="currentMood">Not set yet</span></p>
-                <p>Partner's mood: <span id="partnerMood">Unknown</span></p>
+            
+            <div id="features-menu" class="features-menu">
+                <h2>Welcome, <span id="welcome-name"></span>!</h2>
+                <p>What would you like to do today?</p>
                 
-                <div class="mood-options">
-                    <div class="mood-btn" onclick="setMood('happy')">😊 Happy</div>
-                    <div class="mood-btn" onclick="setMood('sad')">😢 Sad</div>
-                    <div class="mood-btn" onclick="setMood('tired')">😴 Tired</div>
-                    <div class="mood-btn" onclick="setMood('excited')">🤩 Excited</div>
-                    <div class="mood-btn" onclick="setMood('romantic')">😍 Romantic</div>
-                    <div class="mood-btn" onclick="setMood('playful')">😜 Playful</div>
-                    <div class="mood-btn" onclick="setMood('grateful')">🙏 Grateful</div>
-                    <div class="mood-btn" onclick="setMood('nostalgic')">📸 Nostalgic</div>
-                    <div class="mood-btn" onclick="setMood('flirty')">😘 Flirty</div>
-                    <div class="mood-btn" onclick="setMood('cozy')">🛋️ Cozy</div>
-                </div>
-                
-                <button class="btn" onclick="updateMood()">
-                    <i class="fas fa-sync"></i> Update Mood
-                </button>
-            </div>
-        </div>
-        
-        <div id="location-tab" class="tab-content">
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-map-marker-alt"></i> Distance Tracker</h2>
-                <p>Current distance: <span id="currentDistance">Calculating...</span></p>
-                <p>Closest you've been: <span id="closestDistance">Not calculated yet</span></p>
-                <p>Furthest you've been: <span id="furthestDistance">Not calculated yet</span></p>
-                
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-value" id="timesTogether">0</div>
-                        <div class="stat-label">Times Together</div>
+                <div class="features-grid">
+                    <div class="feature-card" onclick="navigateTo('mood.html')">
+                        <i class="fas fa-heartbeat"></i>
+                        <h3>Mood Tracker</h3>
+                        <p>Share your current mood with your partner</p>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="kmTraveled">0</div>
-                        <div class="stat-label">KM Traveled</div>
+                    
+                    <div class="feature-card" onclick="navigateTo('location.html')">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>Distance Tracker</h3>
+                        <p>See how close you are to each other</p>
                     </div>
-                </div>
-                
-                <div id="locationHistory" style="margin-top: 20px;">
-                    <h3>Location History</h3>
-                    <div id="locationHistoryList"></div>
-                </div>
-                
-                <button class="btn" onclick="updateLocation()">
-                    <i class="fas fa-location-arrow"></i> Update Location
-                </button>
-            </div>
-        </div>
-        
-        <div id="activities-tab" class="tab-content">
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-bell"></i> Activities</h2>
-                <p>Notify your partner about your current activity</p>
-                
-                <div class="activity-grid">
-                    <div class="activity-item" onclick="sendActivity('pooping')">
-                        <i class="fas fa-poop fa-2x"></i>
-                        <p>Pooping</p>
+                    
+                    <div class="feature-card" onclick="navigateTo('activities.html')">
+                        <i class="fas fa-bell"></i>
+                        <h3>Activities</h3>
+                        <p>Share what you're doing with your partner</p>
                     </div>
-                    <div class="activity-item" onclick="sendActivity('eating')">
-                        <i class="fas fa-utensils fa-2x"></i>
-                        <p>Eating</p>
+                    
+                    <div class="feature-card" onclick="navigateTo('stats.html')">
+                        <i class="fas fa-chart-pie"></i>
+                        <h3>Statistics</h3>
+                        <p>View your activity history together</p>
                     </div>
-                    <div class="activity-item" onclick="sendActivity('working')">
-                        <i class="fas fa-laptop fa-2x"></i>
-                        <p>Working</p>
+                    
+                    <div class="feature-card" onclick="navigateTo('games.html')">
+                        <i class="fas fa-gamepad"></i>
+                        <h3>Games</h3>
+                        <p>Play fun couple games together</p>
                     </div>
-                    <div class="activity-item" onclick="sendActivity('sleeping')">
-                        <i class="fas fa-bed fa-2x"></i>
-                        <p>Sleeping</p>
+                    
+                    <div class="feature-card" onclick="navigateTo('messages.html')">
+                        <i class="fas fa-envelope"></i>
+                        <h3>Daily Messages</h3>
+                        <p>Send one special message per day</p>
                     </div>
-                    <div class="activity-item" onclick="sendActivity('exercising')">
-                        <i class="fas fa-running fa-2x"></i>
-                        <p>Exercising</p>
-                    </div>
-                    <div class="activity-item" onclick="sendActivity('thinking')">
-                        <i class="fas fa-brain fa-2x"></i>
-                        <p>Thinking of You</p>
-                    </div>
-                    <div class="activity-item" onclick="sendActivity('shopping')">
-                        <i class="fas fa-shopping-cart fa-2x"></i>
-                        <p>Shopping</p>
-                    </div>
-                    <div class="activity-item" onclick="sendActivity('watching')">
-                        <i class="fas fa-tv fa-2x"></i>
-                        <p>Watching TV</p>
-                    </div>
-                    <div class="activity-item" onclick="sendActivity('cooking')">
-                        <i class="fas fa-utensil-spoon fa-2x"></i>
-                        <p>Cooking</p>
-                    </div>
-                    <div class="activity-item" onclick="sendActivity('driving')">
-                        <i class="fas fa-car fa-2x"></i>
-                        <p>Driving</p>
-                    </div>
-                    <div class="activity-item" onclick="sendActivity('missing')">
-                        <i class="fas fa-heart fa-2x"></i>
-                        <p>Missing You</p>
-                    </div>
-                    <div class="activity-item" onclick="sendActivity('celebrating')">
-                        <i class="fas fa-glass-cheers fa-2x"></i>
-                        <p>Celebrating</p>
-                    </div>
-                </div>
-                
-                <h3 style="margin-top: 20px;">Partner's Recent Activities</h3>
-                <div id="partnerActivities" style="margin-top: 10px;">
-                    <p>No recent activities from your partner</p>
-                </div>
-                
-                <button class="btn btn-secondary" onclick="checkPartnerActivity()">
-                    <i class="fas fa-sync"></i> Refresh Activities
-                </button>
-            </div>
-        </div>
-        
-        <div id="stats-tab" class="tab-content">
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-chart-pie"></i> Activity Statistics</h2>
-                
-                <div class="input-group">
-                    <label for="statsPeriod">Select Time Period</label>
-                    <select id="statsPeriod" onchange="updateActivityStats()">
-                        <option value="day">Today</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                        <option value="year">This Year</option>
-                        <option value="all">All Time</option>
-                    </select>
-                </div>
-                
-                <div id="activityStats">
-                    <p>Select a time period to view statistics</p>
                 </div>
             </div>
         </div>
-        
-        <div id="games-tab" class="tab-content">
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-gamepad"></i> Games</h2>
-                
-                <div class="game-option" onclick="startGame('loveQuiz')">
-                    <h3><i class="fas fa-question-circle"></i> Love Quiz</h3>
-                    <p>Test how well you know your partner</p>
-                </div>
-                
-                <div class="game-option" onclick="startGame('truthDare')">
-                    <h3><i class="fas fa-theater-masks"></i> Truth or Dare</h3>
-                    <p>Romantic and fun challenges</p>
-                </div>
-                
-                <div class="game-option" onclick="startGame('memoryGame')">
-                    <h3><i class="fas fa-brain"></i> Memory Game</h3>
-                    <p>Match pairs of cards with couple themes</p>
-                </div>
-                
-                <div id="gameContainer" class="game-container" style="display: none;">
-                    <!-- Game content will be loaded here -->
-                </div>
-            </div>
-        </div>
-        
-        <div id="messages-tab" class="tab-content">
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-envelope"></i> Daily Messages</h2>
-                <p>Send one special message to your partner each day</p>
-                
-                <div class="input-group">
-                    <label for="dailyMessage">Your Message for Today</label>
-                    <textarea id="dailyMessage" rows="4" placeholder="Write your message here..."></textarea>
-                </div>
-                
-                <button class="btn" onclick="sendDailyMessage()">
-                    <i class="fas fa-paper-plane"></i> Send Message
-                </button>
-                
-                <div class="countdown" id="messageCountdown"></div>
-                
-                <div id="messageHistory" style="margin-top: 20px;">
-                    <h3>Message History</h3>
-                    <div id="messageHistoryList"></div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="notification" id="notification">
-            <span id="notificationText"></span>
-        </div>
-        
-        <footer>
-            <p>Together App &copy; 2023 | Built with <i class="fas fa-heart"></i> for couples</p>
-        </footer>
+    </div>
+    
+    <div class="notification" id="notification">
+        <span id="notificationText"></span>
     </div>
 
     <script>
-        // Gist URLs for different activities (using Gists 5-8)
+        // Gist URLs for different activities
         const gistUrls = {
             profile: 'https://gist.githubusercontent.com/Preasx24/7c024dffd3ab26c772ffd786885e66e6/raw/gistfile1.txt',
             mood: 'https://gist.githubusercontent.com/Preasx24/880b2b385a8b11b91e4a7abe58257a14/raw/gistfile1.txt',
             location: 'https://gist.githubusercontent.com/Preasx24/c257b4b817361f2ccc22a60388784986/raw/gistfile1.txt',
             activities: 'https://gist.githubusercontent.com/Preasx24/4f0b769f591da88eb60147bd5a3d044c/raw/gistfile1.txt',
-            token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt',
-            messages: 'https://gist.githubusercontent.com/Preasx24/7c024dffd3ab26c772ffd786885e66e6/raw/gistfile1.txt'
+            token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt'
         };
         
-        // Gist IDs for updating
-        const gistIds = {
-            profile: '7c024dffd3ab26c772ffd786885e66e6',
-            mood: '880b2b385a8b11b91e4a7abe58257a14',
-            location: 'c257b4b817361f2ccc22a60388784986',
-            activities: '4f0b769f591da88eb60147bd5a3d044c',
-            messages: '7c024dffd3ab26c772ffd786885e66e6'
-        };
-        
-        // User data
-        let userData = {
-            username: '',
-            partner: '',
-            userKey: '',
-            partnerKey: '',
-            mood: '',
-            location: null,
-            activities: [],
-            messages: [],
-            gistToken: '',
-            closestDistance: null,
-            furthestDistance: null,
-            locationHistory: []
-        };
-        
-        // Partner data
-        let partnerData = {
-            mood: '',
-            location: null,
-            activities: [],
-            messages: []
-        };
-        
-        // Games data
-        const games = {
-            loveQuiz: {
-                questions: [
-                    {
-                        question: "What is your partner's favorite food?",
-                        options: ["Pizza", "Sushi", "Pasta", "Burger"],
-                        answer: 1
-                    },
-                    {
-                        question: "Where did you first meet your partner?",
-                        options: ["School", "Work", "Party", "Online"],
-                        answer: 2
-                    },
-                    {
-                        question: "What is your partner's dream vacation?",
-                        options: ["Beach", "Mountains", "City", "Countryside"],
-                        answer: 0
-                    }
-                ],
-                currentQuestion: 0,
-                score: 0
-            },
-            truthDare: {
-                truths: [
-                    "What's the most embarrassing thing you've done in front of your partner?",
-                    "When did you know you were in love with your partner?",
-                    "What's your partner's most annoying habit?",
-                    "What's the sweetest thing your partner has done for you?"
-                ],
-                dares: [
-                    "Send a voice message saying 'I love you' in a funny voice",
-                    "Plan a surprise virtual date for your partner",
-                    "Write a short poem about your partner and share it",
-                    "Share a childhood photo with your partner"
-                ]
-            }
-        };
-        
-        // Initialize the app
-        async function initApp() {
-            // Try to load saved profile
+        // Check if profile already exists
+        function checkExistingProfile() {
             const savedProfile = localStorage.getItem('togetherProfile');
             if (savedProfile) {
-                userData = JSON.parse(savedProfile);
+                const userData = JSON.parse(savedProfile);
                 document.getElementById('username').value = userData.username;
                 document.getElementById('partner').value = userData.partner;
                 document.getElementById('userKey').value = userData.userKey;
                 document.getElementById('partnerKey').value = userData.partnerKey;
                 
-                // Update UI
-                document.getElementById('currentMood').textContent = userData.mood || 'Not set yet';
-                
-                // Load GitHub token
-                await loadGithubToken();
-                
-                // Load partner data from Gists
-                loadPartnerData();
-                
-                // Update location history
-                updateLocationHistory();
-                
-                // Update message countdown
-                updateMessageCountdown();
-            } else {
-                // Load GitHub token for new users
-                await loadGithubToken();
-            }
-        }
-        
-        // Switch between tabs
-        function switchTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Deactivate all tab buttons
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Activate selected tab
-            document.getElementById(`${tabName}-tab`).classList.add('active');
-            
-            // Activate selected tab button
-            document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
-            
-            // If switching to activities tab, refresh activities
-            if (tabName === 'activities') {
-                checkPartnerActivity();
-            } else if (tabName === 'stats') {
-                updateActivityStats();
-            } else if (tabName === 'messages') {
-                loadMessageHistory();
-            }
-        }
-        
-        // Load GitHub token from Gist
-        async function loadGithubToken() {
-            try {
-                const response = await fetch(gistUrls.token + '?t=' + new Date().getTime());
-                const token = await response.text();
-                userData.gistToken = token.trim();
-                showNotification('GitHub token loaded successfully');
-            } catch (error) {
-                console.error('Error loading GitHub token:', error);
-                showNotification('Error loading GitHub token. Using fallback method.');
-                
-                // Fallback: try to get token from localStorage
-                if (localStorage.getItem('githubToken')) {
-                    userData.gistToken = localStorage.getItem('githubToken');
-                }
+                // Show features menu
+                showFeaturesMenu(userData.username);
             }
         }
         
         // Save user profile
         async function saveProfile() {
-            userData.username = document.getElementById('username').value;
-            userData.partner = document.getElementById('partner').value;
-            userData.userKey = document.getElementById('userKey').value;
-            userData.partnerKey = document.getElementById('partnerKey').value;
+            const username = document.getElementById('username').value;
+            const partner = document.getElementById('partner').value;
+            const userKey = document.getElementById('userKey').value;
+            const partnerKey = document.getElementById('partnerKey').value;
             
-            if (!userData.username || !userData.partner || !userData.userKey || !userData.partnerKey) {
+            if (!username || !partner || !userKey || !partnerKey) {
                 showNotification('Please fill all fields');
                 return;
             }
             
-            if (userData.userKey === userData.partnerKey) {
+            if (userKey === partnerKey) {
                 showNotification('Your key and partner key cannot be the same');
                 return;
             }
+            
+            const userData = {
+                username,
+                partner,
+                userKey,
+                partnerKey,
+                gistToken: ''
+            };
+            
+            // Load GitHub token
+            await loadGithubToken(userData);
             
             // Save to localStorage
             localStorage.setItem('togetherProfile', JSON.stringify(userData));
             
             // Save to Gist
-            await updateGistData('profile', {
+            await updateGistData('profile', userData, {
                 [userData.userKey]: {
                     username: userData.username,
                     partner: userData.partner,
@@ -807,650 +337,34 @@
                 }
             });
             
+            // Show features menu
+            showFeaturesMenu(username);
+            
             showNotification('Profile saved successfully!');
         }
         
-        // Set user's mood
-        async function setMood(mood) {
-            userData.mood = mood;
-            document.getElementById('currentMood').textContent = mood;
-            
-            // Save to localStorage
-            localStorage.setItem('togetherProfile', JSON.stringify(userData));
-            
-            // Update Gist
-            await updateGistData('mood', {
-                [userData.userKey]: {
-                    mood: userData.mood,
-                    updated: new Date().toISOString()
-                }
-            });
-            
-            showNotification('Mood set to ' + mood);
-        }
-        
-        // Update mood from partner
-        async function updateMood() {
+        // Load GitHub token from Gist
+        async function loadGithubToken(userData) {
             try {
-                const response = await fetch(gistUrls.mood + '?t=' + new Date().getTime());
-                const data = await response.json();
-                
-                if (data && data[userData.partnerKey] && data[userData.partnerKey].mood) {
-                    partnerData.mood = data[userData.partnerKey].mood;
-                    document.getElementById('partnerMood').textContent = data[userData.partnerKey].mood;
-                    showNotification('Updated partner\'s mood: ' + data[userData.partnerKey].mood);
-                } else {
-                    showNotification('No mood data found for partner');
-                }
+                const response = await fetch(gistUrls.token + '?t=' + new Date().getTime());
+                const token = await response.text();
+                userData.gistToken = token.trim();
             } catch (error) {
-                console.error('Error fetching partner mood:', error);
-                showNotification('Error fetching partner mood');
-            }
-        }
-        
-        // Update location
-        function updateLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    async position => {
-                        const newLocation = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude,
-                            timestamp: new Date().toISOString()
-                        };
-                        
-                        userData.location = newLocation;
-                        userData.locationHistory.push(newLocation);
-                        
-                        // Keep only the last 50 location records
-                        if (userData.locationHistory.length > 50) {
-                            userData.locationHistory = userData.locationHistory.slice(-50);
-                        }
-                        
-                        // Save to localStorage
-                        localStorage.setItem('togetherProfile', JSON.stringify(userData));
-                        
-                        // Update Gist
-                        await updateGistData('location', {
-                            [userData.userKey]: {
-                                location: userData.location,
-                                locationHistory: userData.locationHistory,
-                                updated: new Date().toISOString()
-                            }
-                        });
-                        
-                        // Calculate distance if partner location is available
-                        if (partnerData.location) {
-                            calculateDistance();
-                        }
-                        
-                        // Update location history display
-                        updateLocationHistory();
-                        
-                        showNotification('Location updated');
-                    },
-                    error => {
-                        showNotification('Error getting location: ' + error.message);
-                    }
-                );
-            } else {
-                showNotification('Geolocation is not supported by this browser');
-            }
-        }
-        
-        // Calculate distance between users
-        function calculateDistance() {
-            if (!userData.location || !partnerData.location) return;
-            
-            // Haversine formula to calculate distance between two coordinates
-            const R = 6371; // Earth's radius in km
-            const dLat = deg2rad(partnerData.location.lat - userData.location.lat);
-            const dLon = deg2rad(partnerData.location.lng - userData.location.lng);
-            
-            const a = 
-                Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(deg2rad(userData.location.lat)) * Math.cos(deg2rad(partnerData.location.lat)) * 
-                Math.sin(dLon/2) * Math.sin(dLon/2);
-                
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-            const distance = R * c; // Distance in km
-            
-            document.getElementById('currentDistance').textContent = distance.toFixed(2) + ' km apart';
-            
-            // Update closest distance
-            if (!userData.closestDistance || distance < userData.closestDistance) {
-                const previousClosest = userData.closestDistance;
-                userData.closestDistance = distance;
-                document.getElementById('closestDistance').textContent = distance.toFixed(2) + ' km';
-                
-                // Check if we're 10km closer than previous closest
-                if (previousClosest && (previousClosest - distance) >= 10) {
-                    showNotification(`You're ${previousClosest - distance}km closer than before! ❤️`);
-                }
-                
-                // Update stats
-                document.getElementById('timesTogether').textContent = 
-                    parseInt(document.getElementById('timesTogether').textContent) + 1;
-            }
-            
-            // Update furthest distance
-            if (!userData.furthestDistance || distance > userData.furthestDistance) {
-                userData.furthestDistance = distance;
-                document.getElementById('furthestDistance').textContent = distance.toFixed(2) + ' km';
-            }
-            
-            // Save updated data
-            localStorage.setItem('togetherProfile', JSON.stringify(userData));
-        }
-        
-        // Update location history display
-        function updateLocationHistory() {
-            const historyList = document.getElementById('locationHistoryList');
-            historyList.innerHTML = '';
-            
-            if (userData.locationHistory && userData.locationHistory.length > 0) {
-                // Show only the last 5 locations
-                const recentLocations = userData.locationHistory.slice(-5).reverse();
-                
-                recentLocations.forEach(location => {
-                    const locationEl = document.createElement('div');
-                    locationEl.style.padding = '10px';
-                    locationEl.style.marginBottom = '5px';
-                    locationEl.style.background = 'rgba(255, 255, 255, 0.1)';
-                    locationEl.style.borderRadius = '8px';
-                    
-                    const date = new Date(location.timestamp);
-                    locationEl.innerHTML = `
-                        <div>Lat: ${location.lat.toFixed(4)}, Lng: ${location.lng.toFixed(4)}</div>
-                        <small>${date.toLocaleString()}</small>
-                    `;
-                    
-                    historyList.appendChild(locationEl);
-                });
-            } else {
-                historyList.innerHTML = '<p>No location history yet</p>';
-            }
-        }
-        
-        function deg2rad(deg) {
-            return deg * (Math.PI/180);
-        }
-        
-        // Send activity notification
-        async function sendActivity(activity) {
-            userData.activities.push({
-                type: activity,
-                timestamp: new Date().toISOString()
-            });
-            
-            // Keep only the last 50 activities
-            if (userData.activities.length > 50) {
-                userData.activities = userData.activities.slice(-50);
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('togetherProfile', JSON.stringify(userData));
-            
-            // Update Gist
-            await updateGistData('activities', {
-                [userData.userKey]: {
-                    activities: userData.activities,
-                    updated: new Date().toISOString()
-                }
-            });
-            
-            showNotification('Activity shared with partner: ' + formatActivityType(activity));
-        }
-        
-        // Check partner's activity
-        async function checkPartnerActivity() {
-            try {
-                const response = await fetch(gistUrls.activities + '?t=' + new Date().getTime());
-                const data = await response.json();
-                
-                const activitiesContainer = document.getElementById('partnerActivities');
-                activitiesContainer.innerHTML = '';
-                
-                if (data && data[userData.partnerKey] && data[userData.partnerKey].activities && data[userData.partnerKey].activities.length > 0) {
-                    const activities = data[userData.partnerKey].activities;
-                    
-                    // Sort activities by timestamp (newest first)
-                    activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                    
-                    // Display up to 5 most recent activities
-                    const recentActivities = activities.slice(0, 5);
-                    
-                    recentActivities.forEach(activity => {
-                        const timeDiff = Math.floor((new Date() - new Date(activity.timestamp)) / 60000);
-                        
-                        let timeText = '';
-                        if (timeDiff < 1) timeText = 'just now';
-                        else if (timeDiff < 60) timeText = `${timeDiff} minutes ago`;
-                        else timeText = `${Math.floor(timeDiff/60)} hours ago`;
-                        
-                        const activityEl = document.createElement('div');
-                        activityEl.style.padding = '10px';
-                        activityEl.style.marginBottom = '5px';
-                        activityEl.style.background = 'rgba(255, 255, 255, 0.1)';
-                        activityEl.style.borderRadius = '8px';
-                        activityEl.innerHTML = `
-                            <strong>${formatActivityType(activity.type)}</strong> - ${timeText}
-                        `;
-                        
-                        activitiesContainer.appendChild(activityEl);
-                    });
-                } else {
-                    activitiesContainer.innerHTML = '<p>No recent activities from your partner</p>';
-                }
-            } catch (error) {
-                console.error('Error fetching partner activities:', error);
-                showNotification('Error fetching partner activities');
-            }
-        }
-        
-        // Update activity statistics
-        function updateActivityStats() {
-            const period = document.getElementById('statsPeriod').value;
-            const statsContainer = document.getElementById('activityStats');
-            statsContainer.innerHTML = '';
-            
-            if (!partnerData.activities || partnerData.activities.length === 0) {
-                statsContainer.innerHTML = '<p>No activity data available for your partner</p>';
-                return;
-            }
-            
-            // Filter activities by selected period
-            const now = new Date();
-            let filteredActivities = [];
-            
-            switch(period) {
-                case 'day':
-                    filteredActivities = partnerData.activities.filter(activity => {
-                        const activityDate = new Date(activity.timestamp);
-                        return activityDate.toDateString() === now.toDateString();
-                    });
-                    break;
-                case 'week':
-                    const weekStart = new Date(now);
-                    weekStart.setDate(now.getDate() - now.getDay());
-                    weekStart.setHours(0, 0, 0, 0);
-                    
-                    filteredActivities = partnerData.activities.filter(activity => {
-                        const activityDate = new Date(activity.timestamp);
-                        return activityDate >= weekStart;
-                    });
-                    break;
-                case 'month':
-                    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-                    
-                    filteredActivities = partnerData.activities.filter(activity => {
-                        const activityDate = new Date(activity.timestamp);
-                        return activityDate >= monthStart;
-                    });
-                    break;
-                case 'year':
-                    const yearStart = new Date(now.getFullYear(), 0, 1);
-                    
-                    filteredActivities = partnerData.activities.filter(activity => {
-                        const activityDate = new Date(activity.timestamp);
-                        return activityDate >= yearStart;
-                    });
-                    break;
-                case 'all':
-                    filteredActivities = partnerData.activities;
-                    break;
-            }
-            
-            // Count activities by type
-            const activityCounts = {};
-            filteredActivities.forEach(activity => {
-                if (!activityCounts[activity.type]) {
-                    activityCounts[activity.type] = 0;
-                }
-                activityCounts[activity.type]++;
-            });
-            
-            // Display statistics
-            if (Object.keys(activityCounts).length === 0) {
-                statsContainer.innerHTML = `<p>No activities found for the selected period</p>`;
-                return;
-            }
-            
-            const statsGrid = document.createElement('div');
-            statsGrid.className = 'stats-grid';
-            
-            for (const [activityType, count] of Object.entries(activityCounts)) {
-                const statCard = document.createElement('div');
-                statCard.className = 'stat-card';
-                statCard.innerHTML = `
-                    <div class="stat-value">${count}</div>
-                    <div class="stat-label">${formatActivityType(activityType)}</div>
-                `;
-                statsGrid.appendChild(statCard);
-            }
-            
-            statsContainer.appendChild(statsGrid);
-        }
-        
-        // Start a game
-        function startGame(gameType) {
-            const gameContainer = document.getElementById('gameContainer');
-            gameContainer.style.display = 'block';
-            gameContainer.innerHTML = '';
-            
-            switch(gameType) {
-                case 'loveQuiz':
-                    startLoveQuiz();
-                    break;
-                case 'truthDare':
-                    startTruthDare();
-                    break;
-                case 'memoryGame':
-                    startMemoryGame();
-                    break;
-            }
-        }
-        
-        // Start Love Quiz game
-        function startLoveQuiz() {
-            const gameContainer = document.getElementById('gameContainer');
-            games.loveQuiz.currentQuestion = 0;
-            games.loveQuiz.score = 0;
-            
-            showQuestion();
-            
-            function showQuestion() {
-                if (games.loveQuiz.currentQuestion >= games.loveQuiz.questions.length) {
-                    // End of quiz
-                    gameContainer.innerHTML = `
-                        <h3>Quiz Completed!</h3>
-                        <p>Your score: ${games.loveQuiz.score} out of ${games.loveQuiz.questions.length}</p>
-                        <button class="btn" onclick="startGame('loveQuiz')">Play Again</button>
-                    `;
-                    return;
-                }
-                
-                const question = games.loveQuiz.questions[games.loveQuiz.currentQuestion];
-                
-                const questionEl = document.createElement('div');
-                questionEl.className = 'question';
-                questionEl.textContent = question.question;
-                
-                const optionsEl = document.createElement('div');
-                optionsEl.className = 'options';
-                
-                question.options.forEach((option, index) => {
-                    const optionEl = document.createElement('div');
-                    optionEl.className = 'option';
-                    optionEl.textContent = option;
-                    optionEl.onclick = () => checkAnswer(index);
-                    optionsEl.appendChild(optionEl);
-                });
-                
-                gameContainer.innerHTML = '';
-                gameContainer.appendChild(questionEl);
-                gameContainer.appendChild(optionsEl);
-            }
-            
-            function checkAnswer(selectedIndex) {
-                const question = games.loveQuiz.questions[games.loveQuiz.currentQuestion];
-                
-                if (selectedIndex === question.answer) {
-                    games.loveQuiz.score++;
-                    showNotification('Correct! 🎉');
-                } else {
-                    showNotification('Wrong answer 😢');
-                }
-                
-                games.loveQuiz.currentQuestion++;
-                showQuestion();
-            }
-        }
-        
-        // Start Truth or Dare game
-        function startTruthDare() {
-            const gameContainer = document.getElementById('gameContainer');
-            
-            gameContainer.innerHTML = `
-                <h3>Truth or Dare</h3>
-                <p>Choose your challenge:</p>
-                <div class="options">
-                    <div class="option" onclick="showTruth()">Truth</div>
-                    <div class="option" onclick="showDare()">Dare</div>
-                </div>
-                <div id="challengeResult" style="margin-top: 20px;"></div>
-            `;
-        }
-        
-        function showTruth() {
-            const challengeResult = document.getElementById('challengeResult');
-            const randomTruth = games.truthDare.truths[Math.floor(Math.random() * games.truthDare.truths.length)];
-            
-            challengeResult.innerHTML = `
-                <div class="question">${randomTruth}</div>
-                <button class="btn" onclick="startTruthDare()">New Challenge</button>
-            `;
-        }
-        
-        function showDare() {
-            const challengeResult = document.getElementById('challengeResult');
-            const randomDare = games.truthDare.dares[Math.floor(Math.random() * games.truthDare.dares.length)];
-            
-            challengeResult.innerHTML = `
-                <div class="question">${randomDare}</div>
-                <button class="btn" onclick="startTruthDare()">New Challenge</button>
-            `;
-        }
-        
-        // Start Memory Game (simplified version)
-        function startMemoryGame() {
-            const gameContainer = document.getElementById('gameContainer');
-            
-            gameContainer.innerHTML = `
-                <h3>Memory Game</h3>
-                <p>This game would require a more complex implementation with card matching.</p>
-                <p>For now, enjoy this placeholder and imagine matching cute couple-themed cards! 💕</p>
-                <button class="btn" onclick="startGame('memoryGame')">Play Anyway</button>
-            `;
-        }
-        
-        // Send daily message
-        async function sendDailyMessage() {
-            const messageText = document.getElementById('dailyMessage').value;
-            
-            if (!messageText) {
-                showNotification('Please enter a message');
-                return;
-            }
-            
-            // Check if already sent a message today
-            const today = new Date().toDateString();
-            const lastMessageDate = userData.lastMessageDate ? new Date(userData.lastMessageDate).toDateString() : null;
-            
-            if (lastMessageDate === today) {
-                showNotification('You can only send one message per day');
-                return;
-            }
-            
-            const newMessage = {
-                text: messageText,
-                timestamp: new Date().toISOString(),
-                sender: userData.userKey
-            };
-            
-            userData.messages.push(newMessage);
-            userData.lastMessageDate = new Date().toISOString();
-            
-            // Keep only the last 50 messages
-            if (userData.messages.length > 50) {
-                userData.messages = userData.messages.slice(-50);
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('togetherProfile', JSON.stringify(userData));
-            
-            // Update Gist
-            await updateGistData('messages', {
-                [userData.userKey]: {
-                    messages: userData.messages,
-                    lastMessageDate: userData.lastMessageDate,
-                    updated: new Date().toISOString()
-                }
-            });
-            
-            // Clear message input
-            document.getElementById('dailyMessage').value = '';
-            
-            // Update message countdown
-            updateMessageCountdown();
-            
-            // Reload message history
-            loadMessageHistory();
-            
-            showNotification('Message sent to your partner! 💌');
-        }
-        
-        // Update message countdown
-        function updateMessageCountdown() {
-            const countdownEl = document.getElementById('messageCountdown');
-            
-            if (!userData.lastMessageDate) {
-                countdownEl.textContent = 'You can send a message now!';
-                return;
-            }
-            
-            const lastMessageDate = new Date(userData.lastMessageDate);
-            const now = new Date();
-            const tomorrow = new Date(now);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0, 0, 0, 0);
-            
-            const timeRemaining = tomorrow - now;
-            const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
-            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-            
-            countdownEl.textContent = `Next message available in: ${hours}h ${minutes}m`;
-        }
-        
-        // Load message history
-        async function loadMessageHistory() {
-            try {
-                const response = await fetch(gistUrls.messages + '?t=' + new Date().getTime());
-                const data = await response.json();
-                
-                const messageHistoryList = document.getElementById('messageHistoryList');
-                messageHistoryList.innerHTML = '';
-                
-                // Combine user and partner messages
-                let allMessages = [];
-                
-                if (data && data[userData.userKey] && data[userData.userKey].messages) {
-                    allMessages = allMessages.concat(data[userData.userKey].messages.map(msg => ({...msg, isOwn: true})));
-                }
-                
-                if (data && data[userData.partnerKey] && data[userData.partnerKey].messages) {
-                    allMessages = allMessages.concat(data[userData.partnerKey].messages.map(msg => ({...msg, isOwn: false})));
-                }
-                
-                // Sort messages by timestamp
-                allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-                
-                // Display messages
-                if (allMessages.length === 0) {
-                    messageHistoryList.innerHTML = '<p>No messages yet</p>';
-                    return;
-                }
-                
-                // Show only the last 10 messages
-                const recentMessages = allMessages.slice(-10);
-                
-                recentMessages.forEach(message => {
-                    const messageEl = document.createElement('div');
-                    messageEl.className = `message ${message.isOwn ? 'sent' : 'received'}`;
-                    
-                    const date = new Date(message.timestamp);
-                    messageEl.innerHTML = `
-                        <div>${message.text}</div>
-                        <small>${date.toLocaleString()}</small>
-                    `;
-                    
-                    messageHistoryList.appendChild(messageEl);
-                });
-            } catch (error) {
-                console.error('Error loading message history:', error);
-                showNotification('Error loading message history');
-            }
-        }
-        
-        // Format activity type for display
-        function formatActivityType(type) {
-            const activityMap = {
-                'pooping': 'Pooping 💩',
-                'eating': 'Eating 🍽️',
-                'working': 'Working 💼',
-                'sleeping': 'Sleeping 😴',
-                'exercising': 'Exercising 🏃',
-                'thinking': 'Thinking of You 💭',
-                'shopping': 'Shopping 🛍️',
-                'watching': 'Watching TV 📺',
-                'cooking': 'Cooking 👩‍🍳',
-                'driving': 'Driving 🚗',
-                'missing': 'Missing You 💔',
-                'celebrating': 'Celebrating 🎉'
-            };
-            
-            return activityMap[type] || type;
-        }
-        
-        // Load partner data from Gists
-        async function loadPartnerData() {
-            try {
-                // Load partner mood
-                const moodResponse = await fetch(gistUrls.mood + '?t=' + new Date().getTime());
-                const moodData = await moodResponse.json();
-                
-                if (moodData && moodData[userData.partnerKey] && moodData[userData.partnerKey].mood) {
-                    partnerData.mood = moodData[userData.partnerKey].mood;
-                    document.getElementById('partnerMood').textContent = moodData[userData.partnerKey].mood;
-                }
-                
-                // Load partner location
-                const locationResponse = await fetch(gistUrls.location + '?t=' + new Date().getTime());
-                const locationData = await locationResponse.json();
-                
-                if (locationData && locationData[userData.partnerKey] && locationData[userData.partnerKey].location) {
-                    partnerData.location = locationData[userData.partnerKey].location;
-                    
-                    // Calculate distance if user location is available
-                    if (userData.location) {
-                        calculateDistance();
-                    }
-                }
-                
-                // Load partner activities
-                const activitiesResponse = await fetch(gistUrls.activities + '?t=' + new Date().getTime());
-                const activitiesData = await activitiesResponse.json();
-                
-                if (activitiesData && activitiesData[userData.partnerKey] && activitiesData[userData.partnerKey].activities) {
-                    partnerData.activities = activitiesData[userData.partnerKey].activities;
-                }
-                
-                showNotification('Partner data loaded');
-            } catch (error) {
-                console.error('Error loading partner data:', error);
-                showNotification('Error loading partner data');
+                console.error('Error loading GitHub token:', error);
+                showNotification('Error loading GitHub token');
             }
         }
         
         // Update Gist data
-        async function updateGistData(dataType, data) {
+        async function updateGistData(dataType, userData, data) {
             if (!userData.gistToken) {
                 showNotification('GitHub token is required to update Gists');
                 return;
             }
             
             try {
-                const gistId = gistIds[dataType];
+                // Extract Gist ID from URL
+                const gistId = gistUrls[dataType].split('/')[4];
                 
                 // First get the current Gist content
                 const currentResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
@@ -1495,11 +409,24 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                showNotification('Data synced with Gist');
+                return true;
             } catch (error) {
                 console.error('Error updating Gist:', error);
                 showNotification('Error updating Gist: ' + error.message);
+                return false;
             }
+        }
+        
+        // Show features menu
+        function showFeaturesMenu(username) {
+            document.getElementById('profile-section').style.display = 'none';
+            document.getElementById('features-menu').style.display = 'block';
+            document.getElementById('welcome-name').textContent = username;
+        }
+        
+        // Navigate to feature page
+        function navigateTo(page) {
+            window.location.href = page;
         }
         
         // Show notification
@@ -1516,7 +443,7 @@
         }
         
         // Initialize the app when page loads
-        window.onload = initApp;
+        window.onload = checkExistingProfile;
     </script>
 </body>
 </html>
