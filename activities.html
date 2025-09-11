@@ -596,10 +596,23 @@
 
         const currentGist = await currentResponse.json();
         let currentContent = {};
+        
         try {
-          currentContent = JSON.parse(currentGist.files[fileName].content);
+          const content = currentGist.files[fileName].content;
+          // Handle both array format (legacy) and object format
+          if (content.trim() === '[]') {
+            // Empty array - convert to object format
+            currentContent = { activity: null };
+          } else {
+            currentContent = JSON.parse(content);
+            // If it's an array, convert to object format
+            if (Array.isArray(currentContent)) {
+              currentContent = { activity: null };
+            }
+          }
         } catch (e) {
           console.log('Starting fresh personal Gist content');
+          currentContent = { activity: null };
         }
 
         // Update only the activity field
@@ -621,6 +634,8 @@
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
+        console.log('Personal gist updated successfully');
         return true;
       } catch (error) {
         console.error("Error updating personal gist:", error);
