@@ -990,19 +990,24 @@
                 }
                 const token = await tokenResponse.text();
                 
-                // Then, get the current Gist data
-                const gistResponse = await fetch(currentGistUrl);
+                // Extract gist ID from the URL
+                const gistId = currentGistUrl.split('/')[4];
+                const fileName = currentGistUrl.split('/').pop();
+                
+                // Get the current gist data
+                const gistResponse = await fetch(`https://api.github.com/gists/${gistId}`);
                 if (!gistResponse.ok) {
                     throw new Error('Failed to fetch Gist data');
                 }
-                const gistData = await gistResponse.json();
                 
-                // Update only the game data part, preserving other data
-                gistData.gameData = gameData;
-                gistData.lastUpdated = new Date().toISOString();
+                const gist = await gistResponse.json();
                 
-                // Get the Gist ID from the URL
-                const gistId = currentGistUrl.split('/')[4];
+                // Create updated content
+                const updatedContent = {
+                    ...gist.files[fileName] ? JSON.parse(gist.files[fileName].content) : {},
+                    gameData: gameData,
+                    lastUpdated: new Date().toISOString()
+                };
                 
                 // Update the Gist
                 const updateResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
@@ -1013,10 +1018,9 @@
                         'Accept': 'application/vnd.github.v3+json'
                     },
                     body: JSON.stringify({
-                        description: "Game Hub Scores",
                         files: {
-                            'game_data.json': {
-                                content: JSON.stringify(gistData, null, 2)
+                            [fileName]: {
+                                content: JSON.stringify(updatedContent, null, 2)
                             }
                         }
                     })
@@ -1026,7 +1030,6 @@
                     throw new Error('Failed to update Gist');
                 }
                 
-                const result = await updateResponse.json();
                 gistResultElement.textContent = `Scores saved successfully for ${currentUser}!`;
                 
             } catch (error) {
