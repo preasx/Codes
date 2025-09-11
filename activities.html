@@ -1,291 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activities - Together</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activities - Together</title>
 </head>
 <body>
-    <button onclick="goBack()">Back</button>
+  <button onclick="goBack()">Back</button>
+  <div>
+    <header>
+      <h1>Activities</h1>
+      <p>Share what you're doing with your partner</p>
+    </header>
 
     <div>
-        <header>
-            <h1>Activities</h1>
-            <p>Share what you're doing with your partner</p>
-        </header>
-
-        <div>
-            <h2>Share Your Activity</h2>
-            <div>
-                <button onclick="shareActivity('pooping')">Pooping</button>
-                <button onclick="shareActivity('eating')">Eating</button>
-                <button onclick="shareActivity('working')">Working</button>
-                <button onclick="shareActivity('sleeping')">Sleeping</button>
-                <button onclick="shareActivity('exercising')">Exercising</button>
-                <button onclick="shareActivity('thinking')">Thinking of You</button>
-                <button onclick="shareActivity('shopping')">Shopping</button>
-                <button onclick="shareActivity('watching')">Watching TV</button>
-                <button onclick="shareActivity('cooking')">Cooking</button>
-                <button onclick="shareActivity('driving')">Driving</button>
-                <button onclick="shareActivity('missing')">Missing You</button>
-                <button onclick="shareActivity('celebrating')">Celebrating</button>
-            </div>
-        </div>
-
-        <div>
-            <h2>Partner's Recent Activities</h2>
-            <div id="partnerActivities">
-                <p>No recent activities from your partner</p>
-            </div>
-            <button onclick="loadPartnerActivities()">Refresh Activities</button>
-        </div>
+      <h2>Share Your Activity</h2>
+      <div>
+        <button onclick="shareActivity('pooping')">Pooping</button>
+        <button onclick="shareActivity('eating')">Eating</button>
+        <button onclick="shareActivity('working')">Working</button>
+        <button onclick="shareActivity('sleeping')">Sleeping</button>
+        <button onclick="shareActivity('exercising')">Exercising</button>
+        <button onclick="shareActivity('thinking')">Thinking of You</button>
+        <button onclick="shareActivity('shopping')">Shopping</button>
+        <button onclick="shareActivity('watching')">Watching TV</button>
+        <button onclick="shareActivity('cooking')">Cooking</button>
+        <button onclick="shareActivity('driving')">Driving</button>
+        <button onclick="shareActivity('missing')">Missing You</button>
+        <button onclick="shareActivity('celebrating')">Celebrating</button>
+      </div>
     </div>
 
-    <div id="notification">
-        <span id="notificationText"></span>
+    <div>
+      <h2>Partner's Recent Activities</h2>
+      <div id="partnerActivities">
+        <p>No recent activities from your partner</p>
+      </div>
+      <button onclick="loadPartnerActivities()">Refresh Activities</button>
     </div>
+  </div>
 
-    <script>
-        const gistUrls = {
-            activities: 'https://gist.githubusercontent.com/Preasx24/4f0b769f591da88eb60147bd5a3d044c/raw/gistfile1.txt',
-            token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt'
-        };
+  <div id="notification">
+    <span id="notificationText"></span>
+  </div>
 
-        // 🔹 Map usernames to their personal gists
-        const userGistMap = {
-            lefa: "https://gist.githubusercontent.com/Preasx24/02e300379f8b968942ac67379f5bc831/raw/gist_1.json",
-            jonas: "https://gist.githubusercontent.com/Preasx24/69f058ad6bcb25e41d8b797dc7395c6d/raw/gist_2.json",
-            owami: "https://gist.githubusercontent.com/Preasx24/6c9e9fcda5ed38f9839c9ac8bc147ba7/raw/gist_3.json",
-            preasx24: "https://gist.githubusercontent.com/Preasx24/50e60ff2c3bc108d63038c8eb6c26e8d/raw/gist_4.json"
-        };
+  <script>
+    const gistUrls = {
+      activities: 'https://gist.githubusercontent.com/Preasx24/4f0b769f591da88eb60147bd5a3d044c/raw/gistfile1.txt',
+      token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt'
+    };
 
-        let userData = null;
+    // Map usernames to their personal gists
+    const userGistMap = {
+      lefa: "https://gist.githubusercontent.com/Preasx24/02e300379f8b968942ac67379f5bc831/raw/gist_1.json",
+      jonas: "https://gist.githubusercontent.com/Preasx24/69f058ad6bcb25e41d8b797dc7395c6d/raw/gist_2.json",
+      owami: "https://gist.githubusercontent.com/Preasx24/6c9e9fcda5ed38f9839c9ac8bc147ba7/raw/gist_3.json",
+      preasx24: "https://gist.githubusercontent.com/Preasx24/50e60ff2c3bc108d63038c8eb6c26e8d/raw/gist_4.json"
+    };
 
-        function initApp() {
-            const savedProfile = localStorage.getItem('togetherProfile');
-            if (!savedProfile) {
-                showNotification('Please set up your profile first');
-                setTimeout(() => window.location.href = 'index.html', 2000);
-                return;
-            }
+    let userData = null;
 
-            userData = JSON.parse(savedProfile);
+    function initApp() {
+      const savedProfile = localStorage.getItem('togetherProfile');
+      if (!savedProfile) {
+        showNotification('Please set up your profile first');
+        setTimeout(() => window.location.href = 'index.html', 2000);
+        return;
+      }
 
-            // If user has a mapped personal gist, store it
-            if (userGistMap[userData.username]) {
-                userData.personalGistUrl = userGistMap[userData.username];
-            }
+      userData = JSON.parse(savedProfile);
 
-            loadGithubToken();
-            loadPartnerActivities();
+      // If user has a personal gist, attach it
+      if (userGistMap[userData.username]) {
+        userData.personalGistUrl = userGistMap[userData.username];
+      }
+
+      loadGithubToken();
+      loadPartnerActivities();
+    }
+
+    function goBack() {
+      window.location.href = 'index.html';
+    }
+
+    async function loadGithubToken() {
+      try {
+        const response = await fetch(gistUrls.token + '?t=' + new Date().getTime());
+        const token = await response.text();
+        userData.gistToken = token.trim();
+      } catch (error) {
+        console.error('Error loading GitHub token:', error);
+        showNotification('Error loading GitHub token');
+      }
+    }
+
+    async function shareActivity(activity) {
+      if (!userData.activities) {
+        userData.activities = [];
+      }
+
+      userData.activities.push({
+        type: activity,
+        timestamp: new Date().toISOString()
+      });
+
+      if (userData.activities.length > 20) {
+        userData.activities = userData.activities.slice(-20);
+      }
+
+      localStorage.setItem('togetherProfile', JSON.stringify(userData));
+
+      // update main gist
+      await updateGistData({
+        [userData.userKey]: {
+          activities: userData.activities,
+          updated: new Date().toISOString()
+        }
+      });
+
+      // update personal gist if exists
+      if (userData.personalGistUrl) {
+        await updatePersonalActivityGist({
+          type: activity,
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      showNotification('Activity shared: ' + formatActivityType(activity));
+    }
+
+    async function loadPartnerActivities() {
+      try {
+        const response = await fetch(gistUrls.activities + '?t=' + new Date().getTime());
+        const data = await response.json();
+
+        const activitiesContainer = document.getElementById('partnerActivities');
+        activitiesContainer.innerHTML = '';
+
+        if (data && data[userData.partnerKey] && data[userData.partnerKey].activities && data[userData.partnerKey].activities.length > 0) {
+          const activities = data[userData.partnerKey].activities;
+          activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          const recentActivities = activities.slice(0, 10);
+
+          recentActivities.forEach(activity => {
+            const timeDiff = Math.floor((new Date() - new Date(activity.timestamp)) / 60000);
+            let timeText = '';
+            if (timeDiff < 1) timeText = 'just now';
+            else if (timeDiff < 60) timeText = `${timeDiff} minutes ago`;
+            else timeText = `${Math.floor(timeDiff/60)} hours ago`;
+
+            const activityEl = document.createElement('div');
+            activityEl.innerHTML = `
+              <div><strong>${formatActivityType(activity.type)}</strong></div>
+              <div>${timeText}</div>
+            `;
+            activitiesContainer.appendChild(activityEl);
+          });
+        } else {
+          activitiesContainer.innerHTML = '<p>No recent activities from your partner</p>';
+        }
+      } catch (error) {
+        console.error('Error fetching partner activities:', error);
+        showNotification('Error fetching partner activities');
+      }
+    }
+
+    function formatActivityType(type) {
+      const activityMap = {
+        'pooping': 'Pooping 💩',
+        'eating': 'Eating 🍽️',
+        'working': 'Working 💼',
+        'sleeping': 'Sleeping 😴',
+        'exercising': 'Exercising 🏃',
+        'thinking': 'Thinking of You 💭',
+        'shopping': 'Shopping 🛍️',
+        'watching': 'Watching TV 📺',
+        'cooking': 'Cooking 👩‍🍳',
+        'driving': 'Driving 🚗',
+        'missing': 'Missing You 💔',
+        'celebrating': 'Celebrating 🎉'
+      };
+      return activityMap[type] || type;
+    }
+
+    async function updateGistData(data) {
+      if (!userData.gistToken) {
+        showNotification('GitHub token is required to update Gists');
+        return;
+      }
+
+      try {
+        const gistId = gistUrls.activities.split('/')[4];
+        const currentResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
+          headers: { 'Authorization': `token ${userData.gistToken}` }
+        });
+
+        if (!currentResponse.ok) {
+          throw new Error(`HTTP error! status: ${currentResponse.status}`);
         }
 
-        function goBack() {
-            window.location.href = 'index.html';
+        const currentGist = await currentResponse.json();
+        let currentContent = {};
+        try {
+          currentContent = JSON.parse(currentGist.files['gistfile1.txt'].content);
+        } catch (e) {
+          console.log('Starting fresh');
         }
 
-        async function loadGithubToken() {
-            try {
-                const response = await fetch(gistUrls.token + '?t=' + new Date().getTime());
-                const token = await response.text();
-                userData.gistToken = token.trim();
-            } catch (error) {
-                console.error('Error loading GitHub token:', error);
-                showNotification('Error loading GitHub token');
+        const newContent = { ...currentContent, ...data };
+
+        const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `token ${userData.gistToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            files: {
+              'gistfile1.txt': { content: JSON.stringify(newContent, null, 2) }
             }
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+        return true;
+      } catch (error) {
+        console.error('Error updating Gist:', error);
+        showNotification('Error updating Gist: ' + error.message);
+        return false;
+      }
+    }
 
-        async function shareActivity(activity) {
-            if (!userData.activities) {
-                userData.activities = [];
+    // Personal gist update – only the "activity" field
+    async function updatePersonalActivityGist(activity) {
+      try {
+        const parts = userData.personalGistUrl.split('/');
+        const gistId = parts[4];
+        const fileName = parts[parts.length - 1]; // e.g. gist_1.json
+
+        const currentResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
+          headers: { 'Authorization': `token ${userData.gistToken}` }
+        });
+
+        if (!currentResponse.ok) throw new Error(`HTTP error! status: ${currentResponse.status}`);
+
+        const currentGist = await currentResponse.json();
+        let currentContent = {};
+        try {
+          currentContent = JSON.parse(currentGist.files[fileName].content);
+        } catch (e) {}
+
+        // replace only "activity"
+        currentContent["activity"] = activity;
+
+        const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `token ${userData.gistToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            files: {
+              [fileName]: { content: JSON.stringify(currentContent, null, 2) }
             }
+          })
+        });
 
-            userData.activities.push({
-                type: activity,
-                timestamp: new Date().toISOString()
-            });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      } catch (error) {
+        console.error("Error updating personal gist:", error);
+        showNotification("Error updating personal gist: " + error.message);
+      }
+    }
 
-            if (userData.activities.length > 20) {
-                userData.activities = userData.activities.slice(-20);
-            }
+    function showNotification(message) {
+      const notification = document.getElementById('notification');
+      const notificationText = document.getElementById('notificationText');
+      notificationText.textContent = message;
+      notification.style.display = 'block';
+      setTimeout(() => { notification.style.display = 'none'; }, 3000);
+    }
 
-            localStorage.setItem('togetherProfile', JSON.stringify(userData));
-
-            await updateGistData({
-                [userData.userKey]: {
-                    activities: userData.activities,
-                    updated: new Date().toISOString()
-                }
-            });
-
-            // 🔹 Also update personal gist if applicable
-            if (userData.personalGistUrl) {
-                await updatePersonalActivityGist({
-                    type: activity,
-                    timestamp: new Date().toISOString()
-                });
-            }
-
-            showNotification('Activity shared: ' + formatActivityType(activity));
-        }
-
-        async function loadPartnerActivities() {
-            try {
-                const response = await fetch(gistUrls.activities + '?t=' + new Date().getTime());
-                const data = await response.json();
-
-                const activitiesContainer = document.getElementById('partnerActivities');
-                activitiesContainer.innerHTML = '';
-
-                if (data && data[userData.partnerKey] && data[userData.partnerKey].activities && data[userData.partnerKey].activities.length > 0) {
-                    const activities = data[userData.partnerKey].activities;
-                    activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                    const recentActivities = activities.slice(0, 10);
-
-                    recentActivities.forEach(activity => {
-                        const timeDiff = Math.floor((new Date() - new Date(activity.timestamp)) / 60000);
-                        let timeText = '';
-                        if (timeDiff < 1) timeText = 'just now';
-                        else if (timeDiff < 60) timeText = `${timeDiff} minutes ago`;
-                        else timeText = `${Math.floor(timeDiff/60)} hours ago`;
-
-                        const activityEl = document.createElement('div');
-                        activityEl.innerHTML = `
-                            <div><strong>${formatActivityType(activity.type)}</strong></div>
-                            <div>${timeText}</div>
-                        `;
-                        activitiesContainer.appendChild(activityEl);
-                    });
-                } else {
-                    activitiesContainer.innerHTML = '<p>No recent activities from your partner</p>';
-                }
-            } catch (error) {
-                console.error('Error fetching partner activities:', error);
-                showNotification('Error fetching partner activities');
-            }
-        }
-
-        function formatActivityType(type) {
-            const activityMap = {
-                'pooping': 'Pooping 💩',
-                'eating': 'Eating 🍽️',
-                'working': 'Working 💼',
-                'sleeping': 'Sleeping 😴',
-                'exercising': 'Exercising 🏃',
-                'thinking': 'Thinking of You 💭',
-                'shopping': 'Shopping 🛍️',
-                'watching': 'Watching TV 📺',
-                'cooking': 'Cooking 👩‍🍳',
-                'driving': 'Driving 🚗',
-                'missing': 'Missing You 💔',
-                'celebrating': 'Celebrating 🎉'
-            };
-            return activityMap[type] || type;
-        }
-
-        async function updateGistData(data) {
-            if (!userData.gistToken) {
-                showNotification('GitHub token is required to update Gists');
-                return;
-            }
-
-            try {
-                const gistId = gistUrls.activities.split('/')[4];
-                const currentResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
-                    headers: { 'Authorization': `token ${userData.gistToken}` }
-                });
-
-                if (!currentResponse.ok) {
-                    throw new Error(`HTTP error! status: ${currentResponse.status}`);
-                }
-
-                const currentGist = await currentResponse.json();
-                let currentContent = {};
-                try {
-                    currentContent = JSON.parse(currentGist.files['gistfile1.txt'].content);
-                } catch (e) {
-                    console.log('Starting fresh');
-                }
-
-                const newContent = {...currentContent, ...data};
-
-                const response = await fetch(`https://api.github.com/gists/${gistId}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': `token ${userData.gistToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        files: {
-                            'gistfile1.txt': { content: JSON.stringify(newContent, null, 2) }
-                        }
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return true;
-            } catch (error) {
-                console.error('Error updating Gist:', error);
-                showNotification('Error updating Gist: ' + error.message);
-                return false;
-            }
-        }
-
-        // 🔹 New: Update only "activity" entry inside user's personal gist
-        async function updatePersonalActivityGist(activity) {
-            try {
-                const gistId = userData.personalGistUrl.split('/')[4];
-                const currentResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
-                    headers: { 'Authorization': `token ${userData.gistToken}` }
-                });
-
-                if (!currentResponse.ok) throw new Error(`HTTP error! status: ${currentResponse.status}`);
-
-                const currentGist = await currentResponse.json();
-                let currentContent = {};
-                try {
-                    currentContent = JSON.parse(Object.values(currentGist.files)[0].content);
-                } catch (e) {
-                    console.log('Invalid JSON, starting fresh');
-                }
-
-                // Replace only "activity"
-                currentContent["activity"] = activity;
-
-                const response = await fetch(`https://api.github.com/gists/${gistId}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': `token ${userData.gistToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        files: {
-                            [Object.keys(currentGist.files)[0]]: { 
-                                content: JSON.stringify(currentContent, null, 2)
-                            }
-                        }
-                    })
-                });
-
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                console.log("Personal activity gist updated");
-            } catch (error) {
-                console.error("Error updating personal gist:", error);
-                showNotification("Error updating personal gist: " + error.message);
-            }
-        }
-
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            const notificationText = document.getElementById('notificationText');
-            notificationText.textContent = message;
-            notification.style.display = 'block';
-            setTimeout(() => { notification.style.display = 'none'; }, 3000);
-        }
-
-        window.onload = initApp;
-    </script>
+    window.onload = initApp;
+  </script>
 </body>
 </html>
