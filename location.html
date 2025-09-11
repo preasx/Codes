@@ -4,429 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Together - Location Tracker</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #6a11cb;
-            --secondary: #2575fc;
-            --accent: #ff4b90;
-            --light: rgba(255, 255, 255, 0.9);
-            --dark: #2d2b55;
-            --card-bg: rgba(255, 255, 255, 0.15);
-            --card-border: rgba(255, 255, 255, 0.2);
-            --success: #4ade80;
-            --warning: #facc15;
-            --error: #f87171;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: var(--light);
-            min-height: 100vh;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        
-        .app-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        /* Header Styles */
-        .app-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 25px;
-            background: var(--card-bg);
-            border-radius: 20px;
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .app-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            transform: rotate(30deg);
-        }
-        
-        .app-title {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            position: relative;
-        }
-        
-        .app-title i {
-            margin-right: 15px;
-            color: var(--accent);
-            font-size: 2.5rem;
-        }
-        
-        .app-subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            font-weight: 300;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        /* Navigation */
-        .nav-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-            z-index: 10;
-        }
-        
-        .nav-button:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Card Components */
-        .card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 25px;
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .card-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--card-border);
-        }
-        
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-        }
-        
-        .card-title i {
-            margin-right: 12px;
-            color: var(--accent);
-            font-size: 1.4rem;
-        }
-        
-        /* Distance Info */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin: 25px 0;
-        }
-        
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-3px);
-        }
-        
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: white;
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            font-weight: 400;
-        }
-        
-        /* Buttons */
-        .action-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 16px 24px;
-            border-radius: 14px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .btn i {
-            font-size: 1.1rem;
-        }
-        
-        .btn:hover {
-            background: #ff2d78;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(255, 75, 144, 0.4);
-        }
-        
-        .btn-secondary {
-            background: var(--secondary);
-        }
-        
-        .btn-secondary:hover {
-            background: #1a5fd0;
-            box-shadow: 0 7px 20px rgba(37, 117, 252, 0.4);
-        }
-        
-        /* History List */
-        .history-list {
-            margin: 20px 0;
-        }
-        
-        .history-item {
-            padding: 16px;
-            margin-bottom: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-        
-        .history-item:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateX(5px);
-        }
-        
-        .history-coords {
-            font-family: monospace;
-            font-size: 0.95rem;
-        }
-        
-        .history-time {
-            font-size: 0.85rem;
-            opacity: 0.7;
-        }
-        
-        /* Notification */
-        .notification {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: var(--accent);
-            color: white;
-            padding: 16px 24px;
-            border-radius: 14px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            display: none;
-            z-index: 1000;
-            max-width: 350px;
-            animation: slideIn 0.3s ease;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        @keyframes slideIn {
-            from {
-                transform: translateX(100px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        /* Loading Animation */
-        .loader {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .app-title {
-                font-size: 2.2rem;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .action-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .history-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .app-container {
-                padding: 10px;
-            }
-            
-            .app-header {
-                padding: 20px 15px;
-            }
-            
-            .app-title {
-                font-size: 1.8rem;
-            }
-            
-            .card {
-                padding: 20px;
-            }
-        }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 30px 0;
-            opacity: 0.7;
-        }
-        
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: rgba(255, 255, 255, 0.5);
-        }
-        
-        /* Pulse Animation for Real-time Updates */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-    </style>
 </head>
 <body>
-    <button class="nav-button" onclick="goBack()">
-        <i class="fas fa-arrow-left"></i>
-    </button>
-    
-    <div class="app-container">
-        <header class="app-header">
-            <h1 class="app-title"><i class="fas fa-location-dot"></i> Together</h1>
-            <p class="app-subtitle">Stay connected with your partner by tracking your distance in real-time</p>
+    <button onclick="goBack()">Back</button>
+
+    <div>
+        <header>
+            <h1>Together</h1>
+            <p>Stay connected with your partner by tracking your distance in real-time</p>
         </header>
-        
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title"><i class="fas fa-road"></i> Distance Information</h2>
-            </div>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value" id="currentDistance">-- km</div>
-                    <div class="stat-label">Current Distance</div>
+
+        <div>
+            <h2>Distance Information</h2>
+
+            <div>
+                <div>
+                    <div id="currentDistance">-- km</div>
+                    <div>Current Distance</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="closestDistance">-- km</div>
-                    <div class="stat-label">Closest Distance</div>
+                <div>
+                    <div id="closestDistance">-- km</div>
+                    <div>Closest Distance</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="furthestDistance">-- km</div>
-                    <div class="stat-label">Furthest Distance</div>
+                <div>
+                    <div id="furthestDistance">-- km</div>
+                    <div>Furthest Distance</div>
                 </div>
             </div>
-            
-            <div class="action-buttons">
-                <button class="btn" onclick="updateLocation()">
-                    <i class="fas fa-location-arrow"></i> Update My Location
-                </button>
-                
-                <button class="btn btn-secondary" onclick="updatePartnerLocation()">
-                    <i class="fas fa-sync"></i> Update Partner's Location
-                </button>
+
+            <div>
+                <button onclick="updateLocation()">Update My Location</button>
+                <button onclick="updatePartnerLocation()">Update Partner's Location</button>
             </div>
         </div>
-        
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title"><i class="fas fa-clock-rotate-left"></i> Location History</h2>
-            </div>
-            
-            <div id="locationHistory" class="history-list">
-                <div class="empty-state">
-                    <i class="fas fa-history"></i>
-                    <p>No location history yet</p>
-                </div>
+
+        <div>
+            <h2>Location History</h2>
+            <div id="locationHistory">
+                <p>No location history yet</p>
             </div>
         </div>
     </div>
-    
-    <div class="notification" id="notification">
+
+    <div id="notification">
         <span id="notificationText"></span>
     </div>
 
@@ -436,38 +56,30 @@
             location: 'https://gist.githubusercontent.com/Preasx24/c257b4b817361f2ccc22a60388784986/raw/gistfile1.txt',
             token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt'
         };
-        
+
         let userData = null;
         let autoUpdateInterval = null;
-        
-        // Initialize the app
+
         function initApp() {
-            // Load user data
             const savedProfile = localStorage.getItem('togetherProfile');
             if (!savedProfile) {
                 showNotification('Please set up your profile first');
                 setTimeout(() => window.location.href = 'index.html', 2000);
                 return;
             }
-            
+
             userData = JSON.parse(savedProfile);
-            
-            // Load GitHub token
+
             loadGithubToken();
-            
-            // Load location data
             loadLocationData();
-            
-            // Set up auto-update every 2 minutes
+
             autoUpdateInterval = setInterval(updatePartnerLocation, 120000);
         }
-        
-        // Go back to main page
+
         function goBack() {
             window.location.href = 'index.html';
         }
-        
-        // Load GitHub token from Gist
+
         async function loadGithubToken() {
             try {
                 const response = await fetch(gistUrls.token + '?t=' + new Date().getTime());
@@ -478,14 +90,12 @@
                 showNotification('Error loading GitHub token');
             }
         }
-        
-        // Load location data
+
         async function loadLocationData() {
             try {
                 const response = await fetch(gistUrls.location + '?t=' + new Date().getTime());
                 const data = await response.json();
-                
-                // Load user's location data
+
                 if (data && data[userData.userKey]) {
                     const userLocationData = data[userData.userKey];
                     if (userLocationData.locationHistory) {
@@ -500,38 +110,24 @@
                         document.getElementById('furthestDistance').textContent = userData.furthestDistance.toFixed(2) + ' km';
                     }
                 }
-                
-                // Load partner's location data
-                if (data && data[userData.partnerKey]) {
-                    const partnerLocationData = data[userData.partnerKey];
-                    if (partnerLocationData.location) {
-                        userData.partnerLocation = partnerLocationData.location;
-                        
-                        // Calculate distance if user location is available
-                        if (userData.location) {
-                            calculateDistance();
-                        }
+
+                if (data && data[userData.partnerKey] && data[userData.partnerKey].location) {
+                    userData.partnerLocation = data[userData.partnerKey].location;
+                    if (userData.location) {
+                        calculateDistance();
                     }
                 }
-                
-                // Update location history display
+
                 updateLocationHistory();
-                
+
             } catch (error) {
                 console.error('Error loading location data:', error);
                 showNotification('Error loading location data');
             }
         }
-        
-        // Update user's location
+
         async function updateLocation() {
             if (navigator.geolocation) {
-                // Show loading state on button
-                const button = event.target;
-                const originalText = button.innerHTML;
-                button.innerHTML = '<span class="loader"></span> Updating...';
-                button.disabled = true;
-                
                 navigator.geolocation.getCurrentPosition(
                     async position => {
                         const newLocation = {
@@ -539,26 +135,16 @@
                             lng: position.coords.longitude,
                             timestamp: new Date().toISOString()
                         };
-                        
+
                         userData.location = newLocation;
-                        
-                        // Initialize location history if it doesn't exist
-                        if (!userData.locationHistory) {
-                            userData.locationHistory = [];
-                        }
-                        
-                        // Add to location history
+                        if (!userData.locationHistory) userData.locationHistory = [];
                         userData.locationHistory.push(newLocation);
-                        
-                        // Keep only the last 10 location records
                         if (userData.locationHistory.length > 10) {
                             userData.locationHistory = userData.locationHistory.slice(-10);
                         }
-                        
-                        // Save to localStorage
+
                         localStorage.setItem('togetherProfile', JSON.stringify(userData));
-                        
-                        // Update Gist
+
                         await updateGistData({
                             [userData.userKey]: {
                                 location: userData.location,
@@ -566,127 +152,72 @@
                                 updated: new Date().toISOString()
                             }
                         });
-                        
-                        // Calculate distance if partner location is available
+
                         if (userData.partnerLocation) {
                             calculateDistance();
                         }
-                        
-                        // Update location history display
+
                         updateLocationHistory();
-                        
                         showNotification('Location updated successfully');
-                        
-                        // Restore button
-                        button.innerHTML = originalText;
-                        button.disabled = false;
                     },
                     error => {
                         showNotification('Error getting location: ' + error.message);
-                        
-                        // Restore button
-                        button.innerHTML = originalText;
-                        button.disabled = false;
                     }
                 );
             } else {
                 showNotification('Geolocation is not supported by this browser');
             }
         }
-        
-        // Update partner's location
+
         async function updatePartnerLocation() {
             try {
-                // Show loading state on button if called from UI
-                if (event) {
-                    const button = event.target;
-                    const originalText = button.innerHTML;
-                    button.innerHTML = '<span class="loader"></span> Updating...';
-                    button.disabled = true;
-                }
-                
                 const response = await fetch(gistUrls.location + '?t=' + new Date().getTime());
                 const data = await response.json();
-                
+
                 if (data && data[userData.partnerKey] && data[userData.partnerKey].location) {
                     userData.partnerLocation = data[userData.partnerKey].location;
-                    
-                    // Calculate distance if user location is available
                     if (userData.location) {
                         calculateDistance();
                     }
-                    
                     showNotification('Partner location updated');
                 } else {
                     showNotification('No location data found for partner');
                 }
-                
-                // Restore button if called from UI
-                if (event) {
-                    const button = event.target;
-                    button.innerHTML = originalText;
-                    button.disabled = false;
-                }
             } catch (error) {
                 console.error('Error fetching partner location:', error);
                 showNotification('Error fetching partner location');
-                
-                // Restore button if called from UI
-                if (event) {
-                    const button = event.target;
-                    button.innerHTML = originalText;
-                    button.disabled = false;
-                }
             }
         }
-        
-        // Calculate distance between users
+
         function calculateDistance() {
             if (!userData.location || !userData.partnerLocation) return;
-            
-            // Haversine formula to calculate distance between two coordinates
-            const R = 6371; // Earth's radius in km
+
+            const R = 6371; 
             const dLat = deg2rad(userData.partnerLocation.lat - userData.location.lat);
             const dLon = deg2rad(userData.partnerLocation.lng - userData.location.lng);
-            
+
             const a = 
                 Math.sin(dLat/2) * Math.sin(dLat/2) +
                 Math.cos(deg2rad(userData.location.lat)) * Math.cos(deg2rad(userData.partnerLocation.lat)) * 
                 Math.sin(dLon/2) * Math.sin(dLon/2);
-                
+
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-            const distance = R * c; // Distance in km
-            
+            const distance = R * c;
+
             document.getElementById('currentDistance').textContent = distance.toFixed(2) + ' km';
-            
-            // Add visual feedback when distance updates
-            const currentDistanceElement = document.getElementById('currentDistance');
-            currentDistanceElement.classList.add('pulse');
-            setTimeout(() => currentDistanceElement.classList.remove('pulse'), 2000);
-            
-            // Update closest distance
+
             if (!userData.closestDistance || distance < userData.closestDistance) {
                 userData.closestDistance = distance;
                 document.getElementById('closestDistance').textContent = distance.toFixed(2) + ' km';
-                
-                // Check if we're 10km closer than previous closest
-                if (userData.previousClosestDistance && (userData.previousClosestDistance - distance) >= 10) {
-                    showNotification(`You're ${(userData.previousClosestDistance - distance).toFixed(2)}km closer than before! ❤️`);
-                }
-                
-                userData.previousClosestDistance = userData.closestDistance;
             }
-            
-            // Update furthest distance
+
             if (!userData.furthestDistance || distance > userData.furthestDistance) {
                 userData.furthestDistance = distance;
                 document.getElementById('furthestDistance').textContent = distance.toFixed(2) + ' km';
             }
-            
-            // Save updated data
+
             localStorage.setItem('togetherProfile', JSON.stringify(userData));
-            
-            // Update Gist with distance data
+
             updateGistData({
                 [userData.userKey]: {
                     closestDistance: userData.closestDistance,
@@ -695,77 +226,57 @@
                 }
             });
         }
-        
+
         function deg2rad(deg) {
             return deg * (Math.PI/180);
         }
-        
-        // Update location history display
+
         function updateLocationHistory() {
             const historyContainer = document.getElementById('locationHistory');
             historyContainer.innerHTML = '';
-            
+
             if (userData.locationHistory && userData.locationHistory.length > 0) {
-                // Show only the last 5 locations
                 const recentLocations = userData.locationHistory.slice(-5).reverse();
-                
+
                 recentLocations.forEach(location => {
-                    const historyItem = document.createElement('div');
-                    historyItem.className = 'history-item';
-                    
                     const date = new Date(location.timestamp);
-                    historyItem.innerHTML = `
-                        <div class="history-coords">Lat: ${location.lat.toFixed(4)}, Lng: ${location.lng.toFixed(4)}</div>
-                        <div class="history-time">${date.toLocaleString()}</div>
-                    `;
-                    
+                    const historyItem = document.createElement('div');
+                    historyItem.textContent = `Lat: ${location.lat.toFixed(4)}, Lng: ${location.lng.toFixed(4)} - ${date.toLocaleString()}`;
                     historyContainer.appendChild(historyItem);
                 });
             } else {
-                historyContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-history"></i>
-                        <p>No location history yet</p>
-                    </div>
-                `;
+                historyContainer.textContent = 'No location history yet';
             }
         }
-        
-        // Update Gist data
+
         async function updateGistData(data) {
             if (!userData.gistToken) {
                 showNotification('GitHub token is required to update Gists');
                 return;
             }
-            
+
             try {
-                // Extract Gist ID from URL
                 const gistId = gistUrls.location.split('/')[4];
-                
-                // First get the current Gist content
                 const currentResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
                     headers: {
                         'Authorization': `token ${userData.gistToken}`
                     }
                 });
-                
+
                 if (!currentResponse.ok) {
                     throw new Error(`HTTP error! status: ${currentResponse.status}`);
                 }
-                
+
                 const currentGist = await currentResponse.json();
                 let currentContent = {};
-                
                 try {
                     currentContent = JSON.parse(currentGist.files['gistfile1.txt'].content);
                 } catch (e) {
-                    console.log('Gist content is empty or invalid JSON, starting fresh');
+                    console.log('Empty or invalid Gist, starting fresh');
                 }
-                
-                // Merge new data with existing content
+
                 const newContent = {...currentContent, ...data};
-                
-                // Update the Gist
+
                 const response = await fetch(`https://api.github.com/gists/${gistId}`, {
                     method: 'PATCH',
                     headers: {
@@ -780,40 +291,33 @@
                         }
                     })
                 });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return true;
+
             } catch (error) {
                 console.error('Error updating Gist:', error);
                 showNotification('Error updating Gist: ' + error.message);
                 return false;
             }
         }
-        
-        // Show notification
+
         function showNotification(message) {
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
-            
+
             notificationText.textContent = message;
             notification.style.display = 'block';
-            
+
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 3000);
         }
-        
-        // Initialize the app when page loads
+
         window.onload = initApp;
-        
-        // Clean up interval when page is closed
+
         window.addEventListener('beforeunload', () => {
-            if (autoUpdateInterval) {
-                clearInterval(autoUpdateInterval);
-            }
+            if (autoUpdateInterval) clearInterval(autoUpdateInterval);
         });
     </script>
 </body>
