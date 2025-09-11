@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Hub - User Selection</title>
+    <title>Game Hub - Partner Challenge</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,26 +16,23 @@
             background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
             color: #333;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
         
         .container {
-            width: 100%;
-            max-width: 500px;
+            max-width: 1100px;
+            margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             overflow: hidden;
-            text-align: center;
         }
         
         header {
             background: #2c3e50;
             color: white;
-            padding: 30px 20px;
+            padding: 20px;
+            text-align: center;
         }
         
         h1 {
@@ -43,111 +40,17 @@
             margin-bottom: 10px;
         }
         
-        .user-selection {
-            padding: 30px 20px;
-        }
-        
-        h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-        
-        p {
-            color: #7f8c8d;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-        
-        .user-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .user-btn {
-            padding: 15px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .user-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .user-btn.lefa { background: #e74c3c; }
-        .user-btn.owami { background: #2ecc71; }
-        .user-btn.jonas { background: #9b59b6; }
-        .user-btn.preasx24 { background: #f39c12; }
-        
-        .user-btn.selected {
-            transform: scale(1.05);
-            box-shadow: 0 0 0 3px white, 0 0 0 6px currentColor;
-        }
-        
-        .start-btn {
-            background: #2c3e50;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
-        }
-        
-        .start-btn:hover {
-            background: #1a252f;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .start-btn:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        footer {
-            padding: 20px;
-            background: #ecf0f1;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        #game-hub {
-            width: 100%;
-            max-width: 1100px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-        
-        .user-header {
+        .user-panel {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 15px;
             background: #34495e;
             color: white;
+            flex-wrap: wrap;
         }
         
-        .current-user {
+        .user-info {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -169,6 +72,20 @@
         .user-avatar.jonas { background: #9b59b6; }
         .user-avatar.preasx24 { background: #f39c12; }
         
+        .partner-select {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        select {
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            font-weight: bold;
+        }
+        
         .change-user-btn {
             background: rgba(255, 255, 255, 0.2);
             color: white;
@@ -189,6 +106,7 @@
             padding: 15px;
             background: #2c3e50;
             color: white;
+            flex-wrap: wrap;
         }
         
         .score-box {
@@ -197,6 +115,7 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             min-width: 120px;
+            margin: 5px;
         }
         
         .score-value {
@@ -209,6 +128,65 @@
             font-size: 0.9rem;
             margin-top: 5px;
             color: #ecf0f1;
+        }
+        
+        .leaderboard {
+            padding: 20px;
+            background: #ecf0f1;
+            text-align: center;
+            border-bottom: 2px solid #bdc3c7;
+        }
+        
+        .leaderboard h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .leaderboard-content {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .leaderboard-user {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 200px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .leaderboard-user h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        
+        .leaderboard-score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 10px 0;
+        }
+        
+        .score-difference {
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        
+        .winning {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .losing {
+            background: #e74c3c;
+            color: white;
         }
         
         .tabs {
@@ -432,8 +410,13 @@
                 margin: 5px;
             }
             
-            .user-options {
-                grid-template-columns: 1fr;
+            .user-panel {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .partner-select {
+                margin-top: 10px;
             }
         }
         
@@ -462,44 +445,67 @@
                 height: 90px;
                 font-size: 2.5rem;
             }
+            
+            .leaderboard-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .leaderboard-user {
+                width: 100%;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- User Selection Screen -->
-    <div class="container" id="user-selection">
+    <div class="container">
         <header>
-            <h1>Game Hub</h1>
-            <p>Select your user to start playing</p>
+            <h1>Game Hub - Partner Challenge</h1>
+            <p>Select a partner to compete against and track your scores!</p>
         </header>
         
-        <div class="user-selection">
-            <h2>Who's Playing?</h2>
-            <p>Choose your username to track your scores and progress</p>
-            
-            <div class="user-options">
-                <button class="user-btn lefa" data-user="lefa">lefa</button>
-                <button class="user-btn owami" data-user="owami">owami</button>
-                <button class="user-btn jonas" data-user="jonas">jonas</button>
-                <button class="user-btn preasx24" data-user="preasx24">preasx24</button>
-            </div>
-            
-            <button class="start-btn" id="start-btn" disabled>Start Playing</button>
-        </div>
-        
-        <footer>
-            <p>Your progress will be saved to your personal Gist</p>
-        </footer>
-    </div>
-
-    <!-- Game Hub (initially hidden) -->
-    <div class="hidden" id="game-hub">
-        <div class="user-header">
-            <div class="current-user">
+        <div class="user-panel">
+            <div class="user-info">
                 <div class="user-avatar" id="user-avatar">U</div>
                 <span>Playing as: <strong id="current-username">Username</strong></span>
             </div>
+            
+            <div class="partner-select">
+                <label for="partner">Challenge Partner:</label>
+                <select id="partner">
+                    <option value="">Select a partner</option>
+                    <option value="lefa">lefa</option>
+                    <option value="owami">owami</option>
+                    <option value="jonas">jonas</option>
+                    <option value="preasx24">preasx24</option>
+                </select>
+            </div>
+            
             <button class="change-user-btn" id="change-user-btn">Change User</button>
+        </div>
+        
+        <div class="leaderboard">
+            <h2>Leaderboard</h2>
+            <div class="leaderboard-content" id="leaderboard-content">
+                <div class="leaderboard-user">
+                    <h3>Your Score</h3>
+                    <div class="leaderboard-score" id="user-score">0</div>
+                    <div>Total Points</div>
+                </div>
+                
+                <div class="leaderboard-user">
+                    <h3>Partner Score</h3>
+                    <div class="leaderboard-score" id="partner-score">0</div>
+                    <div>Total Points</div>
+                </div>
+                
+                <div class="leaderboard-user">
+                    <h3>Difference</h3>
+                    <div class="leaderboard-score" id="score-difference">0</div>
+                    <div class="score-difference" id="difference-text">No partner selected</div>
+                </div>
+            </div>
         </div>
         
         <div class="score-panel">
@@ -605,58 +611,40 @@
             }
         };
         
-        let currentUser = null;
-        let currentGistUrl = null;
+        let currentUser = 'preasx24';
+        let currentGistUrl = userGistMap[currentUser];
+        let partnerData = null;
+        let selectedPartner = '';
 
-        // ========== USER SELECTION ==========
+        // ========== INITIALIZATION ==========
         document.addEventListener('DOMContentLoaded', function() {
-            // Set up user selection buttons
-            document.querySelectorAll('.user-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Remove selected class from all buttons
-                    document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('selected'));
-                    
-                    // Add selected class to clicked button
-                    this.classList.add('selected');
-                    
-                    // Enable start button
-                    document.getElementById('start-btn').disabled = false;
-                    
-                    // Set current user
-                    currentUser = this.dataset.user;
-                });
+            // Set up username
+            document.getElementById('current-username').textContent = currentUser;
+            document.getElementById('user-avatar').textContent = currentUser.charAt(0).toUpperCase();
+            document.getElementById('user-avatar').classList.add(currentUser);
+            
+            // Set up partner selection
+            document.getElementById('partner').addEventListener('change', function() {
+                selectedPartner = this.value;
+                if (selectedPartner) {
+                    loadPartnerData();
+                } else {
+                    clearPartnerData();
+                }
             });
             
-            // Set up start button
-            document.getElementById('start-btn').addEventListener('click', function() {
-                if (!currentUser) return;
-                
-                // Hide user selection, show game hub
-                document.getElementById('user-selection').classList.add('hidden');
-                document.getElementById('game-hub').classList.remove('hidden');
-                
-                // Set current username display
-                document.getElementById('current-username').textContent = currentUser;
-                document.getElementById('user-avatar').textContent = currentUser.charAt(0).toUpperCase();
-                document.getElementById('user-avatar').classList.add(currentUser);
-                
-                // Set current Gist URL
-                currentGistUrl = userGistMap[currentUser];
-                
-                // Initialize games
-                initGames();
-            });
+            // Remove current user from partner options
+            const partnerSelect = document.getElementById('partner');
+            for (let i = 0; i < partnerSelect.options.length; i++) {
+                if (partnerSelect.options[i].value === currentUser) {
+                    partnerSelect.remove(i);
+                    break;
+                }
+            }
             
             // Set up change user button
             document.getElementById('change-user-btn').addEventListener('click', function() {
-                // Show user selection, hide game hub
-                document.getElementById('user-selection').classList.remove('hidden');
-                document.getElementById('game-hub').classList.add('hidden');
-                
-                // Reset user selection
-                document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('selected'));
-                document.getElementById('start-btn').disabled = true;
-                currentUser = null;
+                alert("To change user, please refresh the page. This will be improved in a future version.");
             });
             
             // Set up tab navigation
@@ -669,14 +657,13 @@
                     document.getElementById(tab.dataset.game).classList.add('active');
                 });
             });
-        });
-        
-        function initGames() {
+            
+            // Initialize games
             resetTicTacToe();
             initMemoryGame();
             updatePlayCounters();
             loadUserData();
-        }
+        });
         
         // ========== DAILY LIMIT CHECK ==========
         function checkDailyLimit(game, maxPlays) {
@@ -708,6 +695,65 @@
             document.getElementById('rps-score').textContent = gameData.rps.score;
             document.getElementById('memory-score').textContent = gameData.memory.score;
             document.getElementById('total-score').textContent = gameData.totalScore;
+            
+            // Update leaderboard
+            updateLeaderboard();
+        }
+        
+        // ========== LEADERBOARD FUNCTIONS ==========
+        async function loadPartnerData() {
+            if (!selectedPartner) return;
+            
+            try {
+                const response = await fetch(userGistMap[selectedPartner]);
+                if (!response.ok) throw new Error('Failed to fetch partner data');
+                
+                const partnerGistData = await response.json();
+                
+                if (partnerGistData.gameData) {
+                    partnerData = partnerGistData.gameData;
+                    updateLeaderboard();
+                } else {
+                    throw new Error('Partner data not found in Gist');
+                }
+            } catch (error) {
+                console.error('Error loading partner data:', error);
+                document.getElementById('gist-result').textContent = `Error loading ${selectedPartner}'s data: ${error.message}`;
+                clearPartnerData();
+            }
+        }
+        
+        function clearPartnerData() {
+            partnerData = null;
+            document.getElementById('partner-score').textContent = '0';
+            document.getElementById('score-difference').textContent = '0';
+            document.getElementById('difference-text').textContent = 'No partner selected';
+            document.getElementById('difference-text').className = 'score-difference';
+        }
+        
+        function updateLeaderboard() {
+            // Update user score
+            document.getElementById('user-score').textContent = gameData.totalScore;
+            
+            if (partnerData) {
+                const partnerTotal = partnerData.ticTacToe.score + partnerData.rps.score + partnerData.memory.score;
+                document.getElementById('partner-score').textContent = partnerTotal;
+                
+                const difference = gameData.totalScore - partnerTotal;
+                document.getElementById('score-difference').textContent = Math.abs(difference);
+                
+                const differenceElement = document.getElementById('difference-text');
+                if (difference > 0) {
+                    differenceElement.textContent = `You are winning by ${difference} points!`;
+                    differenceElement.className = 'score-difference winning';
+                } else if (difference < 0) {
+                    differenceElement.textContent = `${selectedPartner} is winning by ${Math.abs(difference)} points!`;
+                    differenceElement.className = 'score-difference losing';
+                } else {
+                    differenceElement.textContent = "It's a tie!";
+                    differenceElement.className = 'score-difference';
+                }
+            }
         }
         
         // ========== TIC TAC TOE GAME ==========
@@ -1031,6 +1077,11 @@
                 }
                 
                 gistResultElement.textContent = `Scores saved successfully for ${currentUser}!`;
+                
+                // Reload partner data if a partner is selected
+                if (selectedPartner) {
+                    loadPartnerData();
+                }
                 
             } catch (error) {
                 console.error('Error saving scores:', error);
