@@ -4,254 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mood Tracker - Together</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: #fff;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        h1 i {
-            margin-right: 15px;
-            color: #ff4b90;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .card-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .card-title i {
-            margin-right: 10px;
-            color: #ff4b90;
-        }
-        
-        .btn {
-            background: #ff4b90;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 50px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .btn i {
-            margin-right: 8px;
-        }
-        
-        .btn:hover {
-            background: #ff2d78;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .mood-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-        
-        .mood-btn {
-            padding: 20px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.15);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .mood-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
-        }
-        
-        .mood-btn.active {
-            background: #ff4b90;
-            box-shadow: 0 0 15px rgba(255, 75, 144, 0.5);
-        }
-        
-        .mood-status {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-        }
-        
-        .mood-status div {
-            text-align: center;
-            flex: 1;
-        }
-        
-        .mood-status .value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .mood-status .label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #ff4b90;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            display: none;
-            z-index: 1000;
-        }
-        
-        @media (max-width: 600px) {
-            .mood-options {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .mood-status {
-                flex-direction: column;
-                gap: 15px;
-            }
-        }
-    </style>
 </head>
 <body>
-    <button class="back-btn" onclick="goBack()">
-        <i class="fas fa-arrow-left"></i>
-    </button>
-    
-    <div class="container">
+    <button onclick="goBack()">Back</button>
+
+    <div>
         <header>
-            <h1><i class="fas fa-heartbeat"></i> Mood Tracker</h1>
-            <p class="subtitle">Share your mood with your partner</p>
+            <h1>Mood Tracker</h1>
+            <p>Share your mood with your partner</p>
         </header>
-        
-        <div class="card">
-            <h2 class="card-title"><i class="fas fa-user"></i> Your Current Mood</h2>
-            <div class="mood-status">
+
+        <div>
+            <h2>Your Current Mood</h2>
+            <div>
                 <div>
-                    <div class="value" id="currentMood">Not set</div>
-                    <div class="label">Your Mood</div>
+                    <div id="currentMood">Not set</div>
+                    <div>Your Mood</div>
                 </div>
                 <div>
-                    <div class="value" id="partnerMood">Unknown</div>
-                    <div class="label">Partner's Mood</div>
+                    <div id="partnerMood">Unknown</div>
+                    <div>Partner's Mood</div>
                 </div>
             </div>
-            
-            <h2 class="card-title"><i class="fas fa-smile"></i> Select Your Mood</h2>
-            <div class="mood-options">
-                <div class="mood-btn" onclick="setMood('happy', this)">
-                    <div style="font-size: 2rem;">😊</div>
+
+            <h2>Select Your Mood</h2>
+            <div>
+                <div onclick="setMood('happy', this)">
+                    <div>😊</div>
                     <div>Happy</div>
                 </div>
-                <div class="mood-btn" onclick="setMood('sad', this)">
-                    <div style="font-size: 2rem;">😢</div>
+                <div onclick="setMood('sad', this)">
+                    <div>😢</div>
                     <div>Sad</div>
                 </div>
-                <div class="mood-btn" onclick="setMood('tired', this)">
-                    <div style="font-size: 2rem;">😴</div>
+                <div onclick="setMood('tired', this)">
+                    <div>😴</div>
                     <div>Tired</div>
                 </div>
-                <div class="mood-btn" onclick="setMood('excited', this)">
-                    <div style="font-size: 2rem;">🤩</div>
+                <div onclick="setMood('excited', this)">
+                    <div>🤩</div>
                     <div>Excited</div>
                 </div>
-                <div class="mood-btn" onclick="setMood('romantic', this)">
-                    <div style="font-size: 2rem;">😍</div>
+                <div onclick="setMood('romantic', this)">
+                    <div>😍</div>
                     <div>Romantic</div>
                 </div>
-                <div class="mood-btn" onclick="setMood('playful', this)">
-                    <div style="font-size: 2rem;">😜</div>
+                <div onclick="setMood('playful', this)">
+                    <div>😜</div>
                     <div>Playful</div>
                 </div>
             </div>
-            
-            <button class="btn" onclick="updatePartnerMood()">
-                <i class="fas fa-sync"></i> Update Partner's Mood
-            </button>
+
+            <button onclick="updatePartnerMood()">Update Partner's Mood</button>
         </div>
     </div>
-    
-    <div class="notification" id="notification">
+
+    <div id="notification">
         <span id="notificationText"></span>
     </div>
 
@@ -261,35 +69,29 @@
             mood: 'https://gist.githubusercontent.com/Preasx24/880b2b385a8b11b91e4a7abe58257a14/raw/gistfile1.txt',
             token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt'
         };
-        
+
         let userData = null;
-        
+
         // Initialize the app
         function initApp() {
-            // Load user data
             const savedProfile = localStorage.getItem('togetherProfile');
             if (!savedProfile) {
                 showNotification('Please set up your profile first');
                 setTimeout(() => window.location.href = 'index.html', 2000);
                 return;
             }
-            
+
             userData = JSON.parse(savedProfile);
             document.getElementById('currentMood').textContent = userData.mood || 'Not set';
-            
-            // Load GitHub token
+
             loadGithubToken();
-            
-            // Load partner mood
             updatePartnerMood();
         }
-        
-        // Go back to main page
+
         function goBack() {
             window.location.href = 'index.html';
         }
-        
-        // Load GitHub token from Gist
+
         async function loadGithubToken() {
             try {
                 const response = await fetch(gistUrls.token + '?t=' + new Date().getTime());
@@ -300,40 +102,28 @@
                 showNotification('Error loading GitHub token');
             }
         }
-        
-        // Set user's mood
+
         async function setMood(mood, element) {
-            // Remove active class from all buttons
-            document.querySelectorAll('.mood-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Add active class to clicked button
-            element.classList.add('active');
-            
             userData.mood = mood;
             document.getElementById('currentMood').textContent = mood;
-            
-            // Save to localStorage
+
             localStorage.setItem('togetherProfile', JSON.stringify(userData));
-            
-            // Update Gist
+
             await updateGistData({
                 [userData.userKey]: {
                     mood: userData.mood,
                     updated: new Date().toISOString()
                 }
             });
-            
+
             showNotification('Mood set to ' + mood);
         }
-        
-        // Update partner's mood
+
         async function updatePartnerMood() {
             try {
                 const response = await fetch(gistUrls.mood + '?t=' + new Date().getTime());
                 const data = await response.json();
-                
+
                 if (data && data[userData.partnerKey] && data[userData.partnerKey].mood) {
                     const partnerMood = data[userData.partnerKey].mood;
                     document.getElementById('partnerMood').textContent = partnerMood;
@@ -346,42 +136,37 @@
                 showNotification('Error fetching partner mood');
             }
         }
-        
-        // Update Gist data
+
         async function updateGistData(data) {
             if (!userData.gistToken) {
                 showNotification('GitHub token is required to update Gists');
                 return;
             }
-            
+
             try {
-                // Extract Gist ID from URL
                 const gistId = gistUrls.mood.split('/')[4];
-                
-                // First get the current Gist content
+
                 const currentResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
                     headers: {
                         'Authorization': `token ${userData.gistToken}`
                     }
                 });
-                
+
                 if (!currentResponse.ok) {
                     throw new Error(`HTTP error! status: ${currentResponse.status}`);
                 }
-                
+
                 const currentGist = await currentResponse.json();
                 let currentContent = {};
-                
+
                 try {
                     currentContent = JSON.parse(currentGist.files['gistfile1.txt'].content);
                 } catch (e) {
                     console.log('Gist content is empty or invalid JSON, starting fresh');
                 }
-                
-                // Merge new data with existing content
+
                 const newContent = {...currentContent, ...data};
-                
-                // Update the Gist
+
                 const response = await fetch(`https://api.github.com/gists/${gistId}`, {
                     method: 'PATCH',
                     headers: {
@@ -396,11 +181,11 @@
                         }
                     })
                 });
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
+
                 return true;
             } catch (error) {
                 console.error('Error updating Gist:', error);
@@ -408,21 +193,19 @@
                 return false;
             }
         }
-        
-        // Show notification
+
         function showNotification(message) {
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
-            
+
             notificationText.textContent = message;
             notification.style.display = 'block';
-            
+
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 3000);
         }
-        
-        // Initialize the app when page loads
+
         window.onload = initApp;
     </script>
 </body>
