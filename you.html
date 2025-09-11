@@ -86,6 +86,14 @@
             token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt'
         };
 
+        // New personal gist URLs mapped to usernames
+        const userGistMap = {
+            lefa: "https://gist.githubusercontent.com/Preasx24/02e300379f8b968942ac67379f5bc831/raw/gist_1.json",
+            jonas: "https://gist.githubusercontent.com/Preasx24/69f058ad6bcb25e41d8b797dc7395c6d/raw/gist_2.json",
+            owami: "https://gist.githubusercontent.com/Preasx24/6c9e9fcda5ed38f9839c9ac8bc147ba7/raw/gist_3.json",
+            preasx24: "https://gist.githubusercontent.com/Preasx24/50e60ff2c3bc108d63038c8eb6c26e8d/raw/gist_4.json"
+        };
+
         // Check if profile already exists
         function checkExistingProfile() {
             const savedProfile = localStorage.getItem('togetherProfile');
@@ -101,7 +109,7 @@
 
         // Save user profile
         async function saveProfile() {
-            const username = document.getElementById('username').value;
+            const username = document.getElementById('username').value.trim().toLowerCase();
             const partner = document.getElementById('partner').value;
             const userKey = document.getElementById('userKey').value;
             const partnerKey = document.getElementById('partnerKey').value;
@@ -117,6 +125,11 @@
             }
 
             const userData = { username, partner, userKey, partnerKey, gistToken: '' };
+
+            // If username is one of the special ones, attach its gist URL
+            if (userGistMap[username]) {
+                userData.personalGistUrl = userGistMap[username];
+            }
 
             await loadGithubToken(userData);
 
