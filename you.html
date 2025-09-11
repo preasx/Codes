@@ -333,15 +333,15 @@
             .features-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .app-card {
                 padding: 30px 20px;
             }
-            
+
             h1 {
                 font-size: 2.5rem;
             }
-            
+
             .logo i {
                 width: 110px;
                 height: 110px;
@@ -354,15 +354,15 @@
             .features-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             h1 {
                 font-size: 2.2rem;
             }
-            
+
             .subtitle {
                 font-size: 1.1rem;
             }
-            
+
             .btn {
                 padding: 16px 25px;
                 font-size: 1.1rem;
@@ -372,7 +372,7 @@
 </head>
 <body>
     <div class="heart-background" id="heartBackground"></div>
-    
+
     <div class="container">
         <div class="app-card">
             <div class="logo">
@@ -386,19 +386,11 @@
                     <div class="input-group">
                         <label for="username">Your Name</label>
                         <input type="text" id="username" placeholder="Enter your name">
+                        <small>Enter "lefa", "less", or another username to match with a gist</small>
                     </div>
                     <div class="input-group">
                         <label for="partner">Partner's Name</label>
                         <input type="text" id="partner" placeholder="Enter your partner's name">
-                    </div>
-                    <div class="input-group">
-                        <label for="userKey">Your Unique Key</label>
-                        <input type="text" id="userKey" placeholder="Create a unique key (e.g., user1)">
-                        <small>This will identify you in the system. Both partners need to know each other's keys.</small>
-                    </div>
-                    <div class="input-group">
-                        <label for="partnerKey">Partner's Unique Key</label>
-                        <input type="text" id="partnerKey" placeholder="Enter your partner's key">
                     </div>
                 </div>
 
@@ -409,6 +401,7 @@
 
             <div id="features-menu" class="features-menu">
                 <h2>Welcome, <span id="welcome-name"></span>!</h2>
+                <p>Your personal gist: <span id="personal-gist-url" style="word-break: break-all; font-size: 0.9rem;"></span></p>
                 <p>What would you like to do today?</p>
 
                 <div class="features-grid">
@@ -457,42 +450,45 @@
     </div>
 
     <script>
-        // Gist URLs for different activities
-        const gistUrls = {
-            profile: 'https://gist.githubusercontent.com/Preasx24/7c024dffd3ab26c772ffd786885e66e6/raw/gistfile1.txt',
-            mood: 'https://gist.githubusercontent.com/Preasx24/880b2b385a8b11b91e4a7abe58257a14/raw/gistfile1.txt',
-            location: 'https://gist.githubusercontent.com/Preasx24/c257b4b817361f2ccc22a60388784986/raw/gistfile1.txt',
-            activities: 'https://gist.githubusercontent.com/Preasx24/4f0b769f591da88eb60147bd5a3d044c/raw/gistfile1.txt',
-            token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt'
+        // Hardcoded usernames and their associated gist URLs
+        const userGists = {
+            "lefa": "https://gist.githubusercontent.com/Preasx24/02e300379f8b968942ac67379f5bc831/raw/0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc/gist_1.json",
+            "less": "https://gist.githubusercontent.com/Preasx24/69f058ad6bcb25e41d8b797dc7395c6d/raw/0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc/gist_2.json",
+            "alex": "https://gist.githubusercontent.com/Preasx24/6c9e9fcda5ed38f9839c9ac8bc147ba7/raw/0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc/gist_3.json",
+            "maya": "https://gist.githubusercontent.com/Preasx24/50e60ff2c3bc108d63038c8eb6c26e8d/raw/0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc/gist_4.json",
+            "ryan": "https://gist.githubusercontent.com/Preasx24/cda6f139e255b022f1cd1b852352de4b/raw/0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc/gist_5.json",
+            "luna": "https://gist.githubusercontent.com/Preasx24/95a4ee89bc90234744c76a41fe7adc7a/raw/0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc/gist_6.json",
+            "noah": "https://gist.githubusercontent.com/Preasx24/d43527d1accf44635213fa20b8230e79/raw/0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc/gist_7.json",
+            "zoe": "https://gist.githubusercontent.com/Preasx24/11e287cc258143bd5c40a55b8fa96bd2/raw/0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc/gist_8.json"
         };
 
         // Create falling hearts
         function createHearts() {
             const heartBackground = document.getElementById('heartBackground');
             const numberOfHearts = 25;
-            
+
             for (let i = 0; i < numberOfHearts; i++) {
                 const heart = document.createElement('div');
                 heart.classList.add('heart');
-                
+
                 // Random properties for each heart
                 const size = Math.random() * 15 + 8;
                 const left = Math.random() * 100;
                 const animationDuration = Math.random() * 10 + 8;
                 const animationDelay = Math.random() * 5;
                 const opacity = Math.random() * 0.7 + 0.3;
-                
+
                 heart.style.width = `${size}px`;
                 heart.style.height = `${size}px`;
                 heart.style.left = `${left}vw`;
                 heart.style.animationDuration = `${animationDuration}s`;
                 heart.style.animationDelay = `${animationDelay}s`;
                 heart.style.opacity = opacity;
-                
+
                 heartBackground.appendChild(heart);
             }
         }
-        
+
         // Initialize the falling hearts
         createHearts();
 
@@ -503,139 +499,57 @@
                 const userData = JSON.parse(savedProfile);
                 document.getElementById('username').value = userData.username;
                 document.getElementById('partner').value = userData.partner;
-                document.getElementById('userKey').value = userData.userKey;
-                document.getElementById('partnerKey').value = userData.partnerKey;
 
                 // Show features menu
-                showFeaturesMenu(userData.username);
+                showFeaturesMenu(userData.username, userData.personalGistUrl);
             }
         }
 
         // Save user profile
-        async function saveProfile() {
+        function saveProfile() {
             const username = document.getElementById('username').value;
             const partner = document.getElementById('partner').value;
-            const userKey = document.getElementById('userKey').value;
-            const partnerKey = document.getElementById('partnerKey').value;
 
-            if (!username || !partner || !userKey || !partnerKey) {
+            if (!username || !partner) {
                 showNotification('Please fill all fields');
                 return;
             }
 
-            if (userKey === partnerKey) {
-                showNotification('Your key and partner key cannot be the same');
-                return;
+            // Check if username matches one of our hardcoded usernames
+            const userKey = username.toLowerCase();
+            let personalGistUrl = null;
+
+            if (userGists[userKey]) {
+                personalGistUrl = userGists[userKey];
+            } else {
+                // If not, assign a random gist URL from the list
+                const keys = Object.keys(userGists);
+                const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                personalGistUrl = userGists[randomKey];
+                showNotification(`Username not in our list. Assigned a random gist.`);
             }
 
             const userData = {
                 username,
                 partner,
-                userKey,
-                partnerKey,
-                gistToken: ''
+                personalGistUrl
             };
-
-            // Load GitHub token
-            await loadGithubToken(userData);
 
             // Save to localStorage
             localStorage.setItem('togetherProfile', JSON.stringify(userData));
 
-            // Save to Gist
-            await updateGistData('profile', userData, {
-                [userData.userKey]: {
-                    username: userData.username,
-                    partner: userData.partner,
-                    updated: new Date().toISOString()
-                }
-            });
-
             // Show features menu
-            showFeaturesMenu(username);
+            showFeaturesMenu(username, personalGistUrl);
 
             showNotification('Profile saved successfully!');
         }
 
-        // Load GitHub token from Gist
-        async function loadGithubToken(userData) {
-            try {
-                const response = await fetch(gistUrls.token + '?t=' + new Date().getTime());
-                const token = await response.text();
-                userData.gistToken = token.trim();
-            } catch (error) {
-                console.error('Error loading GitHub token:', error);
-                showNotification('Error loading GitHub token');
-            }
-        }
-
-        // Update Gist data
-        async function updateGistData(dataType, userData, data) {
-            if (!userData.gistToken) {
-                showNotification('GitHub token is required to update Gists');
-                return;
-            }
-
-            try {
-                // Extract Gist ID from URL
-                const gistId = gistUrls[dataType].split('/')[4];
-
-                // First get the current Gist content
-                const currentResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
-                    headers: {
-                        'Authorization': `token ${userData.gistToken}`
-                    }
-                });
-
-                if (!currentResponse.ok) {
-                    throw new Error(`HTTP error! status: ${currentResponse.status}`);
-                }
-
-                const currentGist = await currentResponse.json();
-                let currentContent = {};
-
-                try {
-                    currentContent = JSON.parse(currentGist.files['gistfile1.txt'].content);
-                } catch (e) {
-                    console.log('Gist content is empty or invalid JSON, starting fresh');
-                }
-
-                // Merge new data with existing content
-                const newContent = {...currentContent, ...data};
-
-                // Update the Gist
-                const response = await fetch(`https://api.github.com/gists/${gistId}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': `token ${userData.gistToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        files: {
-                            'gistfile1.txt': {
-                                content: JSON.stringify(newContent, null, 2)
-                            }
-                        }
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                return true;
-            } catch (error) {
-                console.error('Error updating Gist:', error);
-                showNotification('Error updating Gist: ' + error.message);
-                return false;
-            }
-        }
-
         // Show features menu
-        function showFeaturesMenu(username) {
+        function showFeaturesMenu(username, gistUrl) {
             document.getElementById('profile-section').style.display = 'none';
             document.getElementById('features-menu').style.display = 'block';
             document.getElementById('welcome-name').textContent = username;
+            document.getElementById('personal-gist-url').textContent = gistUrl;
         }
 
         // Navigate to feature page
