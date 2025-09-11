@@ -339,8 +339,16 @@
       preasx24: "https://gist.githubusercontent.com/Preasx24/50e60ff2c3bc108d63038c8eb6c26e8d/raw/gist_4.json"
     };
 
-    // Map usernames to their partner keys
-    const userPartnerMap = {
+    // Map usernames to their user keys (for main gist)
+    const userKeyMap = {
+      lefa: "user1",
+      jonas: "user2",
+      owami: "user3",
+      preasx24: "user4"
+    };
+
+    // Map usernames to their partner keys (for reading partner's activities)
+    const partnerKeyMap = {
       lefa: "partner1",
       jonas: "partner2",
       owami: "partner3",
@@ -349,6 +357,7 @@
 
     let userData = {
       username: null,
+      userKey: null,
       partnerKey: null,
       personalGistUrl: null,
       gistToken: null,
@@ -363,7 +372,8 @@
       
       // Update user data
       userData.username = username;
-      userData.partnerKey = userPartnerMap[username] || "defaultPartner";
+      userData.userKey = userKeyMap[username] || "defaultUser";
+      userData.partnerKey = partnerKeyMap[username] || "defaultPartner";
       userData.personalGistUrl = userGistMap[username];
       
       // Update status
@@ -440,21 +450,23 @@
       localStorage.setItem('togetherProfile', JSON.stringify(userData));
 
       try {
-        // Update main gist
-        const mainGistSuccess = await updateGistData({
-          [userData.partnerKey]: {
+        // Update main gist (original functionality)
+        const mainGistSuccess = await updateMainGist({
+          [userData.userKey]: {
             activities: userData.activities,
             updated: new Date().toISOString()
           }
         });
 
-        // Update personal gist
+        // Update personal gist (new functionality)
         const personalGistSuccess = await updatePersonalActivityGist(newActivity);
 
         if (mainGistSuccess && personalGistSuccess) {
           showNotification('Activity shared: ' + formatActivityType(activity));
+        } else if (mainGistSuccess) {
+          showNotification('Activity shared to main feed, but personal gist update failed');
         } else {
-          showNotification('Activity shared locally but gist update failed');
+          showNotification('Failed to share activity');
         }
       } catch (error) {
         console.error('Error sharing activity:', error);
@@ -525,7 +537,8 @@
       return activityMap[type] || type;
     }
 
-    async function updateGistData(data) {
+    // Original main gist update function
+    async function updateMainGist(data) {
       if (!userData.gistToken) {
         showNotification('GitHub token is required to update Gists');
         return false;
@@ -569,12 +582,13 @@
         }
         return true;
       } catch (error) {
-        console.error('Error updating Gist:', error);
-        showNotification('Error updating Gist: ' + error.message);
+        console.error('Error updating main Gist:', error);
+        showNotification('Error updating main Gist: ' + error.message);
         return false;
       }
     }
 
+    // Personal gist update function
     async function updatePersonalActivityGist(activity) {
       if (!userData.personalGistUrl) {
         console.log('No personal gist URL for user:', userData.username);
