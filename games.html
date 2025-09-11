@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Hub - Score Tracker</title>
+    <title>Enhanced Game Hub</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,18 +13,18 @@
         }
         
         body {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
             color: #333;
             min-height: 100vh;
             padding: 20px;
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             overflow: hidden;
         }
         
@@ -40,22 +40,54 @@
             margin-bottom: 10px;
         }
         
-        .score-panel {
+        .user-panel {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
+            align-items: center;
             padding: 15px;
             background: #34495e;
             color: white;
         }
         
+        .user-select {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        select {
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            font-weight: bold;
+        }
+        
+        .score-panel {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: #2c3e50;
+            color: white;
+        }
+        
         .score-box {
             text-align: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            min-width: 120px;
         }
         
         .score-value {
             font-size: 1.8rem;
             font-weight: bold;
             color: #f1c40f;
+        }
+        
+        .play-counter {
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: #ecf0f1;
         }
         
         .tabs {
@@ -69,6 +101,8 @@
             cursor: pointer;
             font-weight: bold;
             transition: background 0.3s;
+            flex: 1;
+            text-align: center;
         }
         
         .tab.active {
@@ -82,7 +116,7 @@
         
         .game-container {
             padding: 30px;
-            min-height: 400px;
+            min-height: 500px;
         }
         
         .game {
@@ -165,21 +199,21 @@
         /* Memory Game Styles */
         .memory-grid {
             display: grid;
-            grid-template-columns: repeat(4, 100px);
+            grid-template-columns: repeat(6, 80px);
             grid-gap: 10px;
             margin: 20px auto;
             width: fit-content;
         }
         
         .memory-card {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             background: #3498db;
             border-radius: 5px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 2rem;
+            font-size: 1.8rem;
             cursor: pointer;
             transform-style: preserve-3d;
             transition: transform 0.5s;
@@ -208,15 +242,6 @@
             border-top: 2px solid #bdc3c7;
         }
         
-        .username-select {
-            padding: 10px;
-            font-size: 1rem;
-            border: 2px solid #3498db;
-            border-radius: 5px;
-            margin-right: 10px;
-            width: 150px;
-        }
-        
         .save-btn {
             background: #2ecc71;
             color: white;
@@ -226,10 +251,16 @@
             font-size: 1rem;
             cursor: pointer;
             transition: background 0.3s;
+            margin: 10px;
         }
         
         .save-btn:hover {
             background: #27ae60;
+        }
+        
+        .save-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
         }
         
         .gist-result {
@@ -247,11 +278,42 @@
             border-radius: 5px;
             margin: 15px 0;
             font-size: 0.9rem;
+            text-align: center;
         }
         
-        @media (max-width: 600px) {
-            .tic-tac-toe-board,
+        .game-status {
+            text-align: center;
+            margin: 15px 0;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        @media (max-width: 768px) {
             .memory-grid {
+                grid-template-columns: repeat(4, 70px);
+            }
+            
+            .memory-card {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .rps-options {
+                flex-wrap: wrap;
+            }
+            
+            .score-panel {
+                flex-wrap: wrap;
+            }
+            
+            .score-box {
+                min-width: 100px;
+                margin: 5px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tic-tac-toe-board {
                 grid-template-columns: repeat(3, 80px);
             }
             
@@ -260,14 +322,20 @@
                 height: 80px;
             }
             
-            .memory-card {
-                width: 80px;
-                height: 80px;
+            .memory-grid {
+                grid-template-columns: repeat(3, 60px);
             }
             
-            .rps-options {
-                flex-direction: column;
-                align-items: center;
+            .memory-card {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .rps-option {
+                width: 90px;
+                height: 90px;
+                font-size: 2.5rem;
             }
         }
     </style>
@@ -275,22 +343,38 @@
 <body>
     <div class="container">
         <header>
-            <h1>Game Hub</h1>
-            <p>Play games and track your scores!</p>
+            <h1>Enhanced Game Hub</h1>
+            <p>Play games with daily limits and improved AI!</p>
         </header>
+        
+        <div class="user-panel">
+            <div class="user-select">
+                <label for="username">Select User:</label>
+                <select id="username">
+                    <option value="lefa">lefa</option>
+                    <option value="owami">owami</option>
+                    <option value="jonas">jonas</option>
+                    <option value="preasx24" selected>preasx24</option>
+                </select>
+            </div>
+            <div id="last-saved">Not saved yet</div>
+        </div>
         
         <div class="score-panel">
             <div class="score-box">
                 <div>Tic Tac Toe</div>
                 <div class="score-value" id="tic-tac-toe-score">0</div>
+                <div class="play-counter">Plays today: <span id="tic-tac-toe-plays">0</span>/10</div>
             </div>
             <div class="score-box">
                 <div>Rock Paper Scissors</div>
                 <div class="score-value" id="rps-score">0</div>
+                <div class="play-counter">Plays today: <span id="rps-plays">0</span>/5</div>
             </div>
             <div class="score-box">
                 <div>Memory Game</div>
                 <div class="score-value" id="memory-score">0</div>
+                <div class="play-counter">Plays today: <span id="memory-plays">0</span>/15</div>
             </div>
             <div class="score-box">
                 <div>Total Score</div>
@@ -308,7 +392,8 @@
             <!-- Tic Tac Toe Game -->
             <div class="game active" id="tic-tac-toe">
                 <h2>Tic Tac Toe</h2>
-                <div class="instructions">Get three in a row to win! You're X, the computer is O.</div>
+                <div class="instructions">Get three in a row to win! You're X, the computer is O. You can play 10 times per day.</div>
+                <div class="game-status" id="tic-tac-toe-status"></div>
                 <div class="tic-tac-toe-board" id="board">
                     <div class="cell" data-cell-index="0"></div>
                     <div class="cell" data-cell-index="1"></div>
@@ -327,7 +412,8 @@
             <!-- Rock Paper Scissors Game -->
             <div class="game" id="rps">
                 <h2>Rock Paper Scissors</h2>
-                <div class="instructions">Choose your weapon against the computer!</div>
+                <div class="instructions">Choose your weapon against the computer! You can play 5 times per day.</div>
+                <div class="game-status" id="rps-status"></div>
                 <div class="rps-options">
                     <div class="rps-option" data-choice="rock">🪨</div>
                     <div class="rps-option" data-choice="paper">📄</div>
@@ -339,10 +425,11 @@
             <!-- Memory Game -->
             <div class="game" id="memory">
                 <h2>Memory Game</h2>
-                <div class="instructions">Find all matching pairs. Match all pairs to win!</div>
+                <div class="instructions">Find all matching pairs. Match all pairs to win! You can play 15 times per day.</div>
+                <div class="game-status" id="memory-status"></div>
                 <div style="text-align: center; margin: 15px;">
-                    Matches: <span id="match-count">0</span>/8
-                    <button class="save-btn" onclick="initMemoryGame()" style="margin-left: 15px;">New Game</button>
+                    Matches: <span id="match-count">0</span>/13
+                    <button class="save-btn" onclick="initMemoryGame()">New Game</button>
                 </div>
                 <div class="memory-grid" id="memory-grid"></div>
             </div>
@@ -350,54 +437,100 @@
         
         <div class="save-section">
             <h3>Save Your Scores</h3>
-            <p>Select your username and save your scores to the Gist</p>
-            <select class="username-select" id="username">
-                <option value="lefa">lefa</option>
-                <option value="owami">owami</option>
-                <option value="Jonas">Jonas</option>
-                <option value="preasx24" selected>preasx24</option>
-            </select>
-            <button class="save-btn" onclick="saveScoresToGist()">Save Scores to Gist</button>
+            <p>Your scores will be saved to your personal Gist</p>
+            <button class="save-btn" id="save-btn" onclick="saveScoresToGist()">Save Scores to Gist</button>
             <div class="gist-result" id="gist-result"></div>
         </div>
     </div>
 
     <script>
         // ========== GLOBAL VARIABLES ==========
-        const GIST_URL = 'https://gist.githubusercontent.com/Preasx24/4bc35d944aa39fa6e1b6a2af67606ebd/raw/gist_1.json';
+        const userGistMap = {
+            lefa: "https://gist.githubusercontent.com/Preasx24/02e300379f8b968942ac67379f5bc831/raw/gist_1.json",
+            jonas: "https://gist.githubusercontent.com/Preasx24/69f058ad6bcb25e41d8b797dc7395c6d/raw/gist_2.json",
+            owami: "https://gist.githubusercontent.com/Preasx24/6c9e9fcda5ed38f9839c9ac8bc147ba7/raw/gist_3.json",
+            preasx24: "https://gist.githubusercontent.com/Preasx24/50e60ff2c3bc108d63038c8eb6c26e8d/raw/gist_4.json"
+        };
+        
         const GIST_TOKEN_URL = 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt';
         
-        let scores = {
-            ticTacToe: 0,
-            rps: 0,
-            memory: 0,
-            get total() {
-                return this.ticTacToe + this.rps + this.memory;
+        let gameData = {
+            ticTacToe: { score: 0, playsToday: 0, lastPlayed: null },
+            rps: { score: 0, playsToday: 0, lastPlayed: null },
+            memory: { score: 0, playsToday: 0, lastPlayed: null },
+            get totalScore() {
+                return this.ticTacToe.score + this.rps.score + this.memory.score;
             }
         };
         
         let currentUser = 'preasx24';
+        let currentGistUrl = userGistMap[currentUser];
         
-        // ========== TAB NAVIGATION ==========
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Remove active class from all tabs and games
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.game').forEach(g => g.classList.remove('active'));
-                
-                // Add active class to clicked tab and corresponding game
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.game).classList.add('active');
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up username change handler
+            document.getElementById('username').addEventListener('change', function() {
+                currentUser = this.value;
+                currentGistUrl = userGistMap[currentUser];
+                loadUserData();
             });
+            
+            // Set up tab navigation
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.game').forEach(g => g.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.game).classList.add('active');
+                });
+            });
+            
+            // Initialize games
+            resetTicTacToe();
+            initMemoryGame();
+            updatePlayCounters();
+            loadUserData();
         });
         
+        // ========== DAILY LIMIT CHECK ==========
+        function checkDailyLimit(game, maxPlays) {
+            const today = new Date().toDateString();
+            const lastPlayed = gameData[game].lastPlayed;
+            
+            // Reset if it's a new day
+            if (lastPlayed !== today) {
+                gameData[game].playsToday = 0;
+                gameData[game].lastPlayed = today;
+                updatePlayCounters();
+            }
+            
+            // Check if user can play
+            if (gameData[game].playsToday >= maxPlays) {
+                document.getElementById(`${game}-status`).textContent = `You've reached your daily limit of ${maxPlays} plays!`;
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function updatePlayCounters() {
+            document.getElementById('tic-tac-toe-plays').textContent = gameData.ticTacToe.playsToday;
+            document.getElementById('rps-plays').textContent = gameData.rps.playsToday;
+            document.getElementById('memory-plays').textContent = gameData.memory.playsToday;
+            
+            document.getElementById('tic-tac-toe-score').textContent = gameData.ticTacToe.score;
+            document.getElementById('rps-score').textContent = gameData.rps.score;
+            document.getElementById('memory-score').textContent = gameData.memory.score;
+            document.getElementById('total-score').textContent = gameData.totalScore;
+        }
+        
         // ========== TIC TAC TOE GAME ==========
-        const board = document.getElementById('board');
         const cells = document.querySelectorAll('.cell');
         const ticTacToeResult = document.getElementById('tic-tac-toe-result');
         let currentPlayer = 'X';
         let gameState = ['', '', '', '', '', '', '', '', ''];
-        let gameActive = true;
+        let ticTacToeActive = false;
         
         const winningConditions = [
             [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
@@ -406,10 +539,16 @@
         ];
         
         function handleCellClick(e) {
+            if (!ticTacToeActive) {
+                if (!checkDailyLimit('ticTacToe', 10)) return;
+                ticTacToeActive = true;
+                document.getElementById('tic-tac-toe-status').textContent = '';
+            }
+            
             const cell = e.target;
             const cellIndex = parseInt(cell.getAttribute('data-cell-index'));
             
-            if (gameState[cellIndex] !== '' || !gameActive) return;
+            if (gameState[cellIndex] !== '' || !ticTacToeActive) return;
             
             gameState[cellIndex] = currentPlayer;
             cell.textContent = currentPlayer;
@@ -418,38 +557,63 @@
             if (checkWin()) {
                 endGame(false);
                 if (currentPlayer === 'X') {
-                    scores.ticTacToe++;
-                    updateScoreDisplay();
+                    gameData.ticTacToe.score++;
+                    updatePlayCounters();
                 }
             } else if (isDraw()) {
                 endGame(true);
             } else {
-                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-                if (currentPlayer === 'O') {
-                    setTimeout(makeBotMove, 500);
-                }
+                currentPlayer = 'O';
+                setTimeout(makeBotMove, 500);
             }
         }
         
         function makeBotMove() {
-            const emptyCells = gameState.map((cell, index) => cell === '' ? index : null).filter(val => val !== null);
-            if (emptyCells.length > 0) {
-                const randomIndex = Math.floor(Math.random() * emptyCells.length);
-                const cellIndex = emptyCells[randomIndex];
+            // Improved AI - try to win, then block, then choose center, then corners, then random
+            let move = findWinningMove('O') || 
+                       findWinningMove('X') || 
+                       (gameState[4] === '' ? 4 : null) ||
+                       findEmptyCorner() ||
+                       findRandomEmpty();
+            
+            gameState[move] = 'O';
+            const cell = document.querySelector(`[data-cell-index="${move}"]`);
+            cell.textContent = 'O';
+            cell.classList.add('o');
+            
+            if (checkWin()) {
+                endGame(false);
+            } else if (isDraw()) {
+                endGame(true);
+            } else {
+                currentPlayer = 'X';
+            }
+        }
+        
+        function findWinningMove(player) {
+            for (let i = 0; i < winningConditions.length; i++) {
+                const [a, b, c] = winningConditions[i];
+                const cells = [gameState[a], gameState[b], gameState[c]];
                 
-                gameState[cellIndex] = 'O';
-                const cell = document.querySelector(`[data-cell-index="${cellIndex}"]`);
-                cell.textContent = 'O';
-                cell.classList.add('o');
-                
-                if (checkWin()) {
-                    endGame(false);
-                } else if (isDraw()) {
-                    endGame(true);
-                } else {
-                    currentPlayer = 'X';
+                // If two cells are taken by the player and the third is empty
+                if (cells.filter(cell => cell === player).length === 2) {
+                    if (gameState[a] === '') return a;
+                    if (gameState[b] === '') return b;
+                    if (gameState[c] === '') return c;
                 }
             }
+            return null;
+        }
+        
+        function findEmptyCorner() {
+            const corners = [0, 2, 6, 8];
+            const emptyCorners = corners.filter(index => gameState[index] === '');
+            return emptyCorners.length > 0 ? emptyCorners[Math.floor(Math.random() * emptyCorners.length)] : null;
+        }
+        
+        function findRandomEmpty() {
+            const emptyCells = gameState.map((cell, index) => cell === '' ? index : null).filter(val => val !== null);
+            return emptyCells.length > 0 ? emptyCells[Math.floor(Math.random() * emptyCells.length)] : null;
         }
         
         function checkWin() {
@@ -467,7 +631,10 @@
         }
         
         function endGame(isDraw) {
-            gameActive = false;
+            ticTacToeActive = false;
+            gameData.ticTacToe.playsToday++;
+            updatePlayCounters();
+            
             if (isDraw) {
                 ticTacToeResult.textContent = 'Game ended in a draw!';
             } else {
@@ -476,10 +643,13 @@
         }
         
         function resetTicTacToe() {
+            if (!checkDailyLimit('ticTacToe', 10)) return;
+            
             currentPlayer = 'X';
             gameState = ['', '', '', '', '', '', '', '', ''];
-            gameActive = true;
+            ticTacToeActive = true;
             ticTacToeResult.textContent = '';
+            document.getElementById('tic-tac-toe-status').textContent = '';
             
             cells.forEach(cell => {
                 cell.textContent = '';
@@ -495,6 +665,9 @@
         
         rpsOptions.forEach(option => {
             option.addEventListener('click', () => {
+                if (!checkDailyLimit('rps', 5)) return;
+                
+                document.getElementById('rps-status').textContent = '';
                 const playerChoice = option.dataset.choice;
                 const choices = ['rock', 'paper', 'scissors'];
                 const botChoice = choices[Math.floor(Math.random() * choices.length)];
@@ -509,12 +682,13 @@
                     (playerChoice === 'scissors' && botChoice === 'paper')
                 ) {
                     result = `You win! ${playerChoice} beats ${botChoice}. +1 Point!`;
-                    scores.rps++;
-                    updateScoreDisplay();
+                    gameData.rps.score++;
                 } else {
                     result = `You lose! ${botChoice} beats ${playerChoice}.`;
                 }
                 
+                gameData.rps.playsToday++;
+                updatePlayCounters();
                 rpsResult.textContent = result;
             });
         });
@@ -526,9 +700,16 @@
         let memoryCards = [];
         let flippedCards = [];
         let matchedPairs = 0;
+        let memoryGameActive = false;
         
         function initMemoryGame() {
-            const symbols = ['🍎', '🍌', '🍒', '🍊', '🍇', '🍑', '🍓', '🥝'];
+            if (!checkDailyLimit('memory', 15)) return;
+            
+            memoryGameActive = true;
+            document.getElementById('memory-status').textContent = '';
+            
+            // 13 pairs for a more challenging game
+            const symbols = ['🍎', '🍌', '🍒', '🍊', '🍇', '🍑', '🍓', '🥝', '🍉', '🍋', '🥥', '🍐', '🥭'];
             memoryCards = [...symbols, ...symbols];
             memoryCards.sort(() => Math.random() - 0.5);
             flippedCards = [];
@@ -545,9 +726,14 @@
                 card.addEventListener('click', () => flipCard(card));
                 memoryGrid.appendChild(card);
             });
+            
+            gameData.memory.playsToday++;
+            updatePlayCounters();
         }
         
         function flipCard(card) {
+            if (!memoryGameActive) return;
+            
             if (flippedCards.length < 2 && !flippedCards.includes(card) && !card.classList.contains('flipped')) {
                 card.classList.add('flipped');
                 flippedCards.push(card);
@@ -565,11 +751,12 @@
             if (isMatch) {
                 matchedPairs++;
                 matchCountElement.textContent = matchedPairs;
-                if (matchedPairs === 8) {
+                if (matchedPairs === 13) {
+                    memoryGameActive = false;
                     setTimeout(() => {
                         alert('You won the Memory Game! +5 Points!');
-                        scores.memory += 5;
-                        updateScoreDisplay();
+                        gameData.memory.score += 5;
+                        updatePlayCounters();
                     }, 500);
                 }
             } else {
@@ -579,23 +766,36 @@
             flippedCards = [];
         }
         
-        // Initialize memory game on load
-        initMemoryGame();
-        
-        // ========== SCORE MANAGEMENT ==========
-        function updateScoreDisplay() {
-            document.getElementById('tic-tac-toe-score').textContent = scores.ticTacToe;
-            document.getElementById('rps-score').textContent = scores.rps;
-            document.getElementById('memory-score').textContent = scores.memory;
-            document.getElementById('total-score').textContent = scores.total;
+        // ========== GIST INTEGRATION ==========
+        async function loadUserData() {
+            try {
+                const response = await fetch(currentGistUrl);
+                if (!response.ok) throw new Error('Failed to fetch user data');
+                
+                const userData = await response.json();
+                
+                if (userData.gameData) {
+                    gameData = userData.gameData;
+                    
+                    // Check if we need to reset daily plays
+                    const today = new Date().toDateString();
+                    if (gameData.ticTacToe.lastPlayed !== today) gameData.ticTacToe.playsToday = 0;
+                    if (gameData.rps.lastPlayed !== today) gameData.rps.playsToday = 0;
+                    if (gameData.memory.lastPlayed !== today) gameData.memory.playsToday = 0;
+                    
+                    updatePlayCounters();
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
         }
         
-        // ========== GIST INTEGRATION ==========
         async function saveScoresToGist() {
-            const username = document.getElementById('username').value;
             const gistResultElement = document.getElementById('gist-result');
+            const saveButton = document.getElementById('save-btn');
             
             gistResultElement.textContent = 'Saving scores...';
+            saveButton.disabled = true;
             
             try {
                 // First, get the token from the token URL
@@ -606,43 +806,31 @@
                 const token = await tokenResponse.text();
                 
                 // Then, get the current Gist data
-                const gistResponse = await fetch(GIST_URL);
+                const gistResponse = await fetch(currentGistUrl);
                 if (!gistResponse.ok) {
                     throw new Error('Failed to fetch Gist data');
                 }
                 const gistData = await gistResponse.json();
                 
-                // Update the scores for the current user
-                if (!gistData[username]) {
-                    gistData[username] = {
-                        ticTacToe: 0,
-                        rps: 0,
-                        memory: 0,
-                        total: 0
-                    };
-                }
+                // Update the game data
+                gistData.gameData = gameData;
+                gistData.lastUpdated = new Date().toISOString();
                 
-                gistData[username].ticTacToe += scores.ticTacToe;
-                gistData[username].rps += scores.rps;
-                gistData[username].memory += scores.memory;
-                gistData[username].total += scores.total;
-                
-                // Reset local scores after saving
-                scores.ticTacToe = 0;
-                scores.rps = 0;
-                scores.memory = 0;
-                updateScoreDisplay();
+                // Get the Gist ID from the URL
+                const gistId = currentGistUrl.split('/')[4];
                 
                 // Update the Gist
-                const updateResponse = await fetch('https://api.github.com/gists/4bc35d944aa39fa6e1b6a2af67606ebd', {
+                const updateResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
                     method: 'PATCH',
                     headers: {
                         'Authorization': `token ${token.trim()}`,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
                     },
                     body: JSON.stringify({
+                        description: "Game Hub Scores",
                         files: {
-                            'gist_1.json': {
+                            'game_data.json': {
                                 content: JSON.stringify(gistData, null, 2)
                             }
                         }
@@ -653,16 +841,17 @@
                     throw new Error('Failed to update Gist');
                 }
                 
-                gistResultElement.textContent = `Scores saved successfully for ${username}!`;
+                const result = await updateResponse.json();
+                gistResultElement.textContent = `Scores saved successfully for ${currentUser}!`;
+                document.getElementById('last-saved').textContent = `Last saved: ${new Date().toLocaleTimeString()}`;
                 
             } catch (error) {
                 console.error('Error saving scores:', error);
                 gistResultElement.textContent = `Error: ${error.message}. Please check the console for details.`;
+            } finally {
+                saveButton.disabled = false;
             }
         }
-        
-        // Initialize the page
-        updateScoreDisplay();
     </script>
 </body>
 </html>
