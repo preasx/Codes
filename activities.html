@@ -4,30 +4,134 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Activities - Together</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h1 {
+      color: #4a6fa5;
+      margin-bottom: 5px;
+    }
+    h2 {
+      color: #6b8cbc;
+      border-bottom: 2px solid #e1e8ef;
+      padding-bottom: 10px;
+    }
+    .activity-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    button {
+      background-color: #6b8cbc;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #4a6fa5;
+    }
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    #backButton {
+      background-color: #888;
+      margin-bottom: 20px;
+    }
+    #backButton:hover {
+      background-color: #666;
+    }
+    #refreshButton {
+      background-color: #7d9ec1;
+      margin-top: 15px;
+      width: 100%;
+    }
+    .activity-item {
+      background-color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .activity-item strong {
+      color: #4a6fa5;
+    }
+    #notification {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #4a6fa5;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 1000;
+    }
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .status-connected {
+      background-color: #4caf50;
+    }
+    .status-disconnected {
+      background-color: #f44336;
+    }
+    .status-loading {
+      background-color: #ff9800;
+    }
+  </style>
 </head>
 <body>
-  <button onclick="goBack()">Back</button>
+  <button id="backButton" onclick="goBack()">Back</button>
   <div>
     <header>
       <h1>Activities</h1>
       <p>Share what you're doing with your partner</p>
+      <div id="connectionStatus">
+        <span class="status-indicator" id="statusIndicator"></span>
+        <span id="statusText">Checking connection...</span>
+      </div>
     </header>
 
     <div>
       <h2>Share Your Activity</h2>
-      <div>
-        <button onclick="shareActivity('pooping')">Pooping</button>
-        <button onclick="shareActivity('eating')">Eating</button>
-        <button onclick="shareActivity('working')">Working</button>
-        <button onclick="shareActivity('sleeping')">Sleeping</button>
-        <button onclick="shareActivity('exercising')">Exercising</button>
-        <button onclick="shareActivity('thinking')">Thinking of You</button>
-        <button onclick="shareActivity('shopping')">Shopping</button>
-        <button onclick="shareActivity('watching')">Watching TV</button>
-        <button onclick="shareActivity('cooking')">Cooking</button>
-        <button onclick="shareActivity('driving')">Driving</button>
-        <button onclick="shareActivity('missing')">Missing You</button>
-        <button onclick="shareActivity('celebrating')">Celebrating</button>
+      <div class="activity-grid">
+        <button onclick="shareActivity('pooping')">Pooping 💩</button>
+        <button onclick="shareActivity('eating')">Eating 🍽️</button>
+        <button onclick="shareActivity('working')">Working 💼</button>
+        <button onclick="shareActivity('sleeping')">Sleeping 😴</button>
+        <button onclick="shareActivity('exercising')">Exercising 🏃</button>
+        <button onclick="shareActivity('thinking')">Thinking of You 💭</button>
+        <button onclick="shareActivity('shopping')">Shopping 🛍️</button>
+        <button onclick="shareActivity('watching')">Watching TV 📺</button>
+        <button onclick="shareActivity('cooking')">Cooking 👩‍🍳</button>
+        <button onclick="shareActivity('driving')">Driving 🚗</button>
+        <button onclick="shareActivity('missing')">Missing You 💔</button>
+        <button onclick="shareActivity('celebrating')">Celebrating 🎉</button>
       </div>
     </div>
 
@@ -36,7 +140,7 @@
       <div id="partnerActivities">
         <p>No recent activities from your partner</p>
       </div>
-      <button onclick="loadPartnerActivities()">Refresh Activities</button>
+      <button id="refreshButton" onclick="loadPartnerActivities()">Refresh Activities</button>
     </div>
   </div>
 
@@ -59,6 +163,7 @@
     };
 
     let userData = null;
+    let tokenLoaded = false;
 
     function initApp() {
       const savedProfile = localStorage.getItem('togetherProfile');
@@ -69,14 +174,41 @@
       }
 
       userData = JSON.parse(savedProfile);
+      updateConnectionStatus('loading', 'Loading GitHub token...');
 
       // If user has a personal gist, attach it
       if (userGistMap[userData.username]) {
         userData.personalGistUrl = userGistMap[userData.username];
       }
 
-      loadGithubToken();
-      loadPartnerActivities();
+      loadGithubToken().then(() => {
+        updateConnectionStatus('connected', 'Connected to GitHub Gist');
+        loadPartnerActivities();
+      }).catch(error => {
+        console.error('Error loading GitHub token:', error);
+        updateConnectionStatus('disconnected', 'Failed to connect to GitHub Gist');
+        showNotification('Error loading GitHub token: ' + error.message);
+      });
+    }
+
+    function updateConnectionStatus(status, message) {
+      const indicator = document.getElementById('statusIndicator');
+      const text = document.getElementById('statusText');
+      
+      indicator.className = 'status-indicator';
+      switch(status) {
+        case 'connected':
+          indicator.classList.add('status-connected');
+          break;
+        case 'disconnected':
+          indicator.classList.add('status-disconnected');
+          break;
+        case 'loading':
+          indicator.classList.add('status-loading');
+          break;
+      }
+      
+      text.textContent = message;
     }
 
     function goBack() {
@@ -85,24 +217,40 @@
 
     async function loadGithubToken() {
       try {
+        updateConnectionStatus('loading', 'Loading GitHub token...');
         const response = await fetch(gistUrls.token + '?t=' + new Date().getTime());
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         const token = await response.text();
         userData.gistToken = token.trim();
+        tokenLoaded = true;
+        return true;
       } catch (error) {
-        console.error('Error loading GitHub token:', error);
-        showNotification('Error loading GitHub token');
+        tokenLoaded = false;
+        throw error;
       }
     }
 
     async function shareActivity(activity) {
+      if (!tokenLoaded) {
+        showNotification('GitHub token not loaded yet. Please wait...');
+        return;
+      }
+
+      // Disable buttons during operation
+      setButtonsState(true);
+      
       if (!userData.activities) {
         userData.activities = [];
       }
 
-      userData.activities.push({
+      const newActivity = {
         type: activity,
         timestamp: new Date().toISOString()
-      });
+      };
+
+      userData.activities.push(newActivity);
 
       if (userData.activities.length > 20) {
         userData.activities = userData.activities.slice(-20);
@@ -110,30 +258,62 @@
 
       localStorage.setItem('togetherProfile', JSON.stringify(userData));
 
-      // update main gist
-      await updateGistData({
-        [userData.userKey]: {
-          activities: userData.activities,
-          updated: new Date().toISOString()
+      try {
+        // Update main gist
+        const mainGistSuccess = await updateGistData({
+          [userData.userKey]: {
+            activities: userData.activities,
+            updated: new Date().toISOString()
+          }
+        });
+
+        // Update personal gist if exists
+        let personalGistSuccess = true;
+        if (userData.personalGistUrl) {
+          personalGistSuccess = await updatePersonalActivityGist(newActivity);
+        }
+
+        if (mainGistSuccess && personalGistSuccess) {
+          showNotification('Activity shared: ' + formatActivityType(activity));
+        } else if (!mainGistSuccess) {
+          showNotification('Failed to update main activity feed');
+        } else {
+          showNotification('Failed to update personal activity gist');
+        }
+      } catch (error) {
+        console.error('Error sharing activity:', error);
+        showNotification('Error sharing activity: ' + error.message);
+      } finally {
+        setButtonsState(false);
+      }
+    }
+
+    function setButtonsState(disabled) {
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => {
+        if (button.id !== 'backButton') {
+          button.disabled = disabled;
         }
       });
-
-      // update personal gist if exists
-      if (userData.personalGistUrl) {
-        await updatePersonalActivityGist({
-          type: activity,
-          timestamp: new Date().toISOString()
-        });
+      
+      if (disabled) {
+        document.body.classList.add('loading');
+      } else {
+        document.body.classList.remove('loading');
       }
-
-      showNotification('Activity shared: ' + formatActivityType(activity));
     }
 
     async function loadPartnerActivities() {
       try {
+        setButtonsState(true);
+        updateConnectionStatus('loading', 'Loading partner activities...');
+        
         const response = await fetch(gistUrls.activities + '?t=' + new Date().getTime());
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
         const data = await response.json();
-
         const activitiesContainer = document.getElementById('partnerActivities');
         activitiesContainer.innerHTML = '';
 
@@ -150,6 +330,7 @@
             else timeText = `${Math.floor(timeDiff/60)} hours ago`;
 
             const activityEl = document.createElement('div');
+            activityEl.className = 'activity-item';
             activityEl.innerHTML = `
               <div><strong>${formatActivityType(activity.type)}</strong></div>
               <div>${timeText}</div>
@@ -159,9 +340,14 @@
         } else {
           activitiesContainer.innerHTML = '<p>No recent activities from your partner</p>';
         }
+        
+        updateConnectionStatus('connected', 'Connected to GitHub Gist');
       } catch (error) {
         console.error('Error fetching partner activities:', error);
-        showNotification('Error fetching partner activities');
+        showNotification('Error fetching partner activities: ' + error.message);
+        updateConnectionStatus('disconnected', 'Failed to load activities');
+      } finally {
+        setButtonsState(false);
       }
     }
 
@@ -186,7 +372,7 @@
     async function updateGistData(data) {
       if (!userData.gistToken) {
         showNotification('GitHub token is required to update Gists');
-        return;
+        return false;
       }
 
       try {
@@ -196,15 +382,17 @@
         });
 
         if (!currentResponse.ok) {
-          throw new Error(`HTTP error! status: ${currentResponse.status}`);
+          const errorText = await currentResponse.text();
+          throw new Error(`HTTP error! status: ${currentResponse.status}, details: ${errorText}`);
         }
 
         const currentGist = await currentResponse.json();
         let currentContent = {};
+        
         try {
           currentContent = JSON.parse(currentGist.files['gistfile1.txt'].content);
         } catch (e) {
-          console.log('Starting fresh');
+          console.log('Starting fresh Gist content');
         }
 
         const newContent = { ...currentContent, ...data };
@@ -223,8 +411,10 @@
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorText = await response.text();
+          throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
         }
+        
         return true;
       } catch (error) {
         console.error('Error updating Gist:', error);
@@ -238,19 +428,25 @@
       try {
         const parts = userData.personalGistUrl.split('/');
         const gistId = parts[4];
-        const fileName = parts[parts.length - 1]; // e.g. gist_1.json
+        const fileName = parts[parts.length - 1];
 
         const currentResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
           headers: { 'Authorization': `token ${userData.gistToken}` }
         });
 
-        if (!currentResponse.ok) throw new Error(`HTTP error! status: ${currentResponse.status}`);
+        if (!currentResponse.ok) {
+          const errorText = await currentResponse.text();
+          throw new Error(`HTTP error! status: ${currentResponse.status}, details: ${errorText}`);
+        }
 
         const currentGist = await currentResponse.json();
         let currentContent = {};
+        
         try {
           currentContent = JSON.parse(currentGist.files[fileName].content);
-        } catch (e) {}
+        } catch (e) {
+          console.log('Starting fresh personal Gist content');
+        }
 
         // replace only "activity"
         currentContent["activity"] = activity;
@@ -268,10 +464,16 @@
           })
         });
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
+        }
+        
+        return true;
       } catch (error) {
         console.error("Error updating personal gist:", error);
         showNotification("Error updating personal gist: " + error.message);
+        return false;
       }
     }
 
@@ -280,7 +482,7 @@
       const notificationText = document.getElementById('notificationText');
       notificationText.textContent = message;
       notification.style.display = 'block';
-      setTimeout(() => { notification.style.display = 'none'; }, 3000);
+      setTimeout(() => { notification.style.display = 'none'; }, 5000);
     }
 
     window.onload = initApp;
