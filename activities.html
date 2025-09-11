@@ -4,304 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Activities - Together</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: #fff;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        h1 i {
-            margin-right: 15px;
-            color: #ff4b90;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .card-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .card-title i {
-            margin-right: 10px;
-            color: #ff4b90;
-        }
-        
-        .btn {
-            background: #ff4b90;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 50px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .btn i {
-            margin-right: 8px;
-        }
-        
-        .btn:hover {
-            background: #ff2d78;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn-secondary {
-            background: #2575fc;
-        }
-        
-        .btn-secondary:hover {
-            background: #1a5fd0;
-        }
-        
-        .activity-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-        
-        .activity-item {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .activity-item:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
-        }
-        
-        .activity-item i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-        
-        .partner-activities {
-            margin: 20px 0;
-        }
-        
-        .activity-log {
-            padding: 10px;
-            margin-bottom: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-        }
-        
-        .activity-log .time {
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-        
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #ff4b90;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            display: none;
-            z-index: 1000;
-        }
-        
-        @media (max-width: 600px) {
-            .activity-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
 </head>
 <body>
-    <button class="back-btn" onclick="goBack()">
-        <i class="fas fa-arrow-left"></i>
-    </button>
-    
-    <div class="container">
+    <button onclick="goBack()">Back</button>
+
+    <div>
         <header>
-            <h1><i class="fas fa-bell"></i> Activities</h1>
-            <p class="subtitle">Share what you're doing with your partner</p>
+            <h1>Activities</h1>
+            <p>Share what you're doing with your partner</p>
         </header>
-        
-        <div class="card">
-            <h2 class="card-title"><i class="fas fa-plus"></i> Share Your Activity</h2>
-            <div class="activity-grid">
-                <div class="activity-item" onclick="shareActivity('pooping')">
-                    <i class="fas fa-poop"></i>
-                    <div>Pooping</div>
-                </div>
-                <div class="activity-item" onclick="shareActivity('eating')">
-                    <i class="fas fa-utensils"></i>
-                    <div>Eating</div>
-                </div>
-                <div class="activity-item" onclick="shareActivity('working')">
-                    <i class="fas fa-laptop"></i>
-                    <div>Working</div>
-                </div>
-                <div class="activity-item" onclick="shareActivity('sleeping')">
-                    <i class="fas fa-bed"></i>
-                    <div>Sleeping</div>
-                </div>
-                <div class="activity-item" onclick="shareActivity('exercising')">
-                    <i class="fas fa-running"></i>
-                    <div>Exercising</div>
-                </div>
-                <div class="activity-item" onclick="shareActivity('thinking')">
-                    <i class="fas fa-brain"></i>
-                    <div>Thinking of You</div>
-                </div>
-                <div class="activity-item" onclick="shareActivity('shopping')">
-                    <i class="fas fa-shopping-cart"></i>
-                    <div>Shopping</div>
-                </div>
-                <div class="activity-item" onclick="shareActivity('watching')">
-                    <i class="fas fa-tv"></i>
-                    <div>Watching TV</div>
-                </div>
-                <div class="activity-item" onclick="shareActivity('cooking')">
-                    <i class="fas fa-utensil-spoon"></i>
-                    <div>Cooking</div>
-                </div>
-                <div class="activity-item" onclick="shareActivity('driving')">
-                    <i class="fas fa-car"></i>
-                    <div>Driving</div>
-                </div>
-                <div class="activity-item" onclick="shareActivity('missing')">
-                    <i class="fas fa-heart"></i>
-                    <div>Missing You</div>
-                </div>
-                <div class="activity-item" onclick="shareActivity('celebrating')">
-                    <i class="fas fa-glass-cheers"></i>
-                    <div>Celebrating</div>
-                </div>
+
+        <div>
+            <h2>Share Your Activity</h2>
+            <div>
+                <button onclick="shareActivity('pooping')">Pooping</button>
+                <button onclick="shareActivity('eating')">Eating</button>
+                <button onclick="shareActivity('working')">Working</button>
+                <button onclick="shareActivity('sleeping')">Sleeping</button>
+                <button onclick="shareActivity('exercising')">Exercising</button>
+                <button onclick="shareActivity('thinking')">Thinking of You</button>
+                <button onclick="shareActivity('shopping')">Shopping</button>
+                <button onclick="shareActivity('watching')">Watching TV</button>
+                <button onclick="shareActivity('cooking')">Cooking</button>
+                <button onclick="shareActivity('driving')">Driving</button>
+                <button onclick="shareActivity('missing')">Missing You</button>
+                <button onclick="shareActivity('celebrating')">Celebrating</button>
             </div>
         </div>
-        
-        <div class="card">
-            <h2 class="card-title"><i class="fas fa-history"></i> Partner's Recent Activities</h2>
-            <div id="partnerActivities" class="partner-activities">
+
+        <div>
+            <h2>Partner's Recent Activities</h2>
+            <div id="partnerActivities">
                 <p>No recent activities from your partner</p>
             </div>
-            
-            <button class="btn btn-secondary" onclick="loadPartnerActivities()">
-                <i class="fas fa-sync"></i> Refresh Activities
-            </button>
+            <button onclick="loadPartnerActivities()">Refresh Activities</button>
         </div>
     </div>
-    
-    <div class="notification" id="notification">
+
+    <div id="notification">
         <span id="notificationText"></span>
     </div>
 
     <script>
-        // Gist URLs
         const gistUrls = {
             activities: 'https://gist.githubusercontent.com/Preasx24/4f0b769f591da88eb60147bd5a3d044c/raw/gistfile1.txt',
             token: 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt'
         };
-        
+
         let userData = null;
-        
-        // Initialize the app
+
         function initApp() {
-            // Load user data
             const savedProfile = localStorage.getItem('togetherProfile');
             if (!savedProfile) {
                 showNotification('Please set up your profile first');
                 setTimeout(() => window.location.href = 'index.html', 2000);
                 return;
             }
-            
+
             userData = JSON.parse(savedProfile);
-            
-            // Load GitHub token
             loadGithubToken();
-            
-            // Load partner activities
             loadPartnerActivities();
         }
-        
-        // Go back to main page
+
         function goBack() {
             window.location.href = 'index.html';
         }
-        
-        // Load GitHub token from Gist
+
         async function loadGithubToken() {
             try {
                 const response = await fetch(gistUrls.token + '?t=' + new Date().getTime());
@@ -312,72 +80,58 @@
                 showNotification('Error loading GitHub token');
             }
         }
-        
-        // Share activity
+
         async function shareActivity(activity) {
-            // Initialize activities array if it doesn't exist
             if (!userData.activities) {
                 userData.activities = [];
             }
-            
-            // Add new activity
+
             userData.activities.push({
                 type: activity,
                 timestamp: new Date().toISOString()
             });
-            
-            // Keep only the last 20 activities
+
             if (userData.activities.length > 20) {
                 userData.activities = userData.activities.slice(-20);
             }
-            
-            // Save to localStorage
+
             localStorage.setItem('togetherProfile', JSON.stringify(userData));
-            
-            // Update Gist
+
             await updateGistData({
                 [userData.userKey]: {
                     activities: userData.activities,
                     updated: new Date().toISOString()
                 }
             });
-            
+
             showNotification('Activity shared: ' + formatActivityType(activity));
         }
-        
-        // Load partner activities
+
         async function loadPartnerActivities() {
             try {
                 const response = await fetch(gistUrls.activities + '?t=' + new Date().getTime());
                 const data = await response.json();
-                
+
                 const activitiesContainer = document.getElementById('partnerActivities');
                 activitiesContainer.innerHTML = '';
-                
+
                 if (data && data[userData.partnerKey] && data[userData.partnerKey].activities && data[userData.partnerKey].activities.length > 0) {
                     const activities = data[userData.partnerKey].activities;
-                    
-                    // Sort activities by timestamp (newest first)
                     activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                    
-                    // Display up to 10 most recent activities
                     const recentActivities = activities.slice(0, 10);
-                    
+
                     recentActivities.forEach(activity => {
                         const timeDiff = Math.floor((new Date() - new Date(activity.timestamp)) / 60000);
-                        
                         let timeText = '';
                         if (timeDiff < 1) timeText = 'just now';
                         else if (timeDiff < 60) timeText = `${timeDiff} minutes ago`;
                         else timeText = `${Math.floor(timeDiff/60)} hours ago`;
-                        
+
                         const activityEl = document.createElement('div');
-                        activityEl.className = 'activity-log';
                         activityEl.innerHTML = `
                             <div><strong>${formatActivityType(activity.type)}</strong></div>
-                            <div class="time">${timeText}</div>
+                            <div>${timeText}</div>
                         `;
-                        
                         activitiesContainer.appendChild(activityEl);
                     });
                 } else {
@@ -388,8 +142,7 @@
                 showNotification('Error fetching partner activities');
             }
         }
-        
-        // Format activity type for display
+
         function formatActivityType(type) {
             const activityMap = {
                 'pooping': 'Pooping 💩',
@@ -405,45 +158,35 @@
                 'missing': 'Missing You 💔',
                 'celebrating': 'Celebrating 🎉'
             };
-            
             return activityMap[type] || type;
         }
-        
-        // Update Gist data
+
         async function updateGistData(data) {
             if (!userData.gistToken) {
                 showNotification('GitHub token is required to update Gists');
                 return;
             }
-            
+
             try {
-                // Extract Gist ID from URL
                 const gistId = gistUrls.activities.split('/')[4];
-                
-                // First get the current Gist content
                 const currentResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
-                    headers: {
-                        'Authorization': `token ${userData.gistToken}`
-                    }
+                    headers: { 'Authorization': `token ${userData.gistToken}` }
                 });
-                
+
                 if (!currentResponse.ok) {
                     throw new Error(`HTTP error! status: ${currentResponse.status}`);
                 }
-                
+
                 const currentGist = await currentResponse.json();
                 let currentContent = {};
-                
                 try {
                     currentContent = JSON.parse(currentGist.files['gistfile1.txt'].content);
                 } catch (e) {
-                    console.log('Gist content is empty or invalid JSON, starting fresh');
+                    console.log('Starting fresh');
                 }
-                
-                // Merge new data with existing content
+
                 const newContent = {...currentContent, ...data};
-                
-                // Update the Gist
+
                 const response = await fetch(`https://api.github.com/gists/${gistId}`, {
                     method: 'PATCH',
                     headers: {
@@ -452,17 +195,14 @@
                     },
                     body: JSON.stringify({
                         files: {
-                            'gistfile1.txt': {
-                                content: JSON.stringify(newContent, null, 2)
-                            }
+                            'gistfile1.txt': { content: JSON.stringify(newContent, null, 2) }
                         }
                     })
                 });
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
                 return true;
             } catch (error) {
                 console.error('Error updating Gist:', error);
@@ -470,21 +210,15 @@
                 return false;
             }
         }
-        
-        // Show notification
+
         function showNotification(message) {
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
-            
             notificationText.textContent = message;
             notification.style.display = 'block';
-            
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
+            setTimeout(() => { notification.style.display = 'none'; }, 3000);
         }
-        
-        // Initialize the app when page loads
+
         window.onload = initApp;
     </script>
 </body>
