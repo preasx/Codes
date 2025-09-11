@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Game Hub</title>
+    <title>Game Hub - User Selection</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,23 +16,26 @@
             background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
             color: #333;
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
         
         .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.92);
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             overflow: hidden;
+            text-align: center;
         }
         
         header {
             background: #2c3e50;
             color: white;
-            padding: 20px;
-            text-align: center;
+            padding: 30px 20px;
         }
         
         h1 {
@@ -40,26 +43,144 @@
             margin-bottom: 10px;
         }
         
-        .user-panel {
+        .user-selection {
+            padding: 30px 20px;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .user-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .user-btn {
+            padding: 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .user-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .user-btn.lefa { background: #e74c3c; }
+        .user-btn.owami { background: #2ecc71; }
+        .user-btn.jonas { background: #9b59b6; }
+        .user-btn.preasx24 { background: #f39c12; }
+        
+        .user-btn.selected {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px white, 0 0 0 6px currentColor;
+        }
+        
+        .start-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .start-btn:hover {
+            background: #1a252f;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .start-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        footer {
+            padding: 20px;
+            background: #ecf0f1;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        #game-hub {
+            width: 100%;
+            max-width: 1100px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .user-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
+            padding: 15px 20px;
             background: #34495e;
             color: white;
         }
         
-        .user-select {
+        .current-user {
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
-        select {
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .user-avatar.lefa { background: #e74c3c; }
+        .user-avatar.owami { background: #2ecc71; }
+        .user-avatar.jonas { background: #9b59b6; }
+        .user-avatar.preasx24 { background: #f39c12; }
+        
+        .change-user-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
             padding: 8px 15px;
             border-radius: 5px;
-            border: none;
-            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .change-user-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
         
         .score-panel {
@@ -310,6 +431,10 @@
                 min-width: 100px;
                 margin: 5px;
             }
+            
+            .user-options {
+                grid-template-columns: 1fr;
+            }
         }
         
         @media (max-width: 480px) {
@@ -341,23 +466,40 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- User Selection Screen -->
+    <div class="container" id="user-selection">
         <header>
-            <h1>Enhanced Game Hub</h1>
-            <p>Play games with daily limits and improved AI!</p>
+            <h1>Game Hub</h1>
+            <p>Select your user to start playing</p>
         </header>
         
-        <div class="user-panel">
-            <div class="user-select">
-                <label for="username">Select User:</label>
-                <select id="username">
-                    <option value="lefa">lefa</option>
-                    <option value="owami">owami</option>
-                    <option value="jonas">jonas</option>
-                    <option value="preasx24" selected>preasx24</option>
-                </select>
+        <div class="user-selection">
+            <h2>Who's Playing?</h2>
+            <p>Choose your username to track your scores and progress</p>
+            
+            <div class="user-options">
+                <button class="user-btn lefa" data-user="lefa">lefa</button>
+                <button class="user-btn owami" data-user="owami">owami</button>
+                <button class="user-btn jonas" data-user="jonas">jonas</button>
+                <button class="user-btn preasx24" data-user="preasx24">preasx24</button>
             </div>
-            <div id="last-saved">Not saved yet</div>
+            
+            <button class="start-btn" id="start-btn" disabled>Start Playing</button>
+        </div>
+        
+        <footer>
+            <p>Your progress will be saved to your personal Gist</p>
+        </footer>
+    </div>
+
+    <!-- Game Hub (initially hidden) -->
+    <div class="hidden" id="game-hub">
+        <div class="user-header">
+            <div class="current-user">
+                <div class="user-avatar" id="user-avatar">U</div>
+                <span>Playing as: <strong id="current-username">Username</strong></span>
+            </div>
+            <button class="change-user-btn" id="change-user-btn">Change User</button>
         </div>
         
         <div class="score-panel">
@@ -463,16 +605,58 @@
             }
         };
         
-        let currentUser = 'preasx24';
-        let currentGistUrl = userGistMap[currentUser];
-        
-        // ========== INITIALIZATION ==========
+        let currentUser = null;
+        let currentGistUrl = null;
+
+        // ========== USER SELECTION ==========
         document.addEventListener('DOMContentLoaded', function() {
-            // Set up username change handler
-            document.getElementById('username').addEventListener('change', function() {
-                currentUser = this.value;
+            // Set up user selection buttons
+            document.querySelectorAll('.user-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove selected class from all buttons
+                    document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('selected'));
+                    
+                    // Add selected class to clicked button
+                    this.classList.add('selected');
+                    
+                    // Enable start button
+                    document.getElementById('start-btn').disabled = false;
+                    
+                    // Set current user
+                    currentUser = this.dataset.user;
+                });
+            });
+            
+            // Set up start button
+            document.getElementById('start-btn').addEventListener('click', function() {
+                if (!currentUser) return;
+                
+                // Hide user selection, show game hub
+                document.getElementById('user-selection').classList.add('hidden');
+                document.getElementById('game-hub').classList.remove('hidden');
+                
+                // Set current username display
+                document.getElementById('current-username').textContent = currentUser;
+                document.getElementById('user-avatar').textContent = currentUser.charAt(0).toUpperCase();
+                document.getElementById('user-avatar').classList.add(currentUser);
+                
+                // Set current Gist URL
                 currentGistUrl = userGistMap[currentUser];
-                loadUserData();
+                
+                // Initialize games
+                initGames();
+            });
+            
+            // Set up change user button
+            document.getElementById('change-user-btn').addEventListener('click', function() {
+                // Show user selection, hide game hub
+                document.getElementById('user-selection').classList.remove('hidden');
+                document.getElementById('game-hub').classList.add('hidden');
+                
+                // Reset user selection
+                document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('selected'));
+                document.getElementById('start-btn').disabled = true;
+                currentUser = null;
             });
             
             // Set up tab navigation
@@ -485,13 +669,14 @@
                     document.getElementById(tab.dataset.game).classList.add('active');
                 });
             });
-            
-            // Initialize games
+        });
+        
+        function initGames() {
             resetTicTacToe();
             initMemoryGame();
             updatePlayCounters();
             loadUserData();
-        });
+        }
         
         // ========== DAILY LIMIT CHECK ==========
         function checkDailyLimit(game, maxPlays) {
@@ -812,7 +997,7 @@
                 }
                 const gistData = await gistResponse.json();
                 
-                // Update the game data
+                // Update only the game data part, preserving other data
                 gistData.gameData = gameData;
                 gistData.lastUpdated = new Date().toISOString();
                 
@@ -843,7 +1028,6 @@
                 
                 const result = await updateResponse.json();
                 gistResultElement.textContent = `Scores saved successfully for ${currentUser}!`;
-                document.getElementById('last-saved').textContent = `Last saved: ${new Date().toLocaleTimeString()}`;
                 
             } catch (error) {
                 console.error('Error saving scores:', error);
