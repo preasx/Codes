@@ -325,16 +325,12 @@
         }
 
         /* Memory Game Styles */
-        .memory-game-container {
-            display: flex;
-            justify-content: center;
-        }
-
         .memory-grid {
             display: grid;
             grid-template-columns: repeat(4, 100px);
             grid-gap: 10px;
             margin: 20px auto;
+            width: fit-content;
         }
 
         .memory-card {
@@ -389,10 +385,10 @@
             color: #e74c3c;
         }
 
-        .daily-limit {
-            color: #e74c3c;
-            font-weight: bold;
-            margin-top: 10px;
+        .game-limit {
+            text-align: center;
+            margin: 10px 0;
+            color: #7f8c8d;
         }
 
         footer {
@@ -439,6 +435,12 @@
             color: white;
             border-radius: 5px;
             word-break: break-all;
+        }
+
+        .limit-reached {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -531,7 +533,7 @@
 
             <h2>Tic Tac Toe</h2>
             <div class="game-status" id="tic-tac-toe-status">You're X, computer is O. Make your move!</div>
-            <div class="daily-limit" id="tic-tac-toe-limit">Games played today: 0/10</div>
+            <div class="game-limit" id="tic-tac-toe-limit">Games played today: 0/10</div>
 
             <div class="tic-tac-toe-board" id="board">
                 <div class="cell" data-cell-index="0"></div>
@@ -558,7 +560,7 @@
 
             <h2>Rock Paper Scissors</h2>
             <div class="game-status" id="rps-status">Choose your weapon!</div>
-            <div class="daily-limit" id="rps-limit">Games played today: 0/10</div>
+            <div class="game-limit" id="rps-limit">Games played today: 0/10</div>
 
             <div class="rps-options">
                 <div class="rps-option" data-choice="rock">
@@ -583,16 +585,14 @@
 
             <h2>Memory Game</h2>
             <div class="game-status" id="memory-status">Find all matching pairs!</div>
-            <div class="daily-limit" id="memory-limit">Games played today: 0/10</div>
+            <div class="game-limit" id="memory-limit">Games played today: 0/10</div>
 
             <div style="text-align: center; margin: 15px;">
                 Matches: <span id="match-count">0</span>/8
                 <button class="play-btn" onclick="initMemoryGame()" style="margin-left: 15px;">New Game</button>
             </div>
 
-            <div class="memory-game-container">
-                <div class="memory-grid" id="memory-grid"></div>
-            </div>
+            <div class="memory-grid" id="memory-grid"></div>
         </div>
 
         <footer>
@@ -637,24 +637,21 @@
         // Tic Tac Toe variables
         let ticTacToeBoard = ['', '', '', '', '', '', '', '', ''];
         let currentPlayer = 'X';
-        let gameActive = false;
-        const winPatterns = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-            [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-            [0, 4, 8], [2, 4, 6]             // diagonals
-        ];
+        let gameOver = false;
+        let ticTacToeGameCount = 0;
 
         // Memory Game variables
         let memoryCards = [];
         let flippedCards = [];
         let matchedPairs = 0;
         let canFlip = true;
+        let memoryGameCount = 0;
 
         // ========== INITIALIZATION ==========
         document.addEventListener('DOMContentLoaded', function() {
-            // Load user and partner from localStorage
-            currentUser = localStorage.getItem('gameHubUser');
-            currentPartner = localStorage.getItem('gameHubPartner');
+            // Load user and partner from localStorage with correct keys
+            currentUser = localStorage.getItem('gameHub_unique_user');
+            currentPartner = localStorage.getItem('gameHub_unique_partner');
 
             if (!currentUser || !currentPartner) {
                 alert('Please select a user and partner first!');
@@ -705,8 +702,8 @@
             document.querySelector('.dashboard').style.display = 'none';
             document.getElementById(`${game}-game`).classList.add('active');
             
-            // Update daily limits display
-            updateDailyLimits();
+            // Update game limits display
+            updateGameLimits();
         }
 
         function hideGame() {
@@ -736,13 +733,13 @@
             }
         }
 
-        function updateDailyLimits() {
+        function updateGameLimits() {
             document.getElementById('tic-tac-toe-limit').textContent = `Games played today: ${gameData.ticTacToe.playsToday}/10`;
             document.getElementById('rps-limit').textContent = `Games played today: ${gameData.rps.playsToday}/10`;
             document.getElementById('memory-limit').textContent = `Games played today: ${gameData.memory.playsToday}/10`;
         }
 
-        function checkDailyLimit(gameType) {
+        function checkGameLimit(gameType) {
             const today = new Date().toDateString();
             
             // Reset daily plays if it's a new day
@@ -751,9 +748,8 @@
                 gameData[gameType].lastPlayed = today;
             }
             
-            // Check if limit reached
             if (gameData[gameType].playsToday >= 10) {
-                alert(`You've reached the daily limit of 10 games for ${gameType.replace(/([A-Z])/g, ' $1').trim()}.`);
+                alert(`You've reached the daily limit of 10 games for ${gameType.replace(/([A-Z])/g, ' $1').trim()}!`);
                 return false;
             }
             
@@ -778,7 +774,7 @@
                     if (gameData.memory.lastPlayed !== today) gameData.memory.playsToday = 0;
 
                     updateLeaderboard();
-                    updateDailyLimits();
+                    updateGameLimits();
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
@@ -806,144 +802,130 @@
         function initTicTacToe() {
             const cells = document.querySelectorAll('.cell');
             cells.forEach(cell => cell.addEventListener('click', handleCellClick));
-            resetTicTacToe();
         }
 
         function handleCellClick(e) {
-            if (!checkDailyLimit('ticTacToe')) return;
+            if (!checkGameLimit('ticTacToe')) return;
             
             const cell = e.target;
             const cellIndex = parseInt(cell.getAttribute('data-cell-index'));
-
-            // Check if cell is already occupied or game is not active
-            if (ticTacToeBoard[cellIndex] !== '' || !gameActive) return;
-
+            
+            if (ticTacToeBoard[cellIndex] !== '' || gameOver) return;
+            
             // Player's move
-            makeMove(cellIndex, 'X');
+            ticTacToeBoard[cellIndex] = 'X';
+            cell.textContent = 'X';
+            cell.classList.add('x');
             
-            // Check if game continues
-            if (gameActive) {
-                // AI's move after a short delay
-                setTimeout(makeAIMove, 500);
+            // Check for win or draw
+            if (checkWin('X')) {
+                document.getElementById('tic-tac-toe-status').textContent = 'You win!';
+                gameData.ticTacToe.score += 10;
+                gameData.ticTacToe.playsToday++;
+                gameOver = true;
+                updateLeaderboard();
+                updateGameLimits();
+                return;
             }
-        }
-
-        function makeMove(cellIndex, player) {
-            ticTacToeBoard[cellIndex] = player;
-            document.querySelector(`[data-cell-index="${cellIndex}"]`).textContent = player;
-            document.querySelector(`[data-cell-index="${cellIndex}"]`).classList.add(player.toLowerCase());
             
-            checkResult();
+            if (isBoardFull()) {
+                document.getElementById('tic-tac-toe-status').textContent = 'It\'s a draw!';
+                gameData.ticTacToe.playsToday++;
+                gameOver = true;
+                updateGameLimits();
+                return;
+            }
+            
+            // AI's move
+            setTimeout(makeAIMove, 500);
         }
 
         function makeAIMove() {
-            // Try to find a winning move
-            let move = findWinningMove('O');
+            // Improved AI logic - try to win, then block, then make a strategic move
+            let move = findWinningMove('O') || findWinningMove('X') || findBestMove();
             
-            // If no winning move, try to block player
-            if (move === -1) {
-                move = findWinningMove('X');
-            }
+            ticTacToeBoard[move] = 'O';
+            const cell = document.querySelector(`[data-cell-index="${move}"]`);
+            cell.textContent = 'O';
+            cell.classList.add('o');
             
-            // If no blocking move, take center if available
-            if (move === -1 && ticTacToeBoard[4] === '') {
-                move = 4;
-            }
-            
-            // If center not available, take a random corner
-            if (move === -1) {
-                const corners = [0, 2, 6, 8];
-                const availableCorners = corners.filter(index => ticTacToeBoard[index] === '');
-                if (availableCorners.length > 0) {
-                    move = availableCorners[Math.floor(Math.random() * availableCorners.length)];
-                }
-            }
-            
-            // If no corner available, take any available cell
-            if (move === -1) {
-                const availableCells = ticTacToeBoard.map((cell, index) => cell === '' ? index : null).filter(val => val !== null);
-                if (availableCells.length > 0) {
-                    move = availableCells[Math.floor(Math.random() * availableCells.length)];
-                }
-            }
-            
-            if (move !== -1) {
-                makeMove(move, 'O');
+            // Check for win or draw
+            if (checkWin('O')) {
+                document.getElementById('tic-tac-toe-status').textContent = 'Computer wins!';
+                gameData.ticTacToe.playsToday++;
+                gameOver = true;
+                updateGameLimits();
+            } else if (isBoardFull()) {
+                document.getElementById('tic-tac-toe-status').textContent = 'It\'s a draw!';
+                gameData.ticTacToe.playsToday++;
+                gameOver = true;
+                updateGameLimits();
             }
         }
 
         function findWinningMove(player) {
-            for (let i = 0; i < winPatterns.length; i++) {
-                const [a, b, c] = winPatterns[i];
-                const cells = [ticTacToeBoard[a], ticTacToeBoard[b], ticTacToeBoard[c]];
-                
-                // Count player marks and empty cells
-                const playerCount = cells.filter(cell => cell === player).length;
-                const emptyCount = cells.filter(cell => cell === '').length;
-                
-                // If there are 2 player marks and 1 empty cell, this is a winning/blocking move
-                if (playerCount === 2 && emptyCount === 1) {
-                    if (ticTacToeBoard[a] === '') return a;
-                    if (ticTacToeBoard[b] === '') return b;
-                    if (ticTacToeBoard[c] === '') return c;
+            // Check each empty cell to see if it would result in a win
+            for (let i = 0; i < 9; i++) {
+                if (ticTacToeBoard[i] === '') {
+                    ticTacToeBoard[i] = player;
+                    if (checkWin(player)) {
+                        ticTacToeBoard[i] = ''; // Reset the cell
+                        return i;
+                    }
+                    ticTacToeBoard[i] = ''; // Reset the cell
                 }
             }
-            
-            return -1;
+            return null;
         }
 
-        function checkResult() {
-            let roundWon = false;
-            let winner = null;
-
-            for (let i = 0; i < winPatterns.length; i++) {
-                const [a, b, c] = winPatterns[i];
-                if (ticTacToeBoard[a] && ticTacToeBoard[a] === ticTacToeBoard[b] && ticTacToeBoard[a] === ticTacToeBoard[c]) {
-                    roundWon = true;
-                    winner = ticTacToeBoard[a];
-                    break;
-                }
+        function findBestMove() {
+            // Prefer center, then corners, then edges
+            if (ticTacToeBoard[4] === '') return 4;
+            
+            const corners = [0, 2, 6, 8];
+            for (let corner of corners) {
+                if (ticTacToeBoard[corner] === '') return corner;
             }
-
-            if (roundWon) {
-                gameActive = false;
-                if (winner === 'X') {
-                    document.getElementById('tic-tac-toe-status').textContent = 'You win!';
-                    gameData.ticTacToe.score += 10;
-                } else {
-                    document.getElementById('tic-tac-toe-status').textContent = 'Computer wins!';
-                }
-                gameData.ticTacToe.playsToday++;
-                updateLeaderboard();
-                updateDailyLimits();
-                return;
+            
+            const edges = [1, 3, 5, 7];
+            for (let edge of edges) {
+                if (ticTacToeBoard[edge] === '') return edge;
             }
-
-            // Check for draw
-            const roundDraw = !ticTacToeBoard.includes('');
-            if (roundDraw) {
-                gameActive = false;
-                document.getElementById('tic-tac-toe-status').textContent = 'Game ended in a draw!';
-                gameData.ticTacToe.playsToday++;
-                updateLeaderboard();
-                updateDailyLimits();
-                return;
+            
+            // Fallback - just find any empty cell
+            for (let i = 0; i < 9; i++) {
+                if (ticTacToeBoard[i] === '') return i;
             }
+            
+            return -1; // Should never happen if board isn't full
+        }
 
-            // Switch player
-            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        function checkWin(player) {
+            const winPatterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+                [0, 4, 8], [2, 4, 6]             // Diagonals
+            ];
+            
+            return winPatterns.some(pattern => {
+                return pattern.every(index => ticTacToeBoard[index] === player);
+            });
+        }
+
+        function isBoardFull() {
+            return ticTacToeBoard.every(cell => cell !== '');
         }
 
         function resetTicTacToe() {
             ticTacToeBoard = ['', '', '', '', '', '', '', '', ''];
-            gameActive = true;
             currentPlayer = 'X';
-
+            gameOver = false;
+            
             document.querySelectorAll('.cell').forEach(cell => {
                 cell.textContent = '';
                 cell.classList.remove('x', 'o');
             });
-
+            
             document.getElementById('tic-tac-toe-status').textContent = 'You\'re X, computer is O. Make your move!';
         }
 
@@ -951,7 +933,7 @@
         function initRPS() {
             document.querySelectorAll('.rps-option').forEach(option => {
                 option.addEventListener('click', function() {
-                    if (!checkDailyLimit('rps')) return;
+                    if (!checkGameLimit('rps')) return;
                     
                     const choices = ['rock', 'paper', 'scissors'];
                     const playerChoice = this.dataset.choice;
@@ -973,8 +955,9 @@
                     }
 
                     gameData.rps.playsToday++;
+                    gameData.rps.lastPlayed = new Date().toDateString();
                     updateLeaderboard();
-                    updateDailyLimits();
+                    updateGameLimits();
                     document.getElementById('rps-result').textContent = result;
                 });
             });
@@ -982,18 +965,18 @@
 
         // Memory Game
         function initMemoryGame() {
-            if (!checkDailyLimit('memory')) return;
+            if (!checkGameLimit('memory')) return;
             
             const symbols = ['🍎', '🍌', '🍒', '🍊', '🍇', '🍑', '🍓', '🥝'];
             memoryCards = [...symbols, ...symbols];
             memoryCards.sort(() => Math.random() - 0.5);
-
-            const memoryGrid = document.getElementById('memory-grid');
-            memoryGrid.innerHTML = '';
-
+            
             flippedCards = [];
             matchedPairs = 0;
             canFlip = true;
+
+            const memoryGrid = document.getElementById('memory-grid');
+            memoryGrid.innerHTML = '';
 
             memoryCards.forEach((symbol, index) => {
                 const card = document.createElement('div');
@@ -1018,8 +1001,6 @@
 
             document.getElementById('match-count').textContent = '0';
             document.getElementById('memory-status').textContent = 'Find all matching pairs!';
-            gameData.memory.playsToday++;
-            updateDailyLimits();
         }
 
         function flipCard(card) {
@@ -1032,11 +1013,10 @@
                 canFlip = false;
                 
                 setTimeout(() => {
-                    const [card1, card2] = flippedCards;
-                    const symbol1 = card1.dataset.symbol;
-                    const symbol2 = card2.dataset.symbol;
+                    const card1 = flippedCards[0];
+                    const card2 = flippedCards[1];
                     
-                    if (symbol1 === symbol2) {
+                    if (card1.dataset.symbol === card2.dataset.symbol) {
                         // Match found
                         card1.classList.add('matched');
                         card2.classList.add('matched');
@@ -1045,9 +1025,13 @@
                         document.getElementById('match-count').textContent = matchedPairs;
                         
                         if (matchedPairs === 8) {
-                            document.getElementById('memory-status').textContent = 'You won! All pairs matched!';
-                            gameData.memory.score += 15;
+                            // Game completed
+                            document.getElementById('memory-status').textContent = 'Congratulations! You found all pairs!';
+                            gameData.memory.score += 20;
+                            gameData.memory.playsToday++;
+                            gameData.memory.lastPlayed = new Date().toDateString();
                             updateLeaderboard();
+                            updateGameLimits();
                         }
                     } else {
                         // No match
@@ -1081,8 +1065,17 @@
                 const gistId = currentGistUrl.split('/')[4];
                 const fileName = currentGistUrl.split('/').pop().split('?')[0];
 
+                // Get the current gist data
+                const gistResponse = await fetch(`https://api.github.com/gists/${gistId}`);
+                if (!gistResponse.ok) {
+                    throw new Error('Failed to fetch Gist data');
+                }
+
+                const gist = await gistResponse.json();
+
                 // Create updated content
                 const updatedContent = {
+                    ...(gist.files[fileName] ? JSON.parse(gist.files[fileName].content) : {}),
                     gameData: gameData,
                     lastUpdated: new Date().toISOString()
                 };
@@ -1119,6 +1112,11 @@
                 gistResultElement.textContent = `Error: ${error.message}. Please check the console for details.`;
             } finally {
                 saveButton.disabled = false;
+                
+                // Clear the message after 5 seconds
+                setTimeout(() => {
+                    gistResultElement.textContent = '';
+                }, 5000);
             }
         }
     </script>
