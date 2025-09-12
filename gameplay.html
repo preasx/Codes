@@ -450,15 +450,15 @@
             <h1>Game Hub</h1>
             <div class="user-info">
                 <div class="user-badge" id="user-badge">
-                    <div class="user-avatar">U</div>
-                    <span>Username</span>
+                    <div class="user-avatar">P</div>
+                    <span>preasx24</span>
                 </div>
 
                 <div class="vs">VS</div>
 
                 <div class="user-badge" id="partner-badge">
-                    <div class="user-avatar">P</div>
-                    <span>Partner</span>
+                    <div class="user-avatar">J</div>
+                    <span>jonas</span>
                 </div>
             </div>
         </header>
@@ -469,7 +469,7 @@
 
                 <div class="score-display">
                     <div class="user-score">
-                        <div class="score-value" id="user-score">0</div>
+                        <div class="score-value" id="user-score">6</div>
                         <div class="score-label">Your Score</div>
                     </div>
 
@@ -479,15 +479,15 @@
                     </div>
                 </div>
 
-                <div class="difference" id="score-difference">
-                    No games played yet
+                <div class="difference positive" id="score-difference">
+                    You are winning by 6 points!
                 </div>
 
                 <div class="save-section">
                     <button class="save-btn" id="save-btn">
                         <i class="fas fa-save"></i> Save Scores
                     </button>
-                    <div class="gist-result" id="gist-result"></div>
+                    <div class="gist-result" id="gist-result">Error: Failed to fetch. Please check the console for details.</div>
                 </div>
             </div>
 
@@ -611,10 +611,10 @@
 
         const GIST_TOKEN_URL = 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt';
 
-        let currentUser = null;
-        let currentPartner = null;
-        let currentGistUrl = null;
-        let partnerGistUrl = null;
+        let currentUser = "preasx24";
+        let currentPartner = "jonas";
+        let currentGistUrl = userGistMap[currentUser];
+        let partnerGistUrl = userGistMap[currentPartner];
 
         let gameData = {
             ticTacToe: { score: 0, playsToday: 0, lastPlayed: null },
@@ -638,25 +638,22 @@
         let ticTacToeBoard = ['', '', '', '', '', '', '', '', ''];
         let currentPlayer = 'X';
         let gameOver = false;
-        let ticTacToeGameCount = 0;
 
         // Memory Game variables
         let memoryCards = [];
         let flippedCards = [];
         let matchedPairs = 0;
         let canFlip = true;
-        let memoryGameCount = 0;
 
         // ========== INITIALIZATION ==========
         document.addEventListener('DOMContentLoaded', function() {
-            // Load user and partner from localStorage with correct keys
-            currentUser = localStorage.getItem('gameHub_unique_user');
-            currentPartner = localStorage.getItem('gameHub_unique_partner');
-
-            if (!currentUser || !currentPartner) {
-                alert('Please select a user and partner first!');
-                window.location.href = 'index.html'; // Redirect to selection page
-                return;
+            // Load user and partner from localStorage
+            const savedUser = localStorage.getItem('gameHub_unique_user');
+            const savedPartner = localStorage.getItem('gameHub_unique_partner');
+            
+            if (savedUser && savedPartner) {
+                currentUser = savedUser;
+                currentPartner = savedPartner;
             }
 
             // Set up UI
@@ -1063,21 +1060,19 @@
 
                 // Extract gist ID from the URL
                 const gistId = currentGistUrl.split('/')[4];
-                
-                // Get the current gist data to find the filename
+                const fileName = currentGistUrl.split('/').pop();
+
+                // Get the current gist data
                 const gistResponse = await fetch(`https://api.github.com/gists/${gistId}`);
                 if (!gistResponse.ok) {
                     throw new Error('Failed to fetch Gist data');
                 }
 
                 const gist = await gistResponse.json();
-                
-                // Get the first filename in the gist (each gist has one file)
-                const filename = Object.keys(gist.files)[0];
 
                 // Create updated content
                 const updatedContent = {
-                    ...(gist.files[filename] ? JSON.parse(gist.files[filename].content) : {}),
+                    ...(gist.files[fileName] ? JSON.parse(gist.files[fileName].content) : {}),
                     gameData: gameData,
                     lastUpdated: new Date().toISOString()
                 };
@@ -1092,7 +1087,7 @@
                     },
                     body: JSON.stringify({
                         files: {
-                            [filename]: {
+                            [fileName]: {
                                 content: JSON.stringify(updatedContent, null, 2)
                             }
                         }
@@ -1100,8 +1095,7 @@
                 });
 
                 if (!updateResponse.ok) {
-                    const errorData = await updateResponse.json();
-                    throw new Error(errorData.message || 'Failed to update Gist');
+                    throw new Error('Failed to update Gist');
                 }
 
                 gistResultElement.textContent = `Scores saved successfully for ${currentUser}!`;
