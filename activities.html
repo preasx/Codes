@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activities - Together</title>
+    <title>Our Activities - Together Forever</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -14,7 +14,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background: linear-gradient(135deg, #d4145a 0%, #fbb03b 100%);
             color: #fff;
             min-height: 100vh;
             padding: 20px;
@@ -29,35 +29,48 @@
         header {
             text-align: center;
             margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
             backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         h1 i {
             margin-right: 15px;
-            color: #ff4b90;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
         }
 
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             opacity: 0.9;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .heart {
+            color: #ff4b90;
+            text-shadow: 0 0 10px rgba(255, 75, 144, 0.7);
+            margin: 0 5px;
         }
 
         .back-btn {
             position: absolute;
             top: 20px;
             left: 20px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             border: none;
             color: white;
             width: 50px;
@@ -66,38 +79,44 @@
             font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
             backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
         .card-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
+            font-weight: 300;
         }
 
         .card-title i {
-            margin-right: 10px;
-            color: #ff4b90;
+            margin-right: 12px;
+            color: #fff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
         }
 
         .btn {
-            background: #ff4b90;
+            background: rgba(255, 255, 255, 0.25);
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 14px 25px;
             border-radius: 50px;
             font-size: 1rem;
             cursor: pointer;
@@ -105,6 +124,8 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4px);
         }
 
         .btn i {
@@ -112,43 +133,40 @@
         }
 
         .btn:hover {
-            background: #ff2d78;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-secondary {
-            background: #2575fc;
-        }
-
-        .btn-secondary:hover {
-            background: #1a5fd0;
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
         .activity-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+            gap: 18px;
+            margin: 25px 0;
         }
 
         .activity-item {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 15px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .activity-item:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
         }
 
         .activity-item i {
-            font-size: 2rem;
-            margin-bottom: 10px;
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
         }
 
         .partner-activities {
@@ -156,28 +174,34 @@
         }
 
         .activity-log {
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border-left: 3px solid rgba(255, 255, 255, 0.3);
         }
 
         .activity-log .time {
             font-size: 0.9rem;
-            opacity: 0.7;
+            opacity: 0.8;
+            font-style: italic;
+            margin-top: 5px;
         }
 
         .notification {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: #ff4b90;
+            background: rgba(212, 20, 90, 0.9);
             color: white;
             padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
             display: none;
             z-index: 1000;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         /* Personal Gist Section Styles */
@@ -193,10 +217,13 @@
             min-width: 200px;
             background: rgba(255, 255, 255, 0.15);
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 15px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .user-card:hover {
@@ -206,20 +233,23 @@
 
         .user-card.selected {
             background: rgba(255, 255, 255, 0.3);
-            border: 2px solid #ff4b90;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
 
         .user-card h3 {
             margin-bottom: 10px;
+            font-weight: 400;
         }
 
         .status-bar {
             display: flex;
             align-items: center;
             background: rgba(255, 255, 255, 0.1);
-            padding: 10px 15px;
-            border-radius: 8px;
+            padding: 12px 18px;
+            border-radius: 10px;
             margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
 
         .status-dot {
@@ -230,25 +260,29 @@
         }
 
         .status-connected {
-            background: #4CAF50;
+            background: #8cc152;
+            box-shadow: 0 0 8px #8cc152;
         }
 
         .status-disconnected {
-            background: #F44336;
+            background: #da4453;
+            box-shadow: 0 0 8px #da4453;
         }
 
         .status-loading {
-            background: #FFC107;
+            background: #f6bb42;
+            box-shadow: 0 0 8px #f6bb42;
         }
 
         .selected-user-display {
-            padding: 15px;
+            padding: 18px;
             background: rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
+            border-radius: 15px;
             margin: 15px 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .change-user-btn {
@@ -265,26 +299,50 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
+        .romantic-element {
+            position: fixed;
+            font-size: 1.5rem;
+            opacity: 0.7;
+            z-index: -1;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
         @media (max-width: 600px) {
             .activity-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .user-card {
                 min-width: 100%;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Floating romantic elements -->
+    <div class="romantic-element" style="top: 10%; left: 5%;">❤️</div>
+    <div class="romantic-element" style="top: 20%; right: 7%;">💖</div>
+    <div class="romantic-element" style="top: 40%; left: 8%;">💕</div>
+    <div class="romantic-element" style="bottom: 30%; right: 10%;">🌸</div>
+    <div class="romantic-element" style="bottom: 15%; left: 12%;">🌹</div>
+
     <button class="back-btn" onclick="goBack()">
         <i class="fas fa-arrow-left"></i>
     </button>
 
     <div class="container">
         <header>
-            <h1><i class="fas fa-bell"></i> Activities</h1>
-            <p class="subtitle">Share what you're doing with your partner</p>
+            <h1><i class="fas fa-heart"></i> Our Activities</h1>
+            <p class="subtitle">Share what you're doing with your <span class="heart">love</span></p>
         </header>
 
         <!-- Personal Gist Section -->
@@ -293,7 +351,7 @@
             <div id="userSelectionContainer">
                 <!-- Will be populated by JavaScript -->
             </div>
-            
+
             <div class="status-bar">
                 <div class="status-dot status-loading" id="statusDot"></div>
                 <span id="statusText">Loading personal gist settings...</span>
@@ -302,7 +360,7 @@
 
         <!-- Main Activity Sharing Section -->
         <div class="card">
-            <h2 class="card-title"><i class="fas fa-plus"></i> Share Your Activity</h2>
+            <h2 class="card-title"><i class="fas fa-plus-circle"></i> Share Your Activity</h2>
             <div class="activity-grid">
                 <div class="activity-item" onclick="shareActivity('pooping')">
                     <i class="fas fa-poop"></i>
@@ -352,16 +410,29 @@
                     <i class="fas fa-glass-cheers"></i>
                     <div>Celebrating</div>
                 </div>
+                <!-- New activities -->
+                <div class="activity-item" onclick="shareActivity('studying')">
+                    <i class="fas fa-book"></i>
+                    <div>Studying</div>
+                </div>
+                <div class="activity-item" onclick="shareActivity('goingout')">
+                    <i class="fas fa-walking"></i>
+                    <div>Going Out</div>
+                </div>
+                <div class="activity-item" onclick="shareActivity('goingoffline')">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <div>Going Offline</div>
+                </div>
             </div>
         </div>
 
         <div class="card">
-            <h2 class="card-title"><i class="fas fa-history"></i> Partner's Recent Activities</h2>
+            <h2 class="card-title"><i class="fas fa-history"></i> Your Love's Recent Activities</h2>
             <div id="partnerActivities" class="partner-activities">
-                <p>No recent activities from your partner</p>
+                <p>No recent activities from your love yet</p>
             </div>
 
-            <button class="btn btn-secondary" onclick="loadPartnerActivities()">
+            <button class="btn" onclick="loadPartnerActivities()">
                 <i class="fas fa-sync"></i> Refresh Activities
             </button>
         </div>
@@ -480,7 +551,7 @@
                 const response = await fetch(gistUrls.token + '?t=' + new Date().getTime());
                 const token = await response.text();
                 userData.gistToken = token.trim();
-                
+
                 if (personalGistUser) {
                     updateStatus('connected', `Personal gist updates enabled for ${personalGistUser}`);
                 } else {
@@ -497,7 +568,7 @@
         function updateStatus(status, message) {
             const statusDot = document.getElementById('statusDot');
             const statusText = document.getElementById('statusText');
-            
+
             statusDot.className = 'status-dot';
             switch(status) {
                 case 'connected':
@@ -510,7 +581,7 @@
                     statusDot.classList.add('status-loading');
                     break;
             }
-            
+
             statusText.textContent = message;
         }
 
@@ -520,14 +591,14 @@
             const userCards = document.querySelectorAll('.user-card');
             userCards.forEach(card => card.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
-            
+
             // Set personal gist user
             personalGistUser = username;
             localStorage.setItem('togetherPersonalGistUser', username);
-            
+
             // Update UI to show selected user
             renderPersonalGistSection();
-            
+
             showNotification(`Personal gist updates enabled for ${username}`);
         }
 
@@ -606,7 +677,7 @@
 
                 const currentGist = await currentResponse.json();
                 let currentContent = {};
-                
+
                 try {
                     const content = currentGist.files[fileName].content;
                     // Handle both array format (legacy) and object format
@@ -644,7 +715,7 @@
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
+
                 console.log('Personal gist updated successfully');
                 return true;
             } catch (error) {
@@ -690,7 +761,7 @@
                         activitiesContainer.appendChild(activityEl);
                     });
                 } else {
-                    activitiesContainer.innerHTML = '<p>No recent activities from your partner</p>';
+                    activitiesContainer.innerHTML = '<p>No recent activities from your love yet</p>';
                 }
             } catch (error) {
                 console.error('Error fetching partner activities:', error);
@@ -712,7 +783,10 @@
                 'cooking': 'Cooking 👩‍🍳',
                 'driving': 'Driving 🚗',
                 'missing': 'Missing You 💔',
-                'celebrating': 'Celebrating 🎉'
+                'celebrating': 'Celebrating 🎉',
+                'studying': 'Studying 📚',
+                'goingout': 'Going Out 🚶‍♀️',
+                'goingoffline': 'Going Offline 🔌'
             };
 
             return activityMap[type] || type;
