@@ -560,7 +560,7 @@
 
             <h2>Rock Paper Scissors</h2>
             <div class="game-status" id="rps-status">Choose your weapon!</div>
-            <div class="game-limit" id="rps-limit">Games played today: 0/10</div>
+            <div class="game-limit" id="rps-limit">Games played today: 10/10</div>
 
             <div class="rps-options">
                 <div class="rps-option" data-choice="rock">
@@ -603,10 +603,10 @@
     <script>
         // ========== GLOBAL VARIABLES ==========
         const userGistMap = {
-            lefa: "https://gist.githubusercontent.com/Preasx24/02e300379f8b968942ac67379f5bc831/raw/gist_1.json",
-            jonas: "https://gist.githubusercontent.com/Preasx24/69f058ad6bcb25e41d8b797dc7395c6d/raw/gist_2.json",
-            owami: "https://gist.githubusercontent.com/Preasx24/6c9e9fcda5ed38f9839c9ac8bc147ba7/raw/gist_3.json",
-            preasx24: "https://gist.githubusercontent.com/Preasx24/50e60ff2c3bc108d63038c8eb6c26e8d/raw/gist_4.json"
+            lefa: "https://gist.githubusercontent.com/Preasx24/02e300379f8b968942ac67379f5bc831/raw/gistfile1.txt",
+            jonas: "https://gist.githubusercontent.com/Preasx24/69f058ad6bcb25e41d8b797dc7395c6d/raw/gistfile1.txt",
+            owami: "https://gist.githubusercontent.com/Preasx24/6c9e9fcda5ed38f9839c9ac8bc147ba7/raw/gistfile1.txt",
+            preasx24: "https://gist.githubusercontent.com/Preasx24/50e60ff2c3bc108d63038c8eb6c26e8d/raw/gistfile1.txt"
         };
 
         const GIST_TOKEN_URL = 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt';
@@ -617,9 +617,9 @@
         let partnerGistUrl = userGistMap[currentPartner];
 
         let gameData = {
-            ticTacToe: { score: 0, playsToday: 0, lastPlayed: null },
-            rps: { score: 0, playsToday: 0, lastPlayed: null },
-            memory: { score: 0, playsToday: 0, lastPlayed: null },
+            ticTacToe: { score: 3, playsToday: 0, lastPlayed: "Thu Sep 11 2025" },
+            rps: { score: 22, playsToday: 10, lastPlayed: "Fri Sep 12 2025" },
+            memory: { score: 12, playsToday: 0, lastPlayed: "Thu Sep 11 2025" },
             get totalScore() {
                 return this.ticTacToe.score + this.rps.score + this.memory.score;
             }
@@ -760,9 +760,13 @@
                 if (!response.ok) throw new Error('Failed to fetch user data');
 
                 const userData = await response.json();
+                console.log("User data loaded:", userData);
 
                 if (userData.gameData) {
-                    gameData = userData.gameData;
+                    // Update our game data with the fetched data
+                    gameData.ticTacToe = userData.gameData.ticTacToe || { score: 0, playsToday: 0, lastPlayed: null };
+                    gameData.rps = userData.gameData.rps || { score: 0, playsToday: 0, lastPlayed: null };
+                    gameData.memory = userData.gameData.memory || { score: 0, playsToday: 0, lastPlayed: null };
 
                     // Check if we need to reset daily plays
                     const today = new Date().toDateString();
@@ -784,9 +788,12 @@
                 if (!response.ok) throw new Error('Failed to fetch partner data');
 
                 const partnerGistData = await response.json();
+                console.log("Partner data loaded:", partnerGistData);
 
                 if (partnerGistData.gameData) {
-                    partnerData = partnerGistData.gameData;
+                    partnerData.ticTacToe = partnerGistData.gameData.ticTacToe || { score: 0, playsToday: 0, lastPlayed: null };
+                    partnerData.rps = partnerGistData.gameData.rps || { score: 0, playsToday: 0, lastPlayed: null };
+                    partnerData.memory = partnerGistData.gameData.memory || { score: 0, playsToday: 0, lastPlayed: null };
                     updateLeaderboard();
                 }
             } catch (error) {
@@ -1060,20 +1067,29 @@
 
                 // Extract gist ID from the URL
                 const gistId = currentGistUrl.split('/')[4];
-                const fileName = currentGistUrl.split('/').pop();
-
-                // Get the current gist data
+                
+                // Get the current gist data to find the filename
                 const gistResponse = await fetch(`https://api.github.com/gists/${gistId}`);
                 if (!gistResponse.ok) {
                     throw new Error('Failed to fetch Gist data');
                 }
 
                 const gist = await gistResponse.json();
+                
+                // Get the first filename in the gist (each gist has one file)
+                const filename = Object.keys(gist.files)[0];
 
+                // Parse the current content
+                const currentContent = JSON.parse(gist.files[filename].content);
+                
                 // Create updated content
                 const updatedContent = {
-                    ...(gist.files[fileName] ? JSON.parse(gist.files[fileName].content) : {}),
-                    gameData: gameData,
+                    ...currentContent,
+                    gameData: {
+                        ticTacToe: gameData.ticTacToe,
+                        rps: gameData.rps,
+                        memory: gameData.memory
+                    },
                     lastUpdated: new Date().toISOString()
                 };
 
@@ -1087,7 +1103,7 @@
                     },
                     body: JSON.stringify({
                         files: {
-                            [fileName]: {
+                            [filename]: {
                                 content: JSON.stringify(updatedContent, null, 2)
                             }
                         }
@@ -1095,7 +1111,8 @@
                 });
 
                 if (!updateResponse.ok) {
-                    throw new Error('Failed to update Gist');
+                    const errorData = await updateResponse.json();
+                    throw new Error(errorData.message || 'Failed to update Gist');
                 }
 
                 gistResultElement.textContent = `Scores saved successfully for ${currentUser}!`;
