@@ -36,6 +36,7 @@
             margin: 0 auto;
             padding: 20px;
             width: 100%;
+            flex: 1;
         }
         
         header {
@@ -166,14 +167,14 @@
         
         .mood-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
             margin: 20px 0;
         }
         
         .mood-item {
             background: rgba(255, 255, 255, 0.9);
-            padding: 25px;
+            padding: 20px 15px;
             border-radius: 15px;
             text-align: center;
             cursor: pointer;
@@ -194,8 +195,13 @@
         }
         
         .mood-item .emoji {
-            font-size: 3rem;
-            margin-bottom: 15px;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .mood-item .mood-label {
+            font-size: 0.9rem;
+            line-height: 1.2;
         }
         
         .mood-display {
@@ -328,11 +334,18 @@
             transition: all 0.5s ease;
             z-index: 1000;
             border-left: 5px solid var(--accent-color);
+            max-width: 350px;
         }
         
         #notification.show {
             transform: translateY(0);
             opacity: 1;
+        }
+        
+        .notification-time {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 5px;
         }
         
         .hearts-container {
@@ -374,6 +387,16 @@
             left: -10px;
         }
         
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            color: var(--dark-color);
+            opacity: 0.7;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.2rem;
+        }
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -400,7 +423,7 @@
         
         @media (max-width: 768px) {
             .mood-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
             }
             
             .user-card {
@@ -417,6 +440,16 @@
             
             h1 {
                 font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .mood-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .mood-item .emoji {
+                font-size: 2rem;
             }
         }
     </style>
@@ -469,27 +502,76 @@
             <div class="mood-grid">
                 <div class="mood-item" onclick="setMood('happy', this)">
                     <div class="emoji">😊</div>
-                    <div>Happy</div>
+                    <div class="mood-label">Happy</div>
                 </div>
                 <div class="mood-item" onclick="setMood('sad', this)">
                     <div class="emoji">😢</div>
-                    <div>Sad</div>
+                    <div class="mood-label">Sad</div>
                 </div>
                 <div class="mood-item" onclick="setMood('tired', this)">
                     <div class="emoji">😴</div>
-                    <div>Tired</div>
+                    <div class="mood-label">Tired</div>
                 </div>
                 <div class="mood-item" onclick="setMood('excited', this)">
                     <div class="emoji">🤩</div>
-                    <div>Excited</div>
+                    <div class="mood-label">Excited</div>
                 </div>
                 <div class="mood-item" onclick="setMood('romantic', this)">
                     <div class="emoji">😍</div>
-                    <div>Romantic</div>
+                    <div class="mood-label">Romantic</div>
                 </div>
                 <div class="mood-item" onclick="setMood('playful', this)">
                     <div class="emoji">😜</div>
-                    <div>Playful</div>
+                    <div class="mood-label">Playful</div>
+                </div>
+                <!-- New moods -->
+                <div class="mood-item" onclick="setMood('loved', this)">
+                    <div class="emoji">❤️</div>
+                    <div class="mood-label">Loved</div>
+                </div>
+                <div class="mood-item" onclick="setMood('grateful', this)">
+                    <div class="emoji">🙏</div>
+                    <div class="mood-label">Grateful</div>
+                </div>
+                <div class="mood-item" onclick="setMood('proud', this)">
+                    <div class="emoji">🏆</div>
+                    <div class="mood-label">Proud of U</div>
+                </div>
+                <div class="mood-item" onclick="setMood('stressed', this)">
+                    <div class="emoji">😫</div>
+                    <div class="mood-label">Stressed</div>
+                </div>
+                <div class="mood-item" onclick="setMood('angry', this)">
+                    <div class="emoji">😠</div>
+                    <div class="mood-label">Angry</div>
+                </div>
+                <div class="mood-item" onclick="setMood('hurt', this)">
+                    <div class="emoji">💔</div>
+                    <div class="mood-label">Hurt</div>
+                </div>
+                <div class="mood-item" onclick="setMood('jealous', this)">
+                    <div class="emoji">😒</div>
+                    <div class="mood-label">Jealous</div>
+                </div>
+                <div class="mood-item" onclick="setMood('flirty', this)">
+                    <div class="emoji">😘</div>
+                    <div class="mood-label">Flirty</div>
+                </div>
+                <div class="mood-item" onclick="setMood('mischievous', this)">
+                    <div class="emoji">😏</div>
+                    <div class="mood-label">Mischievous</div>
+                </div>
+                <div class="mood-item" onclick="setMood('sleepy', this)">
+                    <div class="emoji">😪</div>
+                    <div class="mood-label">Sleepy</div>
+                </div>
+                <div class="mood-item" onclick="setMood('sick', this)">
+                    <div class="emoji">🤒</div>
+                    <div class="mood-label">Sick</div>
+                </div>
+                <div class="mood-item" onclick="setMood('bored', this)">
+                    <div class="emoji">😐</div>
+                    <div class="mood-label">Bored</div>
                 </div>
             </div>
         </div>
@@ -501,8 +583,13 @@
         </div>
     </div>
 
+    <footer>
+        made with ❤️ for owami
+    </footer>
+
     <div id="notification">
         <span id="notificationText"></span>
+        <div class="notification-time" id="notificationTime"></div>
     </div>
 
     <script>
@@ -522,6 +609,7 @@
 
         let userData = null;
         let personalGistUser = null;
+        let moodSelectionTime = null;
 
         // Create floating hearts
         function createHearts() {
@@ -684,6 +772,9 @@
         }
 
         async function setMood(mood, element) {
+            // Record the time when mood was selected
+            moodSelectionTime = new Date();
+            
             // Update UI
             const moodItems = document.querySelectorAll('.mood-item');
             moodItems.forEach(item => item.classList.remove('selected'));
@@ -709,10 +800,13 @@
                     personalGistSuccess = await updatePersonalMoodGist(mood);
                 }
 
+                const updateTime = new Date();
+                const timeDiff = (updateTime - moodSelectionTime) / 1000; // in seconds
+                
                 if (mainGistSuccess && personalGistSuccess) {
-                    showNotification('You\'re feeling ' + mood + ' today! 💖');
+                    showNotificationWithTime('You\'re feeling ' + mood + ' today! 💖', moodSelectionTime, updateTime);
                 } else if (mainGistSuccess) {
-                    showNotification('Mood shared to main feed' + (personalGistUser ? ', but personal connection failed' : ''));
+                    showNotificationWithTime('Mood shared to main feed' + (personalGistUser ? ', but personal connection failed' : ''), moodSelectionTime, updateTime);
                 } else {
                     showNotification('Failed to share your mood');
                 }
@@ -871,13 +965,32 @@
         function showNotification(message) {
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
+            const notificationTime = document.getElementById('notificationTime');
 
             notificationText.textContent = message;
+            notificationTime.textContent = '';
             notification.classList.add('show');
 
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
+        }
+        
+        function showNotificationWithTime(message, startTime, endTime) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            const notificationTime = document.getElementById('notificationTime');
+            
+            const timeDiff = (endTime - startTime) / 1000; // in seconds
+            const timeString = `Selected at ${startTime.toLocaleTimeString()}, updated in ${timeDiff.toFixed(1)}s`;
+
+            notificationText.textContent = message;
+            notificationTime.textContent = timeString;
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
         }
 
         window.onload = function() {
