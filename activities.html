@@ -18,12 +18,15 @@
             color: #fff;
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
         }
 
         .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
+            flex: 1;
         }
 
         header {
@@ -279,24 +282,7 @@
             background: rgba(255, 255, 255, 0.15);
             border-radius: 15px;
             margin: 15px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .change-user-btn {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .change-user-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
         }
 
         .romantic-element {
@@ -310,6 +296,14 @@
         @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            font-size: 1.1rem;
+            opacity: 0.9;
         }
 
         @media (max-width: 600px) {
@@ -438,6 +432,10 @@
         </div>
     </div>
 
+    <footer>
+        Made with ❤️ for owami
+    </footer>
+
     <div class="notification" id="notification">
         <span id="notificationText"></span>
     </div>
@@ -459,6 +457,7 @@
 
         let userData = null;
         let personalGistUser = null;
+        let selectionFinalized = false;
 
         // Initialize the app
         function initApp() {
@@ -472,11 +471,18 @@
 
             userData = JSON.parse(savedProfile);
 
+            // Check if user selection is finalized
+            selectionFinalized = localStorage.getItem('togetherSelectionFinalized') === 'true';
+            
             // Load personal gist user selection
             const savedPersonalGistUser = localStorage.getItem('togetherPersonalGistUser');
             if (savedPersonalGistUser) {
                 personalGistUser = savedPersonalGistUser;
-                renderPersonalGistSection();
+                if (selectionFinalized) {
+                    renderFinalizedUserSelection();
+                } else {
+                    renderPersonalGistSection();
+                }
             } else {
                 renderUserSelection();
             }
@@ -523,20 +529,36 @@
                     <div>
                         <strong>Personal Gist User:</strong> ${personalGistUser}
                     </div>
-                    <button class="change-user-btn" onclick="changeUser()">
-                        <i class="fas fa-exchange-alt"></i> Change
+                    <p><small>Your selection can be changed until you finalize it.</small></p>
+                    <button class="btn" onclick="finalizeSelection()" style="margin-top: 10px;">
+                        <i class="fas fa-lock"></i> Finalize Selection
                     </button>
                 </div>
             `;
             updateStatus('connected', `Personal gist updates enabled for ${personalGistUser}`);
         }
 
-        // Change user selection
-        function changeUser() {
-            if (confirm("Change personal gist user? This will clear your current selection.")) {
-                localStorage.removeItem('togetherPersonalGistUser');
-                personalGistUser = null;
-                renderUserSelection();
+        // Render finalized user selection (no option to change)
+        function renderFinalizedUserSelection() {
+            const container = document.getElementById('userSelectionContainer');
+            container.innerHTML = `
+                <div class="selected-user-display">
+                    <div>
+                        <strong>Personal Gist User:</strong> ${personalGistUser}
+                    </div>
+                    <p><small><i class="fas fa-lock"></i> Your selection has been finalized and cannot be changed.</small></p>
+                </div>
+            `;
+            updateStatus('connected', `Personal gist updates enabled for ${personalGistUser}`);
+        }
+
+        // Finalize user selection
+        function finalizeSelection() {
+            if (confirm("Are you sure you want to finalize your selection? This action cannot be undone.")) {
+                selectionFinalized = true;
+                localStorage.setItem('togetherSelectionFinalized', 'true');
+                renderFinalizedUserSelection();
+                showNotification('Selection finalized successfully');
             }
         }
 
@@ -587,6 +609,11 @@
 
         // Select user for personal gist
         function selectUser(username) {
+            if (selectionFinalized) {
+                showNotification('User selection has been finalized and cannot be changed');
+                return;
+            }
+
             // Update UI
             const userCards = document.querySelectorAll('.user-card');
             userCards.forEach(card => card.classList.remove('selected'));
