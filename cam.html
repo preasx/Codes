@@ -18,12 +18,13 @@
     align-items: center; 
     min-height: 100vh; 
     overflow: hidden; 
-    background: #ffebee;
-    transition: background 1.5s ease;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    transition: background 3s ease;
   }
 
   #book-container { 
     width: 95vw; 
+    max-width: 800px;
     height: 90vh; 
     display: flex; 
     flex-direction: column; 
@@ -33,7 +34,7 @@
     border: 1px solid #e6c9a8;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 0 60px rgba(255, 182, 193, 0.3) inset;
     border-radius: 8px;
-    transition: all 1.5s ease;
+    transition: all 0.5s ease;
     z-index: 2;
   }
 
@@ -51,7 +52,7 @@
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath fill='%23ffb6c1' fill-opacity='0.1' d='M20,30 Q30,15 40,30 T60,30 T40,30 T20,30Z'/%3E%3C/svg%3E");
     background-size: 100% 1.6em, 200px 200px;
     background-position: 0 1.4em, 0 0;
-    transition: all 1.5s ease;
+    transition: all 0.5s ease;
     position: relative;
     z-index: 1;
   }
@@ -65,7 +66,7 @@
     min-height: 55px; 
     border-top: 1px solid #f2d9c9;
     background: linear-gradient(to bottom, #fffaf5 0%, #f9e6d8 100%);
-    transition: all 1.5s ease;
+    transition: all 0.5s ease;
     z-index: 2;
   }
 
@@ -85,28 +86,10 @@
     overflow: hidden;
   }
 
-  button::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 5px;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.5);
-    opacity: 0;
-    border-radius: 100%;
-    transform: scale(1, 1) translate(-50%);
-    transform-origin: 50% 50%;
-  }
-
   button:hover:not(:disabled) { 
     transform: translateY(-2px); 
     box-shadow: 0 6px 12px rgba(196, 69, 105, 0.3); 
     background: #b33761;
-  }
-
-  button:hover::after {
-    animation: ripple 1s ease-out;
   }
 
   button:disabled { 
@@ -119,7 +102,7 @@
     font-style: italic; 
     font-weight: bold; 
     color: #c44569;
-    transition: all 1.5s ease;
+    transition: all 0.5s ease;
     opacity: 0.8;
     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
   }
@@ -130,7 +113,7 @@
     margin: 20px 0; 
     font-size: 9pt; 
     color: #c44569;
-    transition: all 1.5s ease;
+    transition: all 0.5s ease;
   }
 
   .chapter-page { 
@@ -146,7 +129,7 @@
     background-size: 100% 1.6em, 200px 200px;
     background-position: 0 1.4em, 0 0;
     text-align: center; 
-    transition: all 1.5s ease;
+    transition: all 0.5s ease;
     position: relative;
   }
 
@@ -163,8 +146,7 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     font-variant: small-caps;
     position: relative;
-    transition: all 1.5s ease;
-    font-family: 'Playfair Display', Georgia, serif;
+    transition: all 0.5s ease;
     text-shadow: 0 2px 3px rgba(0,0,0,0.1);
   }
 
@@ -189,8 +171,7 @@
     color: #c44569; 
     background: rgba(255, 250, 245, 0.9);
     margin-top: 15px;
-    transition: all 1.5s ease;
-    font-family: 'Playfair Display', Georgia, serif;
+    transition: all 0.5s ease;
   }
 
   .chapter-divider { 
@@ -198,11 +179,11 @@
     height: 2px; 
     margin: 20px 0; 
     background: linear-gradient(to right, transparent, #e6c9a8, transparent);
-    transition: all 1.5s ease;
+    transition: all 0.5s ease;
     border-radius: 2px;
   }
 
-  /* Birthday Validation Modal */
+  /* Validation Modal */
   .validation-modal {
     position: fixed;
     top: 0;
@@ -253,7 +234,6 @@
     color: #c44569;
     margin-bottom: 20px;
     font-variant: small-caps;
-    font-family: 'Playfair Display', Georgia, serif;
   }
 
   .validation-text {
@@ -323,42 +303,6 @@
 
   .celebrate {
     animation: celebrate 0.5s ease;
-  }
-
-  /* Floating elements */
-  .floating-hearts {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .heart {
-    position: absolute;
-    opacity: 0;
-    font-size: 24px;
-    color: rgba(255, 182, 193, 0.7);
-    animation: float 15s linear infinite;
-  }
-
-  @keyframes float {
-    0% {
-      transform: translateY(100vh) rotate(0deg);
-      opacity: 0;
-    }
-    10% {
-      opacity: 0.8;
-    }
-    90% {
-      opacity: 0.6;
-    }
-    100% {
-      transform: translateY(-100px) rotate(360deg);
-      opacity: 0;
-    }
   }
 
   /* Page turning animation */
@@ -455,22 +399,6 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   }
 
-  /* Ripple effect */
-  @keyframes ripple {
-    0% {
-      transform: scale(0, 0);
-      opacity: 1;
-    }
-    20% {
-      transform: scale(25, 25);
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-      transform: scale(40, 40);
-    }
-  }
-
   /* Love message */
   .love-message {
     position: absolute;
@@ -483,31 +411,6 @@
     font-style: italic;
     text-align: center;
     width: 100%;
-  }
-
-  /* Theme styles */
-  .theme-classic { background: #ffebee; }
-  .theme-blue { background: #e3f2fd; }
-  .theme-romantic { background: #fce4ec; }
-  .theme-purple { background: #f3e5f5; }
-  .theme-red { background: #ffebee; }
-
-  /* Romantic background elements */
-  .romantic-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .bg-heart {
-    position: absolute;
-    opacity: 0.03;
-    font-size: 120px;
-    color: #c44569;
   }
 
   /* Custom scrollbar */
@@ -529,33 +432,20 @@
     background: #d4b495;
   }
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 </head>
-<body class="theme-romantic">
+<body>
 
-<!-- Romantic background elements -->
-<div class="romantic-bg">
-  <div class="bg-heart" style="top: 10%; left: 15%;">❤</div>
-  <div class="bg-heart" style="top: 25%; left: 75%;">❤</div>
-  <div class="bg-heart" style="top: 60%; left: 10%;">❤</div>
-  <div class="bg-heart" style="top: 75%; left: 80%;">❤</div>
-</div>
-
-<!-- Birthday Validation Modal -->
+<!-- Validation Modal -->
 <div class="validation-modal" id="validation-modal">
   <div class="validation-content">
-    <h2 class="validation-title">A Question From My Heart</h2>
+    <h2 class="validation-title" id="validation-question">A Question From My Heart</h2>
     <p class="validation-text">To continue reading this chapter, please answer this special question:</p>
-    <p class="validation-text">When is my birthday? (DD Month YYYY)</p>
-    <input type="text" class="validation-input" id="birthday-input" placeholder="e.g. 20 June 2005">
+    <input type="text" class="validation-input" id="validation-input" placeholder="Your answer...">
     <button class="validation-btn" id="validate-btn">Validate Our Love</button>
     <p class="validation-error" id="validation-error">That's not quite right, my love. Try again!</p>
     <p class="validation-success" id="validation-success">Yes! You remembered! ❤️</p>
   </div>
 </div>
-
-<!-- Floating hearts background -->
-<div class="floating-hearts" id="floating-hearts"></div>
 
 <div id="book-container">
   <!-- Decorative Elements -->
@@ -586,6 +476,7 @@
 </div>
 
 <script>
+// Define chapters with their file paths
 const chapters = [
   { title: "Chapter 1: Our First Meeting", url: "chapters/chapter1.txt" },
   { title: "Chapter 2: Getting to Know You", url: "chapters/chapter2.txt" },
@@ -596,16 +487,62 @@ const chapters = [
   { title: "Chapter 7: Our Future", url: "chapters/chapter7.txt" }
 ];
 
+// Define validation questions
+const validationQuestions = [
+  {
+    question: "What's my alias?",
+    answers: ["preasx24"],
+    placeholder: "e.g. preasx24"
+  },
+  {
+    question: "What is my age?",
+    answers: ["20"],
+    placeholder: "e.g. 20"
+  },
+  {
+    question: "What is my surname?",
+    answers: ["mochebane"],
+    placeholder: "e.g. mochebane"
+  },
+  {
+    question: "What is my 'company' name?",
+    answers: ["dtech"],
+    placeholder: "e.g. dtech"
+  },
+  {
+    question: "What is one of my favourite colours?",
+    answers: ["blue", "black", "red"],
+    placeholder: "e.g. blue, black or red"
+  },
+  {
+    question: "What is my favourite subject?",
+    answers: ["physics", "physical science"],
+    placeholder: "e.g. physics or physical science"
+  },
+  {
+    question: "What is my favourite body part?",
+    answers: ["boobs", "tits"],
+    placeholder: "e.g. boobs or tits"
+  }
+];
+
 let pages = [];
 let currentPage = 0;
 const wordsPerPage = 500;
 let pageTimer = null;
 let timeOnPage = 0;
-let themeInterval;
-let currentTheme = 2; // Start with romantic theme
-const themes = ['classic', 'blue', 'romantic', 'purple', 'red'];
+let backgroundInterval;
+let currentBg = 0;
+const backgrounds = [
+  'linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)', // Red/Pink
+  'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)', // Orange
+  'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)', // Blue
+  'linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)', // Green
+  'linear-gradient(135deg, #a3bded 0%, #6991c7 100%)', // Purple/Blue
+  'linear-gradient(135deg, #f6d365 0%, #fda085 100%)'  // Yellow/Orange
+];
 let validatedChapters = new Set();
-const CORRECT_BIRTHDAY = "20 June 2005";
+let currentQuestion = null;
 
 // Initialize all features
 function initFeatures() {
@@ -621,71 +558,74 @@ function initFeatures() {
     validatedChapters = new Set(JSON.parse(savedValidated));
   }
 
-  // Start theme cycling
-  themeInterval = setInterval(cycleThemes, 10000); // Change every 10 seconds
-
-  // Create floating hearts
-  createFloatingHearts();
+  // Start background color cycling
+  backgroundInterval = setInterval(cycleBackgrounds, 10000); // Change every 10 seconds
 
   // Setup validation event listeners
-  document.getElementById('validate-btn').addEventListener('click', validateBirthday);
-  document.getElementById('birthday-input').addEventListener('keypress', function(e) {
+  document.getElementById('validate-btn').addEventListener('click', validateAnswer);
+  document.getElementById('validation-input').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
-      validateBirthday();
+      validateAnswer();
     }
   });
+
+  // Ask a random question when the page loads
+  setTimeout(() => {
+    askRandomQuestion();
+  }, 1000);
 }
 
-// Create floating hearts in background
-function createFloatingHearts() {
-  const container = document.getElementById('floating-hearts');
-  for (let i = 0; i < 25; i++) {
-    const heart = document.createElement('div');
-    heart.className = 'heart';
-    heart.innerHTML = '❤';
-    heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.animationDelay = Math.random() * 15 + 's';
-    heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
-    heart.style.color = `rgba(196, 69, 105, ${0.3 + Math.random() * 0.4})`;
-    container.appendChild(heart);
-  }
+// Cycle through background colors
+function cycleBackgrounds() {
+  currentBg = (currentBg + 1) % backgrounds.length;
+  document.body.style.background = backgrounds[currentBg];
 }
 
-// Theme cycling function
-function cycleThemes() {
-  currentTheme = (currentTheme + 1) % themes.length;
-  document.body.className = 'theme-' + themes[currentTheme];
+// Ask a random validation question
+function askRandomQuestion() {
+  const randomIndex = Math.floor(Math.random() * validationQuestions.length);
+  currentQuestion = validationQuestions[randomIndex];
+  
+  document.getElementById('validation-question').textContent = currentQuestion.question;
+  document.getElementById('validation-input').placeholder = currentQuestion.placeholder;
+  document.getElementById('validation-input').value = '';
+  document.getElementById('validation-error').style.display = 'none';
+  document.getElementById('validation-success').style.display = 'none';
+  
+  document.getElementById('validation-modal').classList.add('active');
+  document.getElementById('validation-input').focus();
 }
 
-// Validate birthday function
-function validateBirthday() {
-  const input = document.getElementById('birthday-input').value.trim();
+// Validate the answer
+function validateAnswer() {
+  const input = document.getElementById('validation-input').value.trim().toLowerCase();
   const errorElement = document.getElementById('validation-error');
   const successElement = document.getElementById('validation-success');
 
-  if (input.toLowerCase() === CORRECT_BIRTHDAY.toLowerCase()) {
+  if (currentQuestion && currentQuestion.answers.includes(input)) {
     // Correct answer
     errorElement.style.display = 'none';
     successElement.style.display = 'block';
 
-    // Get current chapter
-    const currentChapter = pages[currentPage].chapter;
-    validatedChapters.add(currentChapter);
-
-    // Save to localStorage
-    localStorage.setItem('diaryValidatedChapters', JSON.stringify(Array.from(validatedChapters)));
-
-    // Create celebration effect
-    createCelebrationHearts();
+    // Get current chapter if we're validating a chapter
+    if (pages.length > 0) {
+      const currentChapter = pages[currentPage].chapter;
+      validatedChapters.add(currentChapter);
+      
+      // Save to localStorage
+      localStorage.setItem('diaryValidatedChapters', JSON.stringify(Array.from(validatedChapters)));
+    }
 
     // Close modal after a delay
     setTimeout(() => {
       document.getElementById('validation-modal').classList.remove('active');
       document.getElementById('book-container').classList.add('celebrate');
 
-      // Enable next button after validation
-      document.getElementById("nextBtn").disabled = false;
-      document.getElementById("timer-indicator").style.display = 'none';
+      // Enable next button after validation if needed
+      if (pages.length > 0 && pages[currentPage].isChapterPage) {
+        document.getElementById("nextBtn").disabled = false;
+        document.getElementById("timer-indicator").style.display = 'none';
+      }
 
       setTimeout(() => {
         document.getElementById('book-container').classList.remove('celebrate');
@@ -697,34 +637,11 @@ function validateBirthday() {
     successElement.style.display = 'none';
 
     // Shake animation for error
-    const inputElement = document.getElementById('birthday-input');
+    const inputElement = document.getElementById('validation-input');
     inputElement.classList.add('celebrate');
     setTimeout(() => {
       inputElement.classList.remove('celebrate');
     }, 500);
-  }
-}
-
-// Create celebration hearts
-function createCelebrationHearts() {
-  for (let i = 0; i < 15; i++) {
-    setTimeout(() => {
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      heart.innerHTML = '❤';
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.animationDelay = '0s';
-      heart.style.animationDuration = '5s';
-      heart.style.fontSize = (Math.random() * 25 + 20) + 'px';
-      heart.style.color = `rgba(196, 69, 105, ${0.5 + Math.random() * 0.5})`;
-      heart.style.zIndex = '1001';
-      document.body.appendChild(heart);
-      
-      // Remove heart after animation
-      setTimeout(() => {
-        document.body.removeChild(heart);
-      }, 5000);
-    }, i * 200);
   }
 }
 
@@ -734,12 +651,8 @@ function checkChapterValidation() {
 
   const page = pages[currentPage];
   if (page.isChapterPage && !validatedChapters.has(page.chapter)) {
-    // Show validation modal
-    document.getElementById('validation-modal').classList.add('active');
-    document.getElementById('birthday-input').value = '';
-    document.getElementById('validation-error').style.display = 'none';
-    document.getElementById('validation-success').style.display = 'none';
-    document.getElementById('birthday-input').focus();
+    // Show validation modal with random question
+    askRandomQuestion();
     return true;
   }
   return false;
@@ -909,21 +822,22 @@ async function loadChapters() {
 
   for (const chapter of chapters) {
     try {
-      // In a real implementation, this would fetch from the URL
-      // For demo purposes, we'll create sample content
+      // Try to fetch from the provided URL
+      const res = await fetch(chapter.url);
+      if (!res.ok) throw new Error(`Failed to fetch ${chapter.url}`);
+
+      const text = await res.text();
+      const wordsData = splitTextIntoWords(text);
+      const chapterPages = paginateContent(wordsData, chapter.title);
+      pages = pages.concat(chapterPages);
+    } catch (error) {
+      console.error("Error loading chapter:", error);
+      // If fetch fails, create sample content
       const sampleText = `This is a sample content for ${chapter.title}. In a real implementation, this text would be loaded from the chapter file. This diary is a collection of my thoughts and memories of us. Every word is written with love, for you, my darling Owami. Our story is my favorite, and I cherish every moment we've shared together. From our first meeting to our latest adventure, each memory holds a special place in my heart.`;
       
       const wordsData = splitTextIntoWords(sampleText);
       const chapterPages = paginateContent(wordsData, chapter.title);
       pages = pages.concat(chapterPages);
-    } catch (error) {
-      console.error("Error loading chapter:", error);
-      pages.push({
-        type: 'content',
-        chapter: chapter.title,
-        content: `Error loading content: ${error.message}`,
-        isChapterPage: false
-      });
     }
   }
 
