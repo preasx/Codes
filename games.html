@@ -81,15 +81,16 @@
 
 <script>
 const userGistMap = {
-  lefa: "https://gist.githubusercontent.com/Preasx24/02e300379f8b968942ac67379f5bc831/raw/gist_1.json",
-  jonas: "https://gist.githubusercontent.com/Preasx24/69f058ad6bcb25e41d8b797dc7395c6d/raw/gist_2.json",
-  owami: "https://gist.githubusercontent.com/Preasx24/6c9e9fcda5ed38f9839c9ac8bc147ba7/raw/gist_3.json",
-  preasx24: "https://gist.githubusercontent.com/Preasx24/50e60ff2c3bc108d63038c8eb6c26e8d/raw/gist_4.json"
+  lefa: "02e300379f8b968942ac67379f5bc831",
+  jonas: "69f058ad6bcb25e41d8b797dc7395c6d",
+  owami: "6c9e9fcda5ed38f9839c9ac8bc147ba7",
+  preasx24: "50e60ff2c3bc108d63038c8eb6c26e8d"
 };
 
 const GIST_TOKEN_URL = "https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt";
 let GIST_TOKEN = "";
 
+// 🔹 Load the token
 async function fetchToken() {
   try {
     const res = await fetch(GIST_TOKEN_URL);
@@ -102,13 +103,20 @@ async function fetchToken() {
   }
 }
 
-async function fetchGameData(url) {
+// 🔹 Fetch game data via GitHub Gist API
+async function fetchGameData(gistId) {
   try {
-    const res = await fetch(url, {
+    const res = await fetch(`https://api.github.com/gists/${gistId}`, {
       headers: { Authorization: `token ${GIST_TOKEN}` }
     });
-    if (!res.ok) throw new Error(`Failed to fetch game data: ${res.status}`);
-    return await res.json();
+    if (!res.ok) throw new Error(`Failed: ${res.status}`);
+    const gist = await res.json();
+
+    // Assume only one JSON file per gist
+    const fileName = Object.keys(gist.files)[0];
+    const content = gist.files[fileName].content;
+    return JSON.parse(content);
+
   } catch (err) {
     console.error("❌ Error fetching game data:", err);
     alert("Could not load game data. Check console.");
@@ -116,6 +124,7 @@ async function fetchGameData(url) {
   }
 }
 
+// 🔹 Populate dropdowns
 function populateSelectors() {
   const userSelect = document.getElementById("userSelect");
   const opponentSelect = document.getElementById("opponentSelect");
@@ -130,6 +139,7 @@ function populateSelectors() {
   });
 }
 
+// 🔹 Load and compare stats
 async function loadStats() {
   const user = document.getElementById("userSelect").value;
   const opponent = document.getElementById("opponentSelect").value;
@@ -177,6 +187,7 @@ async function loadStats() {
   document.getElementById("statsContainer").innerHTML = statsHtml;
 }
 
+// 🔹 Init
 (async () => {
   await fetchToken();
   populateSelectors();
