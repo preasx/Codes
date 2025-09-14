@@ -310,7 +310,7 @@
     const userSetup = document.getElementById("userSetup");
 
     // Emojis for the game - using 15 pairs for a 5x6 grid
-    const emojis = ["🍎","🍌","🍓","🍇","🍊","🍉","🍒","🍍","🥭","🍋","🍈","🍐","🥝","🍏","🥥"];
+    const emojis = ["🍎","🍌","🍓","🍇","🍊","🍉","🍒","🍍","🥭","🍏","🥥"];
 
     // Check for saved user on page load
     window.onload = function() {
@@ -377,7 +377,7 @@
       lockBoard = false;
 
       // Use 15 pairs for a 5x6 grid
-      const selectedEmojis = emojis.slice(0, 15);
+      const selectedEmojis = emojis.slice(0, 10);
       let cards = [...selectedEmojis, ...selectedEmojis];
       cards.sort(() => Math.random() - 0.5);
 
@@ -429,7 +429,7 @@
         matchesFound++;
         await updateScore();
         resetFlipped();
-        if (matchesFound === 15) { // 15 pairs now
+        if (matchesFound === 10) { // 15 pairs now
           statusDiv.textContent = "🎉 You cleared the board! Starting new round...";
           statusDiv.className = "status-success";
           setTimeout(startNewRound, 1500);
