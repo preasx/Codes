@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Card Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      padding: 30px;
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+    }
+    
+    h1 {
+      color: #4a2c82;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    #userSetup {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: #4a2c82;
+    }
+    
+    select, .startBtn {
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 2px solid #ddd;
+      font-size: 1rem;
+      margin: 5px;
+      transition: all 0.3s ease;
+    }
+    
+    select {
+      width: 200px;
+    }
+    
+    select:focus {
+      border-color: #667eea;
+      outline: none;
+    }
+    
+    .startBtn {
+      background-color: #4a2c82;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .startBtn:hover {
+      background-color: #5a3c9f;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    #playerInfo {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #4a2c82;
+      font-weight: 600;
+    }
+    
+    #gameBoard { 
+      display: grid; 
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px; 
+      justify-content: center; 
+      margin: 25px auto;
+      max-width: 500px;
+    }
+    
+    .card {
+      aspect-ratio: 3/4;
+      background: #fff;
+      border-radius: 12px;
+      cursor: pointer;
+      perspective: 1000px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+    
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      font-size: 2.5rem;
+    }
+    
+    .card-front {
+      background: linear-gradient(135deg, #4a2c82 0%, #667eea 100%);
+      color: white;
+    }
+    
+    .card-front::after {
+      content: "?";
+    }
+    
+    .card-back {
+      background-color: #fff;
+      color: #333;
+      transform: rotateY(180deg);
+    }
+    
+    #status {
+      font-weight: 600;
+      margin: 20px 0;
+      font-size: 1.2rem;
+      min-height: 30px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    
+    .status-waiting {
+      background-color: #e9ecef;
+      color: #6c757d;
+    }
+    
+    .status-playing {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .status-match {
+      background-color: #d1ecf1;
+      color: #0c5460;
+    }
+    
+    .status-error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .status-success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    #score {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 12px;
+      font-weight: 600;
+      color: #4a2c82;
+      margin-top: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .limit-reached {
+      background-color: #fff3cd;
+      color: #856404;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+      font-weight: 600;
+    }
+    
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      #gameBoard {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      
+      .card-front, .card-back {
+        font-size: 1.8rem;
+      }
+      
+      select, .startBtn {
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Memory Card Game</h1>
+
+    <div id="userSetup">
+      <label for="playerSelect">Choose your username:</label>
+      <select id="playerSelect">
+        <option value="">-- Select --</option>
+        <option value="lefa">Lefa</option>
+        <option value="jonas">Jonas</option>
+        <option value="owami">Owami</option>
+        <option value="preasx24">Preasx24</option>
+      </select>
+      <button class="startBtn" onclick="startGame()">Start Game</button>
+    </div>
+
+    <p id="playerInfo"></p>
+    <div id="gameBoard"></div>
+    <p id="status" class="status-waiting">Please select a username and press Start.</p>
+    <p id="score"></p>
+  </div>
+
+  <script>
+    const userGistMap = {
+      lefa: { id: "02e300379f8b968942ac67379f5bc831", file: "gist_1.json" },
+      jonas: { id: "69f058ad6bcb25e41d8b797dc7395c6d", file: "gist_2.json" },
+      owami: { id: "6c9e9fcda5ed38f9839c9ac8bc147ba7", file: "gist_3.json" },
+      preasx24: { id: "50e60ff2c3bc108d63038c8eb6c26e8d", file: "gist_4.json" }
+    };
+
+    const GIST_TOKEN_URL = "https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt";
+
+    let token = null, player = null, gistInfo = null, playerData = null;
+    let flippedCards = [], lockBoard = false, matchesFound = 0;
+
+    const boardDiv = document.getElementById("gameBoard");
+    const statusDiv = document.getElementById("status");
+    const scoreDiv = document.getElementById("score");
+    const playerInfo = document.getElementById("playerInfo");
+
+    const emojis = ["🍎","🍌","🍓","🍇","🍊","🍉","🍒","🍍"];
+
+    async function startGame() {
+      player = document.getElementById("playerSelect").value;
+      if (!player) return alert("Please choose a username");
+      gistInfo = userGistMap[player];
+      token = await fetchToken();
+      await loadPlayerData();
+
+      // init dailyGames tracker if missing
+      if (!playerData.gameData.memory.dailyGames) {
+        playerData.gameData.memory.dailyGames = { date: new Date().toDateString(), count: 0 };
+        await savePlayerData();
+      }
+
+      // lock username choice
+      document.getElementById("userSetup").style.display = "none";
+      playerInfo.textContent = `Playing as: ${player}`;
+
+      startNewRound();
+    }
+
+    function startNewRound() {
+      const g = playerData.gameData.memory;
+      const today = new Date().toDateString();
+      if (g.dailyGames.date !== today) {
+        g.dailyGames.date = today;
+        g.dailyGames.count = 0;
+      }
+      if (g.dailyGames.count >= 10) {
+        boardDiv.innerHTML = "";
+        statusDiv.textContent = "🚫 Daily limit reached (10 games). Come back tomorrow!";
+        statusDiv.className = "status-error";
+        renderScore();
+        return;
+      }
+
+      matchesFound = 0;
+      flippedCards = [];
+      lockBoard = false;
+
+      // create card pairs
+      let cards = [...emojis, ...emojis];
+      cards.sort(() => Math.random() - 0.5);
+
+      boardDiv.innerHTML = "";
+      cards.forEach((emoji, i) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.value = emoji;
+        
+        const cardInner = document.createElement("div");
+        cardInner.className = "card-inner";
+        
+        const cardFront = document.createElement("div");
+        cardFront.className = "card-front";
+        
+        const cardBack = document.createElement("div");
+        cardBack.className = "card-back";
+        cardBack.textContent = emoji;
+        
+        cardInner.appendChild(cardFront);
+        cardInner.appendChild(cardBack);
+        card.appendChild(cardInner);
+        
+        card.onclick = () => flipCard(card);
+        boardDiv.appendChild(card);
+      });
+
+      renderScore();
+      statusDiv.textContent = "Find all pairs!";
+      statusDiv.className = "status-playing";
+    }
+
+    function flipCard(card) {
+      if (lockBoard || card.classList.contains("flipped")) return;
+      card.classList.add("flipped");
+      flippedCards.push(card);
+
+      if (flippedCards.length === 2) {
+        checkMatch();
+      }
+    }
+
+    async function checkMatch() {
+      lockBoard = true;
+      const [c1, c2] = flippedCards;
+      if (c1.dataset.value === c2.dataset.value) {
+        statusDiv.textContent = "✅ Match!";
+        statusDiv.className = "status-match";
+        matchesFound++;
+        await updateScore();
+        resetFlipped();
+        if (matchesFound === emojis.length) {
+          statusDiv.textContent = "🎉 You cleared the board! Starting new round...";
+          statusDiv.className = "status-success";
+          setTimeout(startNewRound, 1500);
+        }
+      } else {
+        statusDiv.textContent = "❌ No match!";
+        statusDiv.className = "status-error";
+        setTimeout(() => {
+          c1.classList.remove("flipped");
+          c2.classList.remove("flipped");
+          resetFlipped();
+        }, 1000);
+      }
+    }
+
+    function resetFlipped() {
+      flippedCards = [];
+      lockBoard = false;
+      statusDiv.textContent = "Find all pairs!";
+      statusDiv.className = "status-playing";
+    }
+
+    function renderScore() {
+      const g = playerData.gameData.memory;
+      scoreDiv.textContent = `Memory Score: ${g.score} | Total Score: ${playerData.gameData.totalScore} | Games today: ${g.dailyGames.count}/10`;
+    }
+
+    // --- GIST STUFF ---
+    async function fetchToken() {
+      const res = await fetch(GIST_TOKEN_URL);
+      return res.text();
+    }
+
+    async function loadPlayerData() {
+      const res = await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
+        headers: { "Authorization": `token ${token}` }
+      });
+      const gist = await res.json();
+      playerData = JSON.parse(gist.files[gistInfo.file].content);
+    }
+
+    async function savePlayerData() {
+      const body = { files: { [gistInfo.file]: { content: JSON.stringify(playerData, null, 2) } } };
+      await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
+        method: "PATCH",
+        headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+    }
+
+    async function updateScore() {
+      const g = playerData.gameData.memory;
+      const today = new Date().toDateString();
+
+      if (g.dailyGames.date !== today) {
+        g.dailyGames.date = today;
+        g.dailyGames.count = 0;
+      }
+
+      if (g.dailyGames.count >= 10) return;
+
+      g.score += 1;
+      playerData.gameData.totalScore += 1;
+      g.lastPlayed = today;
+      g.dailyGames.count += 1;
+      playerData.lastUpdated = new Date().toISOString();
+
+      await savePlayerData();
+      renderScore();
+    }
+  </script>
+</body>
+</html>
