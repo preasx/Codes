@@ -2,211 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tic Tac Toe vs Computer</title>
+  <title>Memory Card Game</title>
   <style>
-    :root {
-      --primary: #4a6fa5;
-      --secondary: #166088;
-      --accent: #4cb5f5;
-      --background: #f8f9fa;
-      --text: #333;
-      --x-color: #ff6b6b;
-      --o-color: #4cb5f5;
-      --board-bg: #e9ecef;
-      --cell-bg: #ffffff;
-      --shadow: rgba(0, 0, 0, 0.1);
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 20px; }
+    #gameBoard { 
+      display: grid; 
+      grid-template-columns: repeat(4, 80px); 
+      gap: 10px; 
+      justify-content: center; 
+      margin: 20px auto; 
     }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, var(--background) 0%, #e6f2ff 100%);
-      color: var(--text);
-      margin: 0;
-      padding: 20px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    .card {
+      width: 80px; height: 100px; 
+      background: #444; color: white; 
+      display: flex; align-items: center; justify-content: center; 
+      font-size: 2em; cursor: pointer; border-radius: 8px; 
     }
-
-    .container {
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px var(--shadow);
-      padding: 25px;
-      max-width: 500px;
-      width: 100%;
-      text-align: center;
-    }
-
-    h1 {
-      color: var(--primary);
-      margin-top: 0;
-      font-size: 2.2rem;
-      text-shadow: 1px 1px 2px var(--shadow);
-    }
-
-    #userSetup {
-      background: var(--background);
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: var(--secondary);
-    }
-
-    select, button {
-      padding: 10px 15px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-      font-size: 1rem;
-      margin: 5px;
-      transition: all 0.2s ease;
-    }
-
-    select {
-      width: 200px;
-    }
-
-    button {
-      background: var(--primary);
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    button:hover {
-      background: var(--secondary);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px var(--shadow);
-    }
-
-    #playerInfo {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--secondary);
-      margin: 15px 0;
-    }
-
-    #board {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 20px auto;
-      max-width: 330px;
-    }
-
-    .cell {
-      width: 100px;
-      height: 100px;
-      background: var(--cell-bg);
-      border-radius: 10px;
-      box-shadow: 0 4px 8px var(--shadow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .cell:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px var(--shadow);
-    }
-
-    .cell.x {
-      color: var(--x-color);
-    }
-
-    .cell.o {
-      color: var(--o-color);
-    }
-
-    .cell.win {
-      background-color: #e8f5e9;
-      box-shadow: 0 0 15px #a5d6a7;
-    }
-
-    #status {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin: 15px 0;
-      min-height: 30px;
-      color: var(--secondary);
-    }
-
-    #score {
-      background: var(--background);
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      margin: 15px 0;
-    }
-
-    .win-message {
-      color: #2e7d32;
-      font-size: 1.4rem;
-      animation: pulse 1s infinite;
-    }
-
-    .loss-message {
-      color: #c62828;
-    }
-
-    .draw-message {
-      color: #757575;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    @media (max-width: 500px) {
-      .container {
-        padding: 15px;
-      }
-      
-      .cell {
-        width: 80px;
-        height: 80px;
-        font-size: 2rem;
-      }
-    }
+    .flipped { background: #fff; color: #000; cursor: default; }
+    select, .startBtn { margin: 10px; padding: 8px 12px; }
+    #status { font-weight: bold; margin-top: 20px; font-size: 1.2em; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Tic Tac Toe vs Computer</h1>
+  <h1>Memory Card Game</h1>
 
-    <div id="userSetup">
-      <label for="playerSelect">Choose your username:</label>
-      <select id="playerSelect">
-        <option value="">-- Select --</option>
-        <option value="lefa">Lefa</option>
-        <option value="jonas">Jonas</option>
-        <option value="owami">Owami</option>
-        <option value="preasx24">Preasx24</option>
-      </select>
-      <button onclick="startGame()">Start Game</button>
-    </div>
-
-    <p id="playerInfo"></p>
-    <div id="board"></div>
-    <p id="status">Please select a username and press Start.</p>
-    <p id="score"></p>
+  <div id="userSetup">
+    <label for="playerSelect">Choose your username:</label>
+    <select id="playerSelect">
+      <option value="">-- Select --</option>
+      <option value="lefa">Lefa</option>
+      <option value="jonas">Jonas</option>
+      <option value="owami">Owami</option>
+      <option value="preasx24">Preasx24</option>
+    </select>
+    <button class="startBtn" onclick="startGame()">Start Game</button>
   </div>
+
+  <p id="playerInfo"></p>
+  <div id="gameBoard"></div>
+  <p id="status">Please select a username and press Start.</p>
+  <p id="score"></p>
 
   <script>
     const userGistMap = {
@@ -218,14 +53,15 @@
 
     const GIST_TOKEN_URL = "https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt";
 
-    let board = Array(9).fill(null);
-    let currentPlayer = "X"; // X = human
-    let player = null, gistInfo = null, token = null, playerData = null;
-    let gameActive = false;
-    const boardDiv = document.getElementById("board");
+    let token = null, player = null, gistInfo = null, playerData = null;
+    let flippedCards = [], lockBoard = false, matchesFound = 0;
+
+    const boardDiv = document.getElementById("gameBoard");
     const statusDiv = document.getElementById("status");
     const scoreDiv = document.getElementById("score");
     const playerInfo = document.getElementById("playerInfo");
+
+    const emojis = ["🍎","🍌","🍓","🍇","🍊","🍉","🍒","🍍"];
 
     async function startGame() {
       player = document.getElementById("playerSelect").value;
@@ -234,176 +70,97 @@
       token = await fetchToken();
       await loadPlayerData();
 
-      // 🔹 initialize dailyGames tracker if missing
-      if (!playerData.gameData.ticTacToe.dailyGames) {
-        playerData.gameData.ticTacToe.dailyGames = { date: new Date().toDateString(), count: 0 };
+      // init dailyGames tracker if missing
+      if (!playerData.gameData.memory.dailyGames) {
+        playerData.gameData.memory.dailyGames = { date: new Date().toDateString(), count: 0 };
+        await savePlayerData();
       }
-      await savePlayerData();
 
-      // 🔹 lock username choice
+      // lock username choice
       document.getElementById("userSetup").style.display = "none";
       playerInfo.textContent = `Playing as: ${player}`;
 
-      resetBoard();
-      gameActive = true;
-      renderBoard();
-      statusDiv.textContent = "Your turn (X)";
-      statusDiv.className = "";
+      startNewRound();
     }
 
-    function resetBoard() {
-      board = Array(9).fill(null);
-      currentPlayer = "X";
-      gameActive = true;
-      renderBoard();
-    }
-
-    function renderBoard() {
-      boardDiv.innerHTML = "";
-      board.forEach((cell, i) => {
-        const div = document.createElement("div");
-        div.className = `cell ${cell === 'X' ? 'x' : cell === 'O' ? 'o' : ''}`;
-        div.textContent = cell || "";
-        div.onclick = () => makeMove(i);
-        boardDiv.appendChild(div);
-      });
-      
-      if (playerData) {
-        const g = playerData.gameData.ticTacToe;
-        scoreDiv.textContent = `Score: ${g.score} | Total: ${playerData.gameData.totalScore} | Games today: ${g.dailyGames.count}/10`;
+    function startNewRound() {
+      const g = playerData.gameData.memory;
+      const today = new Date().toDateString();
+      if (g.dailyGames.date !== today) {
+        g.dailyGames.date = today;
+        g.dailyGames.count = 0;
       }
-    }
-
-    function makeMove(i) {
-      if (!player || !gameActive || board[i] || checkWinner() || currentPlayer !== "X") return;
-      
-      board[i] = "X";
-      currentPlayer = "O";
-      renderBoard();
-
-      const winner = checkWinner();
-      if (winner) {
-        endGame(winner);
+      if (g.dailyGames.count >= 10) {
+        boardDiv.innerHTML = "";
+        statusDiv.textContent = "🚫 Daily limit reached (10 games). Come back tomorrow!";
+        renderScore();
         return;
       }
 
-      setTimeout(computerMove, 600); // Slight delay for better UX
+      matchesFound = 0;
+      flippedCards = [];
+      lockBoard = false;
+
+      // create card pairs
+      let cards = [...emojis, ...emojis];
+      cards.sort(() => Math.random() - 0.5);
+
+      boardDiv.innerHTML = "";
+      cards.forEach((emoji, i) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.value = emoji;
+        card.onclick = () => flipCard(card);
+        boardDiv.appendChild(card);
+      });
+
+      renderScore();
+      statusDiv.textContent = "Find all pairs!";
     }
 
-    function computerMove() {
-      if (!gameActive) return;
-      
-      // Get best move using minimax algorithm
-      let move = getBestMove();
-      
-      board[move] = "O";
-      currentPlayer = "X";
-      renderBoard();
+    function flipCard(card) {
+      if (lockBoard || card.classList.contains("flipped")) return;
+      card.textContent = card.dataset.value;
+      card.classList.add("flipped");
+      flippedCards.push(card);
 
-      const winner = checkWinner();
-      if (winner) endGame(winner);
+      if (flippedCards.length === 2) {
+        checkMatch();
+      }
     }
 
-    function getBestMove() {
-      // Check if computer can win in the next move
-      for (let i = 0; i < 9; i++) {
-        if (board[i] === null) {
-          board[i] = "O";
-          if (checkWinner() === "O") {
-            board[i] = null;
-            return i;
-          }
-          board[i] = null;
+    async function checkMatch() {
+      lockBoard = true;
+      const [c1, c2] = flippedCards;
+      if (c1.dataset.value === c2.dataset.value) {
+        statusDiv.textContent = "✅ Match!";
+        matchesFound++;
+        await updateScore();
+        resetFlipped();
+        if (matchesFound === emojis.length) {
+          statusDiv.textContent = "🎉 You cleared the board!";
+          setTimeout(startNewRound, 1500);
         }
+      } else {
+        statusDiv.textContent = "❌ No match!";
+        setTimeout(() => {
+          c1.textContent = "";
+          c1.classList.remove("flipped");
+          c2.textContent = "";
+          c2.classList.remove("flipped");
+          resetFlipped();
+        }, 1000);
       }
-
-      // Check if player can win in the next move and block
-      for (let i = 0; i < 9; i++) {
-        if (board[i] === null) {
-          board[i] = "X";
-          if (checkWinner() === "X") {
-            board[i] = null;
-            return i;
-          }
-          board[i] = null;
-        }
-      }
-
-      // Try to take center if available
-      if (board[4] === null) return 4;
-
-      // Try to take corners if available
-      const corners = [0, 2, 6, 8];
-      const availableCorners = corners.filter(i => board[i] === null);
-      if (availableCorners.length > 0) {
-        return availableCorners[Math.floor(Math.random() * availableCorners.length)];
-      }
-
-      // Take any available edge
-      const edges = [1, 3, 5, 7];
-      const availableEdges = edges.filter(i => board[i] === null);
-      if (availableEdges.length > 0) {
-        return availableEdges[Math.floor(Math.random() * availableEdges.length)];
-      }
-
-      // Fallback (shouldn't happen if board isn't full)
-      return board.findIndex(cell => cell === null);
     }
 
-    function checkWinner() {
-      const wins = [[0,1,2],[3,4,5],[6,7,8],
-                    [0,3,6],[1,4,7],[2,5,8],
-                    [0,4,8],[2,4,6]];
-      
-      for (const [a,b,c] of wins) {
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-          // Highlight winning cells
-          setTimeout(() => {
-            document.querySelectorAll('.cell')[a].classList.add('win');
-            document.querySelectorAll('.cell')[b].classList.add('win');
-            document.querySelectorAll('.cell')[c].classList.add('win');
-          }, 10);
-          
-          return board[a];
-        }
-      }
-      
-      // Check for draw
-      if (!board.includes(null)) return "draw";
-      
-      return null;
+    function resetFlipped() {
+      flippedCards = [];
+      lockBoard = false;
     }
 
-    async function endGame(winner) {
-      gameActive = false;
-      let msg = "";
-      
-      if (winner === "X") { 
-        msg = "🎉 You Win!"; 
-        statusDiv.className = "win-message";
-        await updateScore(); 
-      }
-      else if (winner === "O") {
-        msg = "💻 Computer Wins!";
-        statusDiv.className = "loss-message";
-      }
-      else {
-        msg = "🤝 Draw!";
-        statusDiv.className = "draw-message";
-      }
-
-      statusDiv.textContent = msg;
-
-      setTimeout(() => {
-        if (playerData.gameData.ticTacToe.dailyGames.count >= 10) {
-          statusDiv.textContent = "🚫 Daily limit reached (10 games). Come back tomorrow!";
-          boardDiv.innerHTML = "";
-        } else {
-          resetBoard();
-          statusDiv.textContent = "Your turn (X)";
-          statusDiv.className = "";
-        }
-      }, 2000);
+    function renderScore() {
+      const g = playerData.gameData.memory;
+      scoreDiv.textContent = `Score: ${g.score}, Total: ${playerData.gameData.totalScore}, Games today: ${g.dailyGames.count}/10`;
     }
 
     // --- GIST STUFF ---
@@ -430,7 +187,7 @@
     }
 
     async function updateScore() {
-      const g = playerData.gameData.ticTacToe;
+      const g = playerData.gameData.memory;
       const today = new Date().toDateString();
 
       if (g.dailyGames.date !== today) {
@@ -438,7 +195,7 @@
         g.dailyGames.count = 0;
       }
 
-      if (g.dailyGames.count >= 10) return; // limit reached
+      if (g.dailyGames.count >= 10) return;
 
       g.score += 1;
       playerData.gameData.totalScore += 1;
@@ -447,7 +204,7 @@
       playerData.lastUpdated = new Date().toISOString();
 
       await savePlayerData();
-      renderBoard();
+      renderScore();
     }
   </script>
 </body>
