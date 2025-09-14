@@ -4,10 +4,33 @@
   <meta charset="UTF-8">
   <title>Tic Tac Toe vs Computer</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
-    #board { display: grid; grid-template-columns: repeat(3, 100px); gap: 5px; margin: 20px auto; }
-    .cell { width: 100px; height: 100px; background: #eee; font-size: 2em; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    select, button { margin: 10px; padding: 8px 12px; }
+    body { 
+      font-family: Arial, sans-serif; 
+      text-align: center; 
+      margin-top: 20px; 
+    }
+    #board { 
+      display: grid; 
+      grid-template-columns: repeat(3, 100px); 
+      gap: 5px; 
+      margin: 20px auto; 
+    }
+    .cell { 
+      width: 100px; 
+      height: 100px; 
+      background: #eee; 
+      font-size: 2em; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      cursor: pointer; 
+      border: 2px solid #333;
+    }
+    select, button { 
+      margin: 10px; 
+      padding: 8px 12px; 
+    }
+    #status { font-weight: bold; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -24,16 +47,16 @@
   <button onclick="startGame()">Start Game</button>
 
   <div id="board"></div>
-  <p id="status"></p>
+  <p id="status">Please select a username and press Start.</p>
   <p id="score"></p>
 
   <script>
-    // 🔹 Map usernames to their personal gists
+    // 🔹 Map usernames to gist IDs + filenames
     const userGistMap = {
-      lefa: "https://gist.githubusercontent.com/Preasx24/02e300379f8b968942ac67379f5bc831/raw/gist_1.json",
-      jonas: "https://gist.githubusercontent.com/Preasx24/69f058ad6bcb25e41d8b797dc7395c6d/raw/gist_2.json",
-      owami: "https://gist.githubusercontent.com/Preasx24/6c9e9fcda5ed38f9839c9ac8bc147ba7/raw/gist_3.json",
-      preasx24: "https://gist.githubusercontent.com/Preasx24/50e60ff2c3bc108d63038c8eb6c26e8d/raw/gist_4.json"
+      lefa: { id: "02e300379f8b968942ac67379f5bc831", file: "gist_1.json" },
+      jonas: { id: "69f058ad6bcb25e41d8b797dc7395c6d", file: "gist_2.json" },
+      owami: { id: "6c9e9fcda5ed38f9839c9ac8bc147ba7", file: "gist_3.json" },
+      preasx24: { id: "50e60ff2c3bc108d63038c8eb6c26e8d", file: "gist_4.json" }
     };
 
     const GIST_TOKEN_URL = "https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt";
@@ -41,7 +64,7 @@
     let board = Array(9).fill(null);
     let currentPlayer = "X"; // X = human, O = computer
     let player = null;
-    let gistUrl = null;
+    let gistInfo = null;
     let token = null;
     let playerData = null;
 
@@ -49,23 +72,24 @@
     const statusDiv = document.getElementById("status");
     const scoreDiv = document.getElementById("score");
 
+    // --- GAME SETUP ---
     async function startGame() {
       player = document.getElementById("playerSelect").value;
       if (!player) {
         alert("Please choose a username");
         return;
       }
-      gistUrl = userGistMap[player];
+      gistInfo = userGistMap[player];
       token = await fetchToken();
       await loadPlayerData();
       resetBoard();
       renderBoard();
+      statusDiv.textContent = "Your turn (X)";
     }
 
     function resetBoard() {
       board = Array(9).fill(null);
       currentPlayer = "X";
-      statusDiv.textContent = "Your turn (X)";
     }
 
     function renderBoard() {
@@ -82,6 +106,7 @@
       }
     }
 
+    // --- GAMEPLAY ---
     function makeMove(i) {
       if (!player || board[i] || checkWinner() || currentPlayer !== "X") return;
       board[i] = "X";
@@ -99,7 +124,10 @@
 
     function computerMove() {
       let emptyCells = board.map((v, i) => v ? null : i).filter(v => v !== null);
-      if (emptyCells.length === 0) return;
+      if (emptyCells.length === 0) {
+        statusDiv.textContent = "It's a Draw!";
+        return;
+      }
       let move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
       board[move] = "O";
       currentPlayer = "X";
@@ -131,21 +159,22 @@
         updateScore();
       } else if (winner === "O") {
         statusDiv.textContent = "💻 Computer Wins!";
-      } else {
-        statusDiv.textContent = "It's a Draw!";
       }
     }
 
+    // --- GIST FUNCTIONS ---
     async function fetchToken() {
       const res = await fetch(GIST_TOKEN_URL);
       return res.text();
     }
 
     async function loadPlayerData() {
-      const res = await fetch(gistUrl, {
+      const res = await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
         headers: { "Authorization": `token ${token}` }
       });
-      playerData = await res.json();
+      const gist = await res.json();
+      const content = gist.files[gistInfo.file].content;
+      playerData = JSON.parse(content);
     }
 
     async function updateScore() {
@@ -154,14 +183,23 @@
       playerData.gameData.ticTacToe.lastPlayed = new Date().toDateString();
       playerData.lastUpdated = new Date().toISOString();
 
-      await fetch(gistUrl.split("/raw/")[0], {
-        method: "PUT",
+      const body = {
+        files: {
+          [gistInfo.file]: {
+            content: JSON.stringify(playerData, null, 2)
+          }
+        }
+      };
+
+      await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
+        method: "PATCH",
         headers: {
           "Authorization": `token ${token}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(playerData, null, 2)
+        body: JSON.stringify(body)
       });
+
       renderBoard();
     }
   </script>
