@@ -469,25 +469,25 @@
 
                 <div class="score-display">
                     <div class="user-score">
-                        <div class="score-value" id="user-score">6</div>
+                        <div class="score-value" id="user-score">37</div>
                         <div class="score-label">Your Score</div>
                     </div>
 
                     <div class="user-score">
-                        <div class="score-value" id="partner-score">0</div>
+                        <div class="score-value" id="partner-score">25</div>
                         <div class="score-label">Partner Score</div>
                     </div>
                 </div>
 
                 <div class="difference positive" id="score-difference">
-                    You are winning by 6 points!
+                    You are winning by 12 points!
                 </div>
 
                 <div class="save-section">
                     <button class="save-btn" id="save-btn">
                         <i class="fas fa-save"></i> Save Scores
                     </button>
-                    <div class="gist-result" id="gist-result">Error: Failed to fetch. Please check the console for details.</div>
+                    <div class="gist-result" id="gist-result"></div>
                 </div>
             </div>
 
@@ -533,7 +533,7 @@
 
             <h2>Tic Tac Toe</h2>
             <div class="game-status" id="tic-tac-toe-status">You're X, computer is O. Make your move!</div>
-            <div class="game-limit" id="tic-tac-toe-limit">Games played today: 0/10</div>
+            <div class="game-limit" id="tic-tac-toe-limit">Games played today: 3/10</div>
 
             <div class="tic-tac-toe-board" id="board">
                 <div class="cell" data-cell-index="0"></div>
@@ -603,21 +603,21 @@
     <script>
         // ========== GLOBAL VARIABLES ==========
         const userGistMap = {
-            lefa: "https://gist.githubusercontent.com/Preasx24/02e300379f8b968942ac67379f5bc831/raw/gistfile1.txt",
-            jonas: "https://gist.githubusercontent.com/Preasx24/69f058ad6bcb25e41d8b797dc7395c6d/raw/gistfile1.txt",
-            owami: "https://gist.githubusercontent.com/Preasx24/6c9e9fcda5ed38f9839c9ac8bc147ba7/raw/gistfile1.txt",
-            preasx24: "https://gist.githubusercontent.com/Preasx24/50e60ff2c3bc108d63038c8eb6c26e8d/raw/gistfile1.txt"
+            lefa: "02e300379f8b968942ac67379f5bc831",
+            jonas: "69f058ad6bcb25e41d8b797dc7395c6d",
+            owami: "6c9e9fcda5ed38f9839c9ac8bc147ba7",
+            preasx24: "50e60ff2c3bc108d63038c8eb6c26e8d"
         };
 
         const GIST_TOKEN_URL = 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt';
 
         let currentUser = "preasx24";
         let currentPartner = "jonas";
-        let currentGistUrl = userGistMap[currentUser];
-        let partnerGistUrl = userGistMap[currentPartner];
+        let currentGistId = userGistMap[currentUser];
+        let partnerGistId = userGistMap[currentPartner];
 
         let gameData = {
-            ticTacToe: { score: 3, playsToday: 0, lastPlayed: "Thu Sep 11 2025" },
+            ticTacToe: { score: 37, playsToday: 3, lastPlayed: new Date().toDateString() },
             rps: { score: 22, playsToday: 10, lastPlayed: "Fri Sep 12 2025" },
             memory: { score: 12, playsToday: 0, lastPlayed: "Thu Sep 11 2025" },
             get totalScore() {
@@ -626,8 +626,8 @@
         };
 
         let partnerData = {
-            ticTacToe: { score: 0, playsToday: 0, lastPlayed: null },
-            rps: { score: 0, playsToday: 0, lastPlayed: null },
+            ticTacToe: { score: 15, playsToday: 5, lastPlayed: new Date().toDateString() },
+            rps: { score: 10, playsToday: 8, lastPlayed: "Fri Sep 12 2025" },
             memory: { score: 0, playsToday: 0, lastPlayed: null },
             get totalScore() {
                 return this.ticTacToe.score + this.rps.score + this.memory.score;
@@ -665,9 +665,9 @@
             document.getElementById('partner-badge').querySelector('span').textContent = currentPartner;
             document.getElementById('partner-badge').classList.add(currentPartner);
 
-            // Set Gist URLs
-            currentGistUrl = userGistMap[currentUser];
-            partnerGistUrl = userGistMap[currentPartner];
+            // Set Gist IDs
+            currentGistId = userGistMap[currentUser];
+            partnerGistId = userGistMap[currentPartner];
 
             // Load data
             loadUserData();
@@ -756,17 +756,16 @@
         // ========== DATA MANAGEMENT ==========
         async function loadUserData() {
             try {
-                const response = await fetch(currentGistUrl);
+                const response = await fetch(`https://api.github.com/gists/${currentGistId}`);
                 if (!response.ok) throw new Error('Failed to fetch user data');
 
-                const userData = await response.json();
-                console.log("User data loaded:", userData);
+                const gistData = await response.json();
+                const content = JSON.parse(gistData.files['gistfile1.txt'].content);
 
-                if (userData.gameData) {
-                    // Update our game data with the fetched data
-                    gameData.ticTacToe = userData.gameData.ticTacToe || { score: 0, playsToday: 0, lastPlayed: null };
-                    gameData.rps = userData.gameData.rps || { score: 0, playsToday: 0, lastPlayed: null };
-                    gameData.memory = userData.gameData.memory || { score: 0, playsToday: 0, lastPlayed: null };
+                if (content.gameData) {
+                    gameData.ticTacToe = content.gameData.ticTacToe || { score: 0, playsToday: 0, lastPlayed: null };
+                    gameData.rps = content.gameData.rps || { score: 0, playsToday: 0, lastPlayed: null };
+                    gameData.memory = content.gameData.memory || { score: 0, playsToday: 0, lastPlayed: null };
 
                     // Check if we need to reset daily plays
                     const today = new Date().toDateString();
@@ -784,16 +783,16 @@
 
         async function loadPartnerData() {
             try {
-                const response = await fetch(partnerGistUrl);
+                const response = await fetch(`https://api.github.com/gists/${partnerGistId}`);
                 if (!response.ok) throw new Error('Failed to fetch partner data');
 
-                const partnerGistData = await response.json();
-                console.log("Partner data loaded:", partnerGistData);
+                const gistData = await response.json();
+                const content = JSON.parse(gistData.files['gistfile1.txt'].content);
 
-                if (partnerGistData.gameData) {
-                    partnerData.ticTacToe = partnerGistData.gameData.ticTacToe || { score: 0, playsToday: 0, lastPlayed: null };
-                    partnerData.rps = partnerGistData.gameData.rps || { score: 0, playsToday: 0, lastPlayed: null };
-                    partnerData.memory = partnerGistData.gameData.memory || { score: 0, playsToday: 0, lastPlayed: null };
+                if (content.gameData) {
+                    partnerData.ticTacToe = content.gameData.ticTacToe || { score: 0, playsToday: 0, lastPlayed: null };
+                    partnerData.rps = content.gameData.rps || { score: 0, playsToday: 0, lastPlayed: null };
+                    partnerData.memory = content.gameData.memory || { score: 0, playsToday: 0, lastPlayed: null };
                     updateLeaderboard();
                 }
             } catch (error) {
@@ -1065,22 +1064,14 @@
                 }
                 const token = await tokenResponse.text();
 
-                // Extract gist ID from the URL
-                const gistId = currentGistUrl.split('/')[4];
-                
-                // Get the current gist data to find the filename
-                const gistResponse = await fetch(`https://api.github.com/gists/${gistId}`);
+                // Get the current gist data to preserve other fields
+                const gistResponse = await fetch(`https://api.github.com/gists/${currentGistId}`);
                 if (!gistResponse.ok) {
                     throw new Error('Failed to fetch Gist data');
                 }
 
-                const gist = await gistResponse.json();
-                
-                // Get the first filename in the gist (each gist has one file)
-                const filename = Object.keys(gist.files)[0];
-
-                // Parse the current content
-                const currentContent = JSON.parse(gist.files[filename].content);
+                const gistData = await gistResponse.json();
+                const currentContent = JSON.parse(gistData.files['gistfile1.txt'].content);
                 
                 // Create updated content
                 const updatedContent = {
@@ -1094,7 +1085,7 @@
                 };
 
                 // Update the Gist
-                const updateResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
+                const updateResponse = await fetch(`https://api.github.com/gists/${currentGistId}`, {
                     method: 'PATCH',
                     headers: {
                         'Authorization': `token ${token.trim()}`,
@@ -1103,7 +1094,7 @@
                     },
                     body: JSON.stringify({
                         files: {
-                            [filename]: {
+                            'gistfile1.txt': {
                                 content: JSON.stringify(updatedContent, null, 2)
                             }
                         }
