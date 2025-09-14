@@ -57,6 +57,19 @@
     z-index: 1;
   }
 
+  /* Style for detected links */
+  .diary-link {
+    color: #c44569;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .diary-link:hover {
+    color: #b33761;
+    text-decoration: underline;
+  }
+
   .nav-buttons { 
     display: flex; 
     justify-content: space-between; 
@@ -492,37 +505,37 @@ const validationQuestions = [
   {
     question: "What's my alias?",
     answers: ["preasx24"],
-    placeholder: "e.g. preasx24"
+    placeholder: "e.g. the name I use online"
   },
   {
     question: "What is my age?",
     answers: ["20"],
-    placeholder: "e.g. 20"
+    placeholder: "e.g. my age in years"
   },
   {
     question: "What is my surname?",
     answers: ["mochebane"],
-    placeholder: "e.g. mochebane"
+    placeholder: "e.g. my family name"
   },
   {
     question: "What is my 'company' name?",
     answers: ["dtech"],
-    placeholder: "e.g. dtech"
+    placeholder: "e.g. my business name"
   },
   {
     question: "What is one of my favourite colours?",
     answers: ["blue", "black", "red"],
-    placeholder: "e.g. blue, black or red"
+    placeholder: "e.g. a color I love"
   },
   {
     question: "What is my favourite subject?",
     answers: ["physics", "physical science"],
-    placeholder: "e.g. physics or physical science"
+    placeholder: "e.g. what I enjoy studying"
   },
   {
     question: "What is my favourite body part?",
     answers: ["boobs", "tits"],
-    placeholder: "e.g. boobs or tits"
+    placeholder: "e.g. what I find attractive"
   }
 ];
 
@@ -543,6 +556,17 @@ const backgrounds = [
 ];
 let validatedChapters = new Set();
 let currentQuestion = null;
+
+// Function to detect and convert URLs to clickable links
+function linkify(text) {
+  // Regular expression to match URLs
+  const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+  
+  // Replace URLs with anchor tags
+  return text.replace(urlRegex, function(url) {
+    return '<a href="' + url + '" class="diary-link" target="_blank">' + url + '</a>';
+  });
+}
 
 // Initialize all features
 function initFeatures() {
@@ -585,13 +609,13 @@ function cycleBackgrounds() {
 function askRandomQuestion() {
   const randomIndex = Math.floor(Math.random() * validationQuestions.length);
   currentQuestion = validationQuestions[randomIndex];
-  
+
   document.getElementById('validation-question').textContent = currentQuestion.question;
   document.getElementById('validation-input').placeholder = currentQuestion.placeholder;
   document.getElementById('validation-input').value = '';
   document.getElementById('validation-error').style.display = 'none';
   document.getElementById('validation-success').style.display = 'none';
-  
+
   document.getElementById('validation-modal').classList.add('active');
   document.getElementById('validation-input').focus();
 }
@@ -611,7 +635,7 @@ function validateAnswer() {
     if (pages.length > 0) {
       const currentChapter = pages[currentPage].chapter;
       validatedChapters.add(currentChapter);
-      
+
       // Save to localStorage
       localStorage.setItem('diaryValidatedChapters', JSON.stringify(Array.from(validatedChapters)));
     }
@@ -833,8 +857,8 @@ async function loadChapters() {
     } catch (error) {
       console.error("Error loading chapter:", error);
       // If fetch fails, create sample content
-      const sampleText = `This is a sample content for ${chapter.title}. In a real implementation, this text would be loaded from the chapter file. This diary is a collection of my thoughts and memories of us. Every word is written with love, for you, my darling Owami. Our story is my favorite, and I cherish every moment we've shared together. From our first meeting to our latest adventure, each memory holds a special place in my heart.`;
-      
+      const sampleText = `This is a sample content for ${chapter.title}. In a real implementation, this text would be loaded from the chapter file. This diary is a collection of my thoughts and memories of us. Every word is written with love, for you, my darling Owami. Our story is my favorite, and I cherish every moment we've shared together. From our first meeting to our latest adventure, each memory holds a special place in my heart. Check out my website at https://example.com for more about us.`;
+
       const wordsData = splitTextIntoWords(sampleText);
       const chapterPages = paginateContent(wordsData, chapter.title);
       pages = pages.concat(chapterPages);
@@ -878,7 +902,8 @@ function renderPage() {
     // Check if we need to show validation for this chapter
     checkChapterValidation();
   } else {
-    pageContent.textContent = page.content;
+    // Use linkify to convert URLs to clickable links
+    pageContent.innerHTML = linkify(page.content);
     pageIndicator.style.opacity = '0.7';
   }
 
