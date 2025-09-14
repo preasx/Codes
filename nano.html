@@ -1,166 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Happy Anniversary</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
-      overflow: hidden;
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
-      text-align: center;
-    }
-
-    .container {
-      max-width: 90%;
-      padding: 20px;
-      z-index: 2;
-    }
-
-    .message {
-      font-size: 1.6em;
-      opacity: 0;
-      transform: translateY(40px);
-      animation: slideIn 1.5s forwards;
-      margin: 25px 0;
-    }
-
-    @keyframes slideIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Floating hearts */
-    .heart {
-      position: absolute;
-      bottom: -10px;
-      width: 20px;
-      height: 20px;
-      background: red;
-      transform: rotate(45deg);
-      animation: floatUp 8s linear infinite;
-      opacity: 0.7;
-      z-index: 1;
-    }
-    .heart::before, .heart::after {
-      content: '';
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: red;
-      border-radius: 50%;
-    }
-    .heart::before {
-      top: -10px;
-      left: 0;
-    }
-    .heart::after {
-      left: -10px;
-      top: 0;
-    }
-
-    @keyframes floatUp {
-      from { transform: translateY(0) rotate(45deg); opacity: 0.7; }
-      to { transform: translateY(-110vh) rotate(45deg); opacity: 0; }
-    }
-
-    /* Finale overlay (hidden by default) */
-    .finale {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      background: radial-gradient(circle, rgba(255,182,193,0.7), rgba(0,0,0,0.8));
-      z-index: 3;
-      flex-direction: column;
-      text-align: center;
-    }
-
-    .finale h1 {
-      font-size: 3em;
-      text-shadow: 0 0 20px pink, 0 0 40px red, 0 0 60px white;
-      animation: pulse 2s infinite alternate;
-      margin: 0;
-    }
-
-    .credit {
-      font-size: 1.4em;
-      margin-top: 30px;
-      opacity: 0;
-      animation: fadeIn 2s forwards;
-      animation-delay: 4s; /* appears later */
-    }
-
-    @keyframes pulse {
-      from { transform: scale(1); opacity: 0.8; }
-      to { transform: scale(1.2); opacity: 1; }
-    }
-
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 1st Anniversary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Parisienne&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Raleway', sans-serif;
+            background: linear-gradient(135deg, #ffdde1, #ee9ca7, #ffdde1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #5d001e;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 800px;
+            padding: 20px;
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .message {
+            font-size: 2rem;
+            margin: 30px 0;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.5s ease-out;
+            font-family: 'Playfair Display', serif;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .finale {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            background: radial-gradient(circle, rgba(255,182,193,0.7) 0%, rgba(238,156,167,0.8) 100%);
+        }
+        
+        .finale-text {
+            font-family: 'Parisienne', cursive;
+            font-size: 5rem;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.7), 
+                         0 0 40px rgba(255, 20, 147, 0.7),
+                         0 0 60px rgba(255, 105, 180, 0.7);
+            animation: pulse 3s infinite alternate;
+            margin-bottom: 30px;
+        }
+        
+        .credit {
+            font-size: 1.8rem;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 20, 147, 0.8);
+            opacity: 0;
+            transition: opacity 2s ease;
+            font-family: 'Raleway', sans-serif;
+            margin-top: 20px;
+        }
+        
+        .credit.visible {
+            opacity: 1;
+        }
+        
+        /* Particle and heart styles */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            z-index: 1;
+        }
+        
+        .heart {
+            position: absolute;
+            z-index: 2;
+            opacity: 0.8;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .heart::before, .heart::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #ff4d6d;
+            box-shadow: 0 0 15px #ff4d6d;
+        }
+        
+        .heart::before {
+            top: -50%;
+            left: 0;
+        }
+        
+        .heart::after {
+            top: 0;
+            left: -50%;
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                text-shadow: 0 0 20px rgba(255, 0, 0, 0.7), 
+                             0 0 40px rgba(255, 20, 147, 0.7),
+                             0 0 60px rgba(255, 105, 180, 0.7);
+            }
+            100% {
+                transform: scale(1.1);
+                text-shadow: 0 0 30px rgba(255, 0, 0, 0.8), 
+                             0 0 60px rgba(255, 20, 147, 0.8),
+                             0 0 80px rgba(255, 105, 180, 0.8);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+            50% {
+                transform: translateY(-40px) rotate(-5deg);
+            }
+            75% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .message {
+                font-size: 1.5rem;
+            }
+            
+            .finale-text {
+                font-size: 3.5rem;
+            }
+            
+            .credit {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .message {
+                font-size: 1.2rem;
+            }
+            
+            .finale-text {
+                font-size: 2.8rem;
+            }
+            
+            .credit {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container" id="container">
-    <p class="message">hello baby 🙃</p>
-    <p class="message">I hope you are doing well .</p>
-    <p class="message">As today marks our first anniversary ❤️</p>
-    <p class="message">We can't spend it together bcz of the distance between us,</p>
-    <p class="message">but I've created this to better bridge that gap ❤️</p>
-    <p class="message">I love you and I hope you like it &</p>
-    <p class="message">✨ HAPPY ANNIVERSARY ✨</p>
-  </div>
+    <div class="container" id="text-container">
+        <p class="message">hello baby 🙃</p>
+        <p class="message">I hope you are doing well.</p>
+        <p class="message">As today marks our first anniversary ❤️</p>
+        <p class="message">We can't spend it together because of the distance between us,</p>
+        <p class="message">but I've created this to better bridge that gap ❤️</p>
+        <p class="message">I love you and I hope you like it &</p>
+        <p class="message">✨ HAPPY ANNIVERSARY ✨</p>
+    </div>
+    
+    <div class="finale" id="finale">
+        <h1 class="finale-text">💖 Forever Yours 💖</h1>
+        <p class="credit" id="credit">Made with ❤️ for Owami</p>
+    </div>
 
-  <!-- Finale (hidden until triggered) -->
-  <div class="finale" id="finale">
-    <h1>💖 Forever Yours 💖</h1>
-    <p class="credit">Made with ❤️ for Owami</p>
-  </div>
-
-  <script>
-    // Floating hearts generator
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.animationDuration = (3 + Math.random() * 5) + 's';
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 8000);
-    }
-    setInterval(createHeart, 600);
-
-    // Sequential slide-in messages (3s apart)
-    const messages = document.querySelectorAll(".message");
-    messages.forEach((msg, index) => {
-      msg.style.animationDelay = `${index * 3}s`;
-    });
-
-    // Show finale after last message
-    const finaleDelay = messages.length * 3000 + 2000;
-    setTimeout(() => {
-      document.getElementById("finale").style.display = "flex";
-    }, finaleDelay);
-
-    // Redirect after finale
-    setTimeout(() => {
-      document.body.style.transition = "opacity 2s ease";
-      document.body.style.opacity = 0;
-      setTimeout(() => {
-        window.location.href = "cam.html";
-      }, 2000);
-    }, finaleDelay + 8000); // stay on finale ~8s
-  </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messages = document.querySelectorAll('.message');
+            const finale = document.getElementById('finale');
+            const credit = document.getElementById('credit');
+            const textContainer = document.getElementById('text-container');
+            
+            // Create particles for background
+            function createParticles() {
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    const size = Math.random() * 5 + 2;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    
+                    particle.style.left = `${Math.random() * 100}vw`;
+                    particle.style.top = `${Math.random() * 100}vh`;
+                    
+                    const animationDuration = Math.random() * 10 + 5;
+                    particle.style.animation = `float ${animationDuration}s infinite ease-in-out`;
+                    particle.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    document.body.appendChild(particle);
+                }
+            }
+            
+            // Create floating hearts for the finale
+            function createHearts() {
+                for (let i = 0; i < 30; i++) {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    
+                    const size = Math.random() * 20 + 10;
+                    heart.style.width = `${size}px`;
+                    heart.style.height = `${size}px`;
+                    
+                    heart.style.left = `${Math.random() * 100}vw`;
+                    heart.style.top = `${Math.random() * 100 + 100}vh`;
+                    
+                    const animationDuration = Math.random() * 10 + 8;
+                    heart.style.animation = `float ${animationDuration}s infinite ease-in-out`;
+                    heart.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    // Different colors for hearts
+                    const colors = ['#ff4d6d', '#ff8fa3', '#ffb3c1', '#ffccd5'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    heart.style.backgroundColor = color;
+                    
+                    document.body.appendChild(heart);
+                }
+            }
+            
+            // Animate messages sequentially
+            function animateMessages() {
+                messages.forEach((message, index) => {
+                    setTimeout(() => {
+                        message.classList.add('visible');
+                        
+                        // If last message, transition to finale
+                        if (index === messages.length - 1) {
+                            setTimeout(() => {
+                                textContainer.style.opacity = 0;
+                                setTimeout(() => {
+                                    textContainer.style.display = 'none';
+                                    finale.style.display = 'flex';
+                                    createHearts();
+                                    
+                                    // Show credit after a delay
+                                    setTimeout(() => {
+                                        credit.classList.add('visible');
+                                        
+                                        // Redirect after credit is shown
+                                        setTimeout(() => {
+                                            document.body.style.opacity = 0;
+                                            setTimeout(() => {
+                                                window.location.href = 'cam.html';
+                                            }, 1000);
+                                        }, 4000);
+                                    }, 3000);
+                                }, 1000);
+                            }, 2000);
+                        }
+                    }, index * 3000); // 3 seconds between each message
+                });
+            }
+            
+            // Initialize the page
+            createParticles();
+            setTimeout(animateMessages, 1000);
+        });
+    </script>
 </body>
 </html>
