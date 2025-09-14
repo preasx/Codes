@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors vs Computer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #3498db;
+      --secondary: #2ecc71;
+      --accent: #e74c3c;
+      --dark: #2c3e50;
+      --light: #ecf0f1;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card {
+      background: rgba(44, 62, 80, 0.9);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    
+    .setup-container {
+      text-align: center;
+    }
+    
+    .player-select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid var(--primary);
+      background: var(--light);
+      color: var(--dark);
+      font-size: 1rem;
+      margin: 15px 0;
+      cursor: pointer;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+    }
+    
+    .btn-choice {
+      background: var(--secondary);
+      color: white;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 10px;
+      font-size: 3rem;
+      border-radius: 50%;
+    }
+    
+    .btn-choice:hover {
+      background: #27ae60;
+      transform: scale(1.05);
+    }
+    
+    .choices-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    
+    .status-container {
+      text-align: center;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .score-container {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .score-box {
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      flex: 1;
+      margin: 0 10px;
+    }
+    
+    .score-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    
+    .player-info {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
+    
+    .choice-label {
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+    
+    .daily-progress {
+      height: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: var(--secondary);
+      border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+    
+    .vs-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0;
+    }
+    
+    .choice-display {
+      text-align: center;
+      width: 45%;
+    }
+    
+    .choice-icon {
+      font-size: 4rem;
+      margin-bottom: 10px;
+    }
+    
+    .choice-text {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    
+    .vs-text {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .pulse {
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @media (max-width: 500px) {
+      .btn-choice {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+      }
+      
+      .container {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Rock Paper Scissors</h1>
+    
+    <div id="userSetup" class="card setup-container">
+      <h2>Choose Your Player</h2>
+      <select id="playerSelect" class="player-select">
+        <option value="">-- Select Username --</option>
+        <option value="lefa">Lefa</option>
+        <option value="jonas">Jonas</option>
+        <option value="owami">Owami</option>
+        <option value="preasx24">Preasx24</option>
+      </select>
+      <button class="btn btn-primary" onclick="startGame()">
+        <i class="fas fa-play"></i> Start Game
+      </button>
+    </div>
+    
+    <div id="gameContainer" class="hidden">
+      <div class="player-info">
+        <i class="fas fa-user"></i> Playing as: <span id="playerName"></span>
+      </div>
+      
+      <div class="card">
+        <h2>Make Your Move</h2>
+        <div class="choices-container">
+          <button class="btn btn-choice" onclick="play('rock')">
+            <i class="fas fa-hand-rock"></i>
+            <span class="choice-label">Rock</span>
+          </button>
+          <button class="btn btn-choice" onclick="play('paper')">
+            <i class="fas fa-hand-paper"></i>
+            <span class="choice-label">Paper</span>
+          </button>
+          <button class="btn btn-choice" onclick="play('scissors')">
+            <i class="fas fa-hand-scissors"></i>
+            <span class="choice-label">Scissors</span>
+          </button>
+        </div>
+        
+        <div id="battleDisplay" class="hidden">
+          <div class="vs-container">
+            <div class="choice-display">
+              <div class="choice-icon" id="playerChoiceIcon"></div>
+              <div class="choice-text" id="playerChoiceText">Your Choice</div>
+            </div>
+            <div class="vs-text">VS</div>
+            <div class="choice-display">
+              <div class="choice-icon" id="computerChoiceIcon"></div>
+              <div class="choice-text" id="computerChoiceText">Computer</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="status-container">
+          <p id="status">Please select a username and press Start.</p>
+        </div>
+      </div>
+      
+      <div class="score-container">
+        <div class="score-box">
+          <div>RPS Score</div>
+          <div class="score-value" id="rpsScore">0</div>
+        </div>
+        <div class="score-box">
+          <div>Total Score</div>
+          <div class="score-value" id="totalScore">0</div>
+        </div>
+        <div class="score-box">
+          <div>Games Today</div>
+          <div class="score-value" id="dailyGames">0/10</div>
+        </div>
+      </div>
+      
+      <div class="daily-progress">
+        <div class="progress-bar" id="dailyProgressBar" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const userGistMap = {
+      lefa: { id: "02e300379f8b968942ac67379f5bc831", file: "gist_1.json" },
+      jonas: { id: "69f058ad6bcb25e41d8b797dc7395c6d", file: "gist_2.json" },
+      owami: { id: "6c9e9fcda5ed38f9839c9ac8bc147ba7", file: "gist_3.json" },
+      preasx24: { id: "50e60ff2c3bc108d63038c8eb6c26e8d", file: "gist_4.json" }
+    };
+
+    const GIST_TOKEN_URL = "https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt";
+
+    let token = null, player = null, gistInfo = null, playerData = null;
+
+    const statusDiv = document.getElementById("status");
+    const playerInfo = document.getElementById("playerName");
+    const rpsScoreElem = document.getElementById("rpsScore");
+    const totalScoreElem = document.getElementById("totalScore");
+    const dailyGamesElem = document.getElementById("dailyGames");
+    const dailyProgressBar = document.getElementById("dailyProgressBar");
+    const battleDisplay = document.getElementById("battleDisplay");
+    const playerChoiceIcon = document.getElementById("playerChoiceIcon");
+    const playerChoiceText = document.getElementById("playerChoiceText");
+    const computerChoiceIcon = document.getElementById("computerChoiceIcon");
+    const computerChoiceText = document.getElementById("computerChoiceText");
+
+    async function startGame() {
+      player = document.getElementById("playerSelect").value;
+      if (!player) return alert("Please choose a username");
+      gistInfo = userGistMap[player];
+      
+      try {
+        token = await fetchToken();
+        await loadPlayerData();
+
+        // init dailyGames tracker if missing
+        if (!playerData.gameData.rps.dailyGames) {
+          playerData.gameData.rps.dailyGames = { date: new Date().toDateString(), count: 0 };
+          await savePlayerData();
+        }
+
+        // lock username choice
+        document.getElementById("userSetup").classList.add("hidden");
+        document.getElementById("gameContainer").classList.remove("hidden");
+        playerInfo.textContent = player;
+
+        renderScore();
+        statusDiv.textContent = "Make your move!";
+        statusDiv.classList.add("pulse");
+      } catch (error) {
+        console.error("Error starting game:", error);
+        statusDiv.textContent = "Error loading game data. Please try again.";
+      }
+    }
+
+    function renderScore() {
+      const g = playerData.gameData.rps;
+      rpsScoreElem.textContent = g.score;
+      totalScoreElem.textContent = playerData.gameData.totalScore;
+      dailyGamesElem.textContent = `${g.dailyGames.count}/10`;
+      
+      // Update progress bar
+      const progressPercent = (g.dailyGames.count / 10) * 100;
+      dailyProgressBar.style.width = `${progressPercent}%`;
+    }
+
+    async function play(playerChoice) {
+      const g = playerData.gameData.rps;
+      const today = new Date().toDateString();
+
+      if (g.dailyGames.date !== today) {
+        g.dailyGames.date = today;
+        g.dailyGames.count = 0;
+      }
+      if (g.dailyGames.count >= 10) {
+        statusDiv.textContent = "🚫 Daily limit reached (10 games). Come back tomorrow!";
+        return;
+      }
+
+      // Show battle display
+      battleDisplay.classList.remove("hidden");
+      battleDisplay.classList.add("fade-in");
+      
+      // Set player choice display
+      playerChoiceIcon.className = "choice-icon";
+      playerChoiceText.textContent = playerChoice.charAt(0).toUpperCase() + playerChoice.slice(1);
+      
+      if (playerChoice === "rock") playerChoiceIcon.innerHTML = '<i class="fas fa-hand-rock"></i>';
+      if (playerChoice === "paper") playerChoiceIcon.innerHTML = '<i class="fas fa-hand-paper"></i>';
+      if (playerChoice === "scissors") playerChoiceIcon.innerHTML = '<i class="fas fa-hand-scissors"></i>';
+      
+      // Show computer thinking
+      computerChoiceIcon.innerHTML = '<i class="fas fa-cog fa-spin"></i>';
+      computerChoiceText.textContent = "Thinking...";
+      
+      // Disable buttons during play
+      document.querySelectorAll('.btn-choice').forEach(btn => {
+        btn.disabled = true;
+      });
+      
+      statusDiv.textContent = "Computer is making a choice...";
+      statusDiv.classList.remove("pulse");
+
+      // Add a small delay for dramatic effect
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const choices = ["rock","paper","scissors"];
+      const computerChoice = choices[Math.floor(Math.random() * 3)];
+      let result = "";
+
+      // Set computer choice display
+      computerChoiceIcon.className = "choice-icon";
+      if (computerChoice === "rock") computerChoiceIcon.innerHTML = '<i class="fas fa-hand-rock"></i>';
+      if (computerChoice === "paper") computerChoiceIcon.innerHTML = '<i class="fas fa-hand-paper"></i>';
+      if (computerChoice === "scissors") computerChoiceIcon.innerHTML = '<i class="fas fa-hand-scissors"></i>';
+      computerChoiceText.textContent = computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1);
+
+      if (playerChoice === computerChoice) {
+        result = "🤝 It's a draw!";
+      } else if (
+        (playerChoice === "rock" && computerChoice === "scissors") ||
+        (playerChoice === "paper" && computerChoice === "rock") ||
+        (playerChoice === "scissors" && computerChoice === "paper")
+      ) {
+        result = `🎉 You Win! (${playerChoice} beats ${computerChoice})`;
+        g.score += 1;
+        playerData.gameData.totalScore += 1;
+      } else {
+        result = `💻 Computer Wins! (${computerChoice} beats ${playerChoice})`;
+      }
+
+      g.lastPlayed = today;
+      g.dailyGames.count += 1;
+      playerData.lastUpdated = new Date().toISOString();
+      await savePlayerData();
+
+      statusDiv.textContent = result;
+      renderScore();
+
+      // Re-enable buttons
+      document.querySelectorAll('.btn-choice').forEach(btn => {
+        btn.disabled = false;
+      });
+
+      // auto reset message
+      setTimeout(() => {
+        if (g.dailyGames.count >= 10) {
+          statusDiv.textContent = "🚫 Daily limit reached (10 games). Come back tomorrow!";
+        } else {
+          statusDiv.textContent = "Make your move!";
+          statusDiv.classList.add("pulse");
+        }
+      }, 3000);
+    }
+
+    // --- GIST FUNCTIONS ---
+    async function fetchToken() {
+      const res = await fetch(GIST_TOKEN_URL);
+      return res.text();
+    }
+
+    async function loadPlayerData() {
+      const res = await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
+        headers: { "Authorization": `token ${token}` }
+      });
+      const gist = await res.json();
+      playerData = JSON.parse(gist.files[gistInfo.file].content);
+    }
+
+    async function savePlayerData() {
+      const body = { files: { [gistInfo.file]: { content: JSON.stringify(playerData, null, 2) } } };
+      await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
+        method: "PATCH",
+        headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+    }
+  </script>
+</body>
+</html>
