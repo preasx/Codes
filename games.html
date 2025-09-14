@@ -2,210 +2,178 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Memory Card Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Love Dashboard ❤️</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin-top: 20px; }
-    #gameBoard { 
-      display: grid; 
-      grid-template-columns: repeat(4, 80px); 
-      gap: 10px; 
-      justify-content: center; 
-      margin: 20px auto; 
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffe6f0, #e6f7ff);
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2em;
+      color: #ff4d6d;
+    }
+    .selector {
+      margin: 20px 0;
+    }
+    select, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
     }
     .card {
-      width: 80px; height: 100px; 
-      background: #444; color: white; 
-      display: flex; align-items: center; justify-content: center; 
-      font-size: 2em; cursor: pointer; border-radius: 8px; 
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
     }
-    .flipped { background: #fff; color: #000; cursor: default; }
-    select, .startBtn { margin: 10px; padding: 8px 12px; }
-    #status { font-weight: bold; margin-top: 20px; font-size: 1.2em; }
+    .leader {
+      margin-top: 20px;
+      font-size: 1.4em;
+      color: #ff0066;
+      font-weight: bold;
+    }
+    .game-buttons {
+      margin-top: 30px;
+    }
+    .game-buttons a {
+      text-decoration: none;
+      margin: 10px;
+    }
+    .game-buttons button {
+      background: #ff80aa;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .game-buttons button:hover {
+      background: #ff4d6d;
+    }
   </style>
 </head>
 <body>
-  <h1>Memory Card Game</h1>
 
-  <div id="userSetup">
-    <label for="playerSelect">Choose your username:</label>
-    <select id="playerSelect">
-      <option value="">-- Select --</option>
-      <option value="lefa">Lefa</option>
-      <option value="jonas">Jonas</option>
-      <option value="owami">Owami</option>
-      <option value="preasx24">Preasx24</option>
-    </select>
-    <button class="startBtn" onclick="startGame()">Start Game</button>
+  <h1>💖 Our Love Game Stats 💖</h1>
+  <p>Compare your scores and see who’s winning at love & games ✨</p>
+
+  <div class="selector">
+    <label for="userSelect">Choose Yourself: </label>
+    <select id="userSelect"></select>
+    <label for="opponentSelect">Choose Opponent: </label>
+    <select id="opponentSelect"></select>
+    <button onclick="loadStats()">Compare</button>
   </div>
 
-  <p id="playerInfo"></p>
-  <div id="gameBoard"></div>
-  <p id="status">Please select a username and press Start.</p>
-  <p id="score"></p>
+  <div id="statsContainer"></div>
 
-  <script>
-    const userGistMap = {
-      lefa: { id: "02e300379f8b968942ac67379f5bc831", file: "gist_1.json" },
-      jonas: { id: "69f058ad6bcb25e41d8b797dc7395c6d", file: "gist_2.json" },
-      owami: { id: "6c9e9fcda5ed38f9839c9ac8bc147ba7", file: "gist_3.json" },
-      preasx24: { id: "50e60ff2c3bc108d63038c8eb6c26e8d", file: "gist_4.json" }
-    };
+  <div class="game-buttons">
+    <a href="tic.html"><button>🎮 Play Tic Tac Toe</button></a>
+    <a href="rock.html"><button>✊🤚✌ Play Rock Paper Scissors</button></a>
+    <a href="mem.html"><button>🃏 Play Memory</button></a>
+  </div>
 
-    const GIST_TOKEN_URL = "https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt";
+<script>
+const userGistMap = {
+  lefa: "https://gist.githubusercontent.com/Preasx24/02e300379f8b968942ac67379f5bc831/raw/gist_1.json",
+  jonas: "https://gist.githubusercontent.com/Preasx24/69f058ad6bcb25e41d8b797dc7395c6d/raw/gist_2.json",
+  owami: "https://gist.githubusercontent.com/Preasx24/6c9e9fcda5ed38f9839c9ac8bc147ba7/raw/gist_3.json",
+  preasx24: "https://gist.githubusercontent.com/Preasx24/50e60ff2c3bc108d63038c8eb6c26e8d/raw/gist_4.json"
+};
 
-    let token = null, player = null, gistInfo = null, playerData = null;
-    let flippedCards = [], lockBoard = false, matchesFound = 0;
+const GIST_TOKEN_URL = "https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt";
 
-    const boardDiv = document.getElementById("gameBoard");
-    const statusDiv = document.getElementById("status");
-    const scoreDiv = document.getElementById("score");
-    const playerInfo = document.getElementById("playerInfo");
+let GIST_TOKEN = "";
 
-    const emojis = ["🍎","🍌","🍓","🍇","🍊","🍉","🍒","🍍"];
+async function fetchToken() {
+  const res = await fetch(GIST_TOKEN_URL);
+  GIST_TOKEN = await res.text();
+}
 
-    async function startGame() {
-      player = document.getElementById("playerSelect").value;
-      if (!player) return alert("Please choose a username");
-      gistInfo = userGistMap[player];
-      token = await fetchToken();
-      await loadPlayerData();
+async function fetchGameData(url) {
+  const res = await fetch(url, {
+    headers: { Authorization: `token ${GIST_TOKEN.trim()}` }
+  });
+  return res.json();
+}
 
-      // init dailyGames tracker if missing
-      if (!playerData.gameData.memory.dailyGames) {
-        playerData.gameData.memory.dailyGames = { date: new Date().toDateString(), count: 0 };
-        await savePlayerData();
-      }
+function populateSelectors() {
+  const userSelect = document.getElementById("userSelect");
+  const opponentSelect = document.getElementById("opponentSelect");
 
-      // lock username choice
-      document.getElementById("userSetup").style.display = "none";
-      playerInfo.textContent = `Playing as: ${player}`;
+  Object.keys(userGistMap).forEach(user => {
+    let opt1 = document.createElement("option");
+    opt1.value = user;
+    opt1.textContent = user;
+    userSelect.appendChild(opt1);
 
-      startNewRound();
-    }
+    let opt2 = document.createElement("option");
+    opt2.value = user;
+    opt2.textContent = user;
+    opponentSelect.appendChild(opt2);
+  });
+}
 
-    function startNewRound() {
-      const g = playerData.gameData.memory;
-      const today = new Date().toDateString();
-      if (g.dailyGames.date !== today) {
-        g.dailyGames.date = today;
-        g.dailyGames.count = 0;
-      }
-      if (g.dailyGames.count >= 10) {
-        boardDiv.innerHTML = "";
-        statusDiv.textContent = "🚫 Daily limit reached (10 games). Come back tomorrow!";
-        renderScore();
-        return;
-      }
+async function loadStats() {
+  const user = document.getElementById("userSelect").value;
+  const opponent = document.getElementById("opponentSelect").value;
+  if (user === opponent) {
+    alert("Choose different players!");
+    return;
+  }
 
-      matchesFound = 0;
-      flippedCards = [];
-      lockBoard = false;
+  const userData = await fetchGameData(userGistMap[user]);
+  const oppData = await fetchGameData(userGistMap[opponent]);
 
-      // create card pairs
-      let cards = [...emojis, ...emojis];
-      cards.sort(() => Math.random() - 0.5);
+  const games = ["ticTacToe", "rps", "memory"];
+  let statsHtml = `<div class="stats">`;
 
-      boardDiv.innerHTML = "";
-      cards.forEach((emoji, i) => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.dataset.value = emoji;
-        card.onclick = () => flipCard(card);
-        boardDiv.appendChild(card);
-      });
+  games.forEach(game => {
+    const userScore = userData.gameData[game].score;
+    const oppScore = oppData.gameData[game].score;
+    let status = userScore > oppScore ? "💪 You are leading!" :
+                 userScore < oppScore ? "😢 You are losing!" :
+                 "⚖️ It’s a tie!";
+    statsHtml += `
+      <div class="card">
+        <h3>${game.toUpperCase()}</h3>
+        <p>You: ${userScore} | Opponent: ${oppScore}</p>
+        <p>${status}</p>
+      </div>`;
+  });
 
-      renderScore();
-      statusDiv.textContent = "Find all pairs!";
-    }
+  statsHtml += `</div>`;
 
-    function flipCard(card) {
-      if (lockBoard || card.classList.contains("flipped")) return;
-      card.textContent = card.dataset.value;
-      card.classList.add("flipped");
-      flippedCards.push(card);
+  let leader = userData.gameData.totalScore > oppData.gameData.totalScore ? 
+      `${user} is on top! 👑` : 
+      oppData.gameData.totalScore > userData.gameData.totalScore ? 
+      `${opponent} is leading! 👑` : "Both are equal 💞";
 
-      if (flippedCards.length === 2) {
-        checkMatch();
-      }
-    }
+  statsHtml += `<div class="leader">${leader}</div>`;
 
-    async function checkMatch() {
-      lockBoard = true;
-      const [c1, c2] = flippedCards;
-      if (c1.dataset.value === c2.dataset.value) {
-        statusDiv.textContent = "✅ Match!";
-        matchesFound++;
-        await updateScore();
-        resetFlipped();
-        if (matchesFound === emojis.length) {
-          statusDiv.textContent = "🎉 You cleared the board!";
-          setTimeout(startNewRound, 1500);
-        }
-      } else {
-        statusDiv.textContent = "❌ No match!";
-        setTimeout(() => {
-          c1.textContent = "";
-          c1.classList.remove("flipped");
-          c2.textContent = "";
-          c2.classList.remove("flipped");
-          resetFlipped();
-        }, 1000);
-      }
-    }
+  document.getElementById("statsContainer").innerHTML = statsHtml;
+}
 
-    function resetFlipped() {
-      flippedCards = [];
-      lockBoard = false;
-    }
+(async () => {
+  await fetchToken();
+  populateSelectors();
+})();
+</script>
 
-    function renderScore() {
-      const g = playerData.gameData.memory;
-      scoreDiv.textContent = `Score: ${g.score}, Total: ${playerData.gameData.totalScore}, Games today: ${g.dailyGames.count}/10`;
-    }
-
-    // --- GIST STUFF ---
-    async function fetchToken() {
-      const res = await fetch(GIST_TOKEN_URL);
-      return res.text();
-    }
-
-    async function loadPlayerData() {
-      const res = await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
-        headers: { "Authorization": `token ${token}` }
-      });
-      const gist = await res.json();
-      playerData = JSON.parse(gist.files[gistInfo.file].content);
-    }
-
-    async function savePlayerData() {
-      const body = { files: { [gistInfo.file]: { content: JSON.stringify(playerData, null, 2) } } };
-      await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
-        method: "PATCH",
-        headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
-    }
-
-    async function updateScore() {
-      const g = playerData.gameData.memory;
-      const today = new Date().toDateString();
-
-      if (g.dailyGames.date !== today) {
-        g.dailyGames.date = today;
-        g.dailyGames.count = 0;
-      }
-
-      if (g.dailyGames.count >= 10) return;
-
-      g.score += 1;
-      playerData.gameData.totalScore += 1;
-      g.lastPlayed = today;
-      g.dailyGames.count += 1;
-      playerData.lastUpdated = new Date().toISOString();
-
-      await savePlayerData();
-      renderScore();
-    }
-  </script>
 </body>
 </html>
