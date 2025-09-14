@@ -98,25 +98,25 @@
     
     #gameBoard { 
       display: grid; 
-      grid-template-columns: repeat(6, 1fr);
-      gap: 12px; 
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px; 
       justify-content: center; 
       margin: 25px auto;
-      max-width: 700px;
+      max-width: 600px;
     }
     
     .card {
-      aspect-ratio: 3/4;
+      height: 90px;
       background: #fff;
-      border-radius: 12px;
+      border-radius: 8px;
       cursor: pointer;
       perspective: 1000px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s ease;
     }
     
     .card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-3px);
     }
     
     .card-inner {
@@ -141,8 +141,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 12px;
-      font-size: 2rem;
+      border-radius: 8px;
+      font-size: 1.8rem;
     }
     
     .card-front {
@@ -227,6 +227,14 @@
       #gameBoard {
         grid-template-columns: repeat(4, 1fr);
       }
+      
+      .card {
+        height: 80px;
+      }
+      
+      .card-front, .card-back {
+        font-size: 1.5rem;
+      }
     }
     
     @media (max-width: 480px) {
@@ -243,8 +251,12 @@
         gap: 8px;
       }
       
+      .card {
+        height: 70px;
+      }
+      
       .card-front, .card-back {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
       }
       
       select, .startBtn {
@@ -297,8 +309,8 @@
     const playerSelect = document.getElementById("playerSelect");
     const userSetup = document.getElementById("userSetup");
 
-    // Increased number of emojis for more cards
-    const emojis = ["🍎","🍌","🍓","🍇","🍊","🍉","🍒","🍍","🥭","🍋","🍈","🍐","🥝","🍏","🥥","🫐"];
+    // Emojis for the game - using 15 pairs for a 5x6 grid
+    const emojis = ["🍎","🍌","🍓","🍇","🍊","🍉","🍒","🍍","🥭","🍋","🍈","🍐","🥝","🍏","🥥"];
 
     // Check for saved user on page load
     window.onload = function() {
@@ -364,8 +376,8 @@
       flippedCards = [];
       lockBoard = false;
 
-      // Use 12 pairs for a more challenging game
-      const selectedEmojis = emojis.slice(0, 12);
+      // Use 15 pairs for a 5x6 grid
+      const selectedEmojis = emojis.slice(0, 15);
       let cards = [...selectedEmojis, ...selectedEmojis];
       cards.sort(() => Math.random() - 0.5);
 
@@ -417,7 +429,7 @@
         matchesFound++;
         await updateScore();
         resetFlipped();
-        if (matchesFound === 12) { // 12 pairs now
+        if (matchesFound === 15) { // 15 pairs now
           statusDiv.textContent = "🎉 You cleared the board! Starting new round...";
           statusDiv.className = "status-success";
           setTimeout(startNewRound, 1500);
