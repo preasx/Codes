@@ -4,54 +4,36 @@
   <meta charset="UTF-8">
   <title>Tic Tac Toe vs Computer</title>
   <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      text-align: center; 
-      margin-top: 20px; 
-    }
-    #board { 
-      display: grid; 
-      grid-template-columns: repeat(3, 100px); 
-      gap: 5px; 
-      margin: 20px auto; 
-    }
-    .cell { 
-      width: 100px; 
-      height: 100px; 
-      background: #eee; 
-      font-size: 2em; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      cursor: pointer; 
-      border: 2px solid #333;
-    }
-    select, button { 
-      margin: 10px; 
-      padding: 8px 12px; 
-    }
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 20px; }
+    #board { display: grid; grid-template-columns: repeat(3, 100px); gap: 5px; margin: 20px auto; }
+    .cell { width: 100px; height: 100px; background: #eee; font-size: 2em;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: 2px solid #333; }
+    select, button { margin: 10px; padding: 8px 12px; }
     #status { font-weight: bold; margin-top: 10px; }
   </style>
 </head>
 <body>
   <h1>Tic Tac Toe vs Computer</h1>
 
-  <label for="playerSelect">Choose your username:</label>
-  <select id="playerSelect">
-    <option value="">-- Select --</option>
-    <option value="lefa">Lefa</option>
-    <option value="jonas">Jonas</option>
-    <option value="owami">Owami</option>
-    <option value="preasx24">Preasx24</option>
-  </select>
-  <button onclick="startGame()">Start Game</button>
+  <div id="userSetup">
+    <label for="playerSelect">Choose your username:</label>
+    <select id="playerSelect">
+      <option value="">-- Select --</option>
+      <option value="lefa">Lefa</option>
+      <option value="jonas">Jonas</option>
+      <option value="owami">Owami</option>
+      <option value="preasx24">Preasx24</option>
+    </select>
+    <button onclick="startGame()">Start Game</button>
+  </div>
 
+  <p id="playerInfo"></p>
   <div id="board"></div>
   <p id="status">Please select a username and press Start.</p>
   <p id="score"></p>
 
   <script>
-    // 🔹 Map usernames to gist IDs + filenames
     const userGistMap = {
       lefa: { id: "02e300379f8b968942ac67379f5bc831", file: "gist_1.json" },
       jonas: { id: "69f058ad6bcb25e41d8b797dc7395c6d", file: "gist_2.json" },
@@ -62,26 +44,30 @@
     const GIST_TOKEN_URL = "https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt";
 
     let board = Array(9).fill(null);
-    let currentPlayer = "X"; // X = human, O = computer
-    let player = null;
-    let gistInfo = null;
-    let token = null;
-    let playerData = null;
-
+    let currentPlayer = "X"; // X = human
+    let player = null, gistInfo = null, token = null, playerData = null;
     const boardDiv = document.getElementById("board");
     const statusDiv = document.getElementById("status");
     const scoreDiv = document.getElementById("score");
+    const playerInfo = document.getElementById("playerInfo");
 
-    // --- GAME SETUP ---
     async function startGame() {
       player = document.getElementById("playerSelect").value;
-      if (!player) {
-        alert("Please choose a username");
-        return;
-      }
+      if (!player) return alert("Please choose a username");
       gistInfo = userGistMap[player];
       token = await fetchToken();
       await loadPlayerData();
+
+      // 🔹 initialize dailyGames tracker if missing
+      if (!playerData.gameData.ticTacToe.dailyGames) {
+        playerData.gameData.ticTacToe.dailyGames = { date: new Date().toDateString(), count: 0 };
+      }
+      await savePlayerData();
+
+      // 🔹 lock username choice
+      document.getElementById("userSetup").style.display = "none";
+      playerInfo.textContent = `Playing as: ${player}`;
+
       resetBoard();
       renderBoard();
       statusDiv.textContent = "Your turn (X)";
@@ -90,6 +76,7 @@
     function resetBoard() {
       board = Array(9).fill(null);
       currentPlayer = "X";
+      renderBoard();
     }
 
     function renderBoard() {
@@ -102,11 +89,11 @@
         boardDiv.appendChild(div);
       });
       if (playerData) {
-        scoreDiv.textContent = `Score: ${playerData.gameData.ticTacToe.score}, Total: ${playerData.gameData.totalScore}`;
+        const g = playerData.gameData.ticTacToe;
+        scoreDiv.textContent = `Score: ${g.score}, Total: ${playerData.gameData.totalScore}, Games today: ${g.dailyGames.count}/10`;
       }
     }
 
-    // --- GAMEPLAY ---
     function makeMove(i) {
       if (!player || board[i] || checkWinner() || currentPlayer !== "X") return;
       board[i] = "X";
@@ -114,55 +101,53 @@
       renderBoard();
 
       const winner = checkWinner();
-      if (winner) {
-        endGame(winner);
-        return;
-      }
+      if (winner) return endGame(winner);
 
       setTimeout(computerMove, 500);
     }
 
     function computerMove() {
-      let emptyCells = board.map((v, i) => v ? null : i).filter(v => v !== null);
-      if (emptyCells.length === 0) {
-        statusDiv.textContent = "It's a Draw!";
-        return;
-      }
-      let move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      let empty = board.map((v, i) => v ? null : i).filter(v => v !== null);
+      if (empty.length === 0) return endGame("draw");
+      let move = empty[Math.floor(Math.random() * empty.length)];
       board[move] = "O";
       currentPlayer = "X";
       renderBoard();
 
       const winner = checkWinner();
-      if (winner) {
-        endGame(winner);
-      }
+      if (winner) endGame(winner);
     }
 
     function checkWinner() {
-      const wins = [
-        [0,1,2],[3,4,5],[6,7,8],
-        [0,3,6],[1,4,7],[2,5,8],
-        [0,4,8],[2,4,6]
-      ];
+      const wins = [[0,1,2],[3,4,5],[6,7,8],
+                    [0,3,6],[1,4,7],[2,5,8],
+                    [0,4,8],[2,4,6]];
       for (const [a,b,c] of wins) {
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-          return board[a];
-        }
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a];
       }
       return null;
     }
 
-    function endGame(winner) {
-      if (winner === "X") {
-        statusDiv.textContent = "🎉 You Win!";
-        updateScore();
-      } else if (winner === "O") {
-        statusDiv.textContent = "💻 Computer Wins!";
-      }
+    async function endGame(winner) {
+      let msg = "";
+      if (winner === "X") { msg = "🎉 You Win!"; await updateScore(); }
+      else if (winner === "O") msg = "💻 Computer Wins!";
+      else msg = "🤝 Draw!";
+
+      statusDiv.textContent = msg;
+
+      setTimeout(() => {
+        if (playerData.gameData.ticTacToe.dailyGames.count >= 10) {
+          statusDiv.textContent = "🚫 Daily limit reached (10 games). Come back tomorrow!";
+          boardDiv.innerHTML = "";
+        } else {
+          resetBoard();
+          statusDiv.textContent = "Your turn (X)";
+        }
+      }, 1500);
     }
 
-    // --- GIST FUNCTIONS ---
+    // --- GIST STUFF ---
     async function fetchToken() {
       const res = await fetch(GIST_TOKEN_URL);
       return res.text();
@@ -173,33 +158,36 @@
         headers: { "Authorization": `token ${token}` }
       });
       const gist = await res.json();
-      const content = gist.files[gistInfo.file].content;
-      playerData = JSON.parse(content);
+      playerData = JSON.parse(gist.files[gistInfo.file].content);
+    }
+
+    async function savePlayerData() {
+      const body = { files: { [gistInfo.file]: { content: JSON.stringify(playerData, null, 2) } } };
+      await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
+        method: "PATCH",
+        headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
     }
 
     async function updateScore() {
-      playerData.gameData.ticTacToe.score += 1;
+      const g = playerData.gameData.ticTacToe;
+      const today = new Date().toDateString();
+
+      if (g.dailyGames.date !== today) {
+        g.dailyGames.date = today;
+        g.dailyGames.count = 0;
+      }
+
+      if (g.dailyGames.count >= 10) return; // limit reached
+
+      g.score += 1;
       playerData.gameData.totalScore += 1;
-      playerData.gameData.ticTacToe.lastPlayed = new Date().toDateString();
+      g.lastPlayed = today;
+      g.dailyGames.count += 1;
       playerData.lastUpdated = new Date().toISOString();
 
-      const body = {
-        files: {
-          [gistInfo.file]: {
-            content: JSON.stringify(playerData, null, 2)
-          }
-        }
-      };
-
-      await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
-        method: "PATCH",
-        headers: {
-          "Authorization": `token ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
-      });
-
+      await savePlayerData();
       renderBoard();
     }
   </script>
