@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Anniversary</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 90%;
+      padding: 20px;
+    }
+
+    .message {
+      font-size: 1.6em;
+      opacity: 0;
+      transform: translateY(40px);
+      animation: slideIn 1s forwards;
+      margin: 20px 0;
+    }
+
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -10px;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: floatUp 8s linear infinite;
+      opacity: 0.7;
+    }
+    .heart::before, .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0) rotate(45deg); opacity: 0.7; }
+      to { transform: translateY(-110vh) rotate(45deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="container">
+    <p class="message">hello baby 🙃</p>
+    <p class="message">I hope you are doing well .</p>
+    <p class="message">As today marks our first anniversary ❤️</p>
+    <p class="message">We can't spend it together bcz of the distance between us,</p>
+    <p class="message">but I've created this to better bridge that gap ❤️</p>
+    <p class="message">I love you and I hope you like it &</p>
+    <p class="message">✨ HAPPY ANNIVERSARY ✨</p>
+  </div>
+
+  <script>
+    // Floating hearts animation
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (3 + Math.random() * 5) + 's';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 8000);
+    }
+    setInterval(createHeart, 500);
+
+    // Sequential slide-in messages
+    const messages = document.querySelectorAll(".message");
+    messages.forEach((msg, index) => {
+      msg.style.animationDelay = `${index * 2}s`;
+    });
+
+    // Redirect after last message (adjust timing if needed)
+    const totalTime = messages.length * 2000 + 3000; // slide-in duration + buffer
+    setTimeout(() => {
+      // Add some extra animation before redirect
+      document.body.style.transition = "opacity 2s ease";
+      document.body.style.opacity = 0;
+      setTimeout(() => {
+        window.location.href = "cam.html";
+      }, 2000);
+    }, totalTime);
+  </script>
+</body>
+</html>
