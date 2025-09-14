@@ -5,270 +5,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Game Love Dashboard ❤️</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #ffe6f0, #e6f7ff);
       color: #333;
       text-align: center;
       padding: 20px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
     }
-    
-    .container {
-      max-width: 800px;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 25px;
-    }
-    
     h1 {
-      font-size: 2.2em;
+      font-size: 2em;
       color: #ff4d6d;
-      margin-bottom: 10px;
     }
-    
-    p {
-      color: #666;
-      margin-bottom: 15px;
-    }
-    
-    .selector {
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    }
-    
+    .selector { margin: 20px 0; }
     select, button {
-      padding: 12px 20px;
-      margin: 10px;
+      padding: 10px;
+      margin: 5px;
       border-radius: 10px;
-      border: 2px solid #ff80aa;
+      border: 1px solid #ccc;
       font-size: 1em;
-      background: white;
-      cursor: pointer;
-      transition: all 0.3s;
     }
-    
-    select:focus {
-      outline: none;
-      border-color: #ff4d6d;
-    }
-    
-    button {
-      background: #ff80aa;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      font-weight: 500;
-      box-shadow: 0 4px 10px rgba(255, 128, 170, 0.3);
-    }
-    
-    button:hover {
-      background: #ff4d6d;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(255, 128, 170, 0.4);
-    }
-    
-    .winner-section {
-      order: 1;
-      background: linear-gradient(to right, #ffe6ee, #fff);
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 10px;
-    }
-    
-    .winner-text {
-      font-size: 1.8em;
-      color: #ff0066;
-      font-weight: bold;
-    }
-    
     .stats {
-      order: 2;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 20px;
-      margin: 10px 0;
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
     }
-    
     .card {
       background: white;
       border-radius: 15px;
       box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
       padding: 20px;
-      transition: transform 0.3s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      width: 40%;
     }
-    
-    .card:hover {
-      transform: translateY(-5px);
+    .leader {
+      margin-top: 15px;
+      font-size: 1.3em;
+      color: #ff0066;
+      font-weight: bold;
     }
-    
-    .card h3 {
-      color: #ff4d6d;
-      margin-top: 0;
-      margin-bottom: 15px;
-      font-size: 1.2em;
-    }
-    
-    .card p {
-      margin: 5px 0;
-    }
-    
-    .game-buttons {
-      order: 3;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 15px;
+    .message {
       margin-top: 20px;
+      font-size: 1.2em;
+      color: #333;
+      font-style: italic;
     }
-    
-    .game-buttons a {
-      text-decoration: none;
-    }
-    
+    .game-buttons { margin-top: 30px; }
+    .game-buttons a { text-decoration: none; margin: 10px; }
     .game-buttons button {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
       background: #ff80aa;
       color: white;
       border: none;
-      border-radius: 15px;
-      padding: 15px;
+      border-radius: 25px;
+      padding: 12px 20px;
       font-size: 1em;
       cursor: pointer;
-      transition: all 0.3s;
-      width: 150px;
-      height: 120px;
-      justify-content: center;
+      transition: background 0.3s;
     }
-    
-    .game-buttons button:hover {
-      background: #ff4d6d;
-      transform: translateY(-3px);
-      box-shadow: 0 8px 15px rgba(255, 128, 170, 0.4);
-    }
-    
-    .game-buttons i {
-      font-size: 2em;
-      margin-bottom: 5px;
-    }
-    
-    .selected-players {
-      background: #f8f8f8;
-      padding: 15px;
-      border-radius: 15px;
-      margin: 10px 0;
-      display: inline-block;
-    }
-    
-    .selected-players span {
-      font-weight: 600;
-      color: #ff4d6d;
-    }
-    
-    .change-selection {
-      margin-top: 15px;
-      color: #888;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-    
-    .hidden {
-      display: none;
-    }
-    
-    @media (max-width: 768px) {
-      .stats {
-        grid-template-columns: 1fr;
-      }
-      
-      .game-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .game-buttons button {
-        width: 100%;
-        max-width: 250px;
-      }
-    }
+    .game-buttons button:hover { background: #ff4d6d; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>💖 Our Love Game Stats 💖</h1>
-    <p>Compare your scores and see who's winning at love & games ✨</p>
 
-    <div id="selectionSection" class="selector">
-      <h2>Choose Players</h2>
-      <div>
-        <label for="userSelect">Choose Yourself: </label>
-        <select id="userSelect"></select>
-      </div>
-      <div>
-        <label for="opponentSelect">Choose Partner: </label>
-        <select id="opponentSelect"></select>
-      </div>
-      <button onclick="saveSelection()">Save & Compare</button>
-    </div>
+  <h1>💖 Our Love Game Stats 💖</h1>
+  <p id="titleLine">Select your names to begin ✨</p>
 
-    <div id="statsSection" class="hidden">
-      <div class="selected-players">
-        Comparing: <span id="userDisplay"></span> 💞 <span id="opponentDisplay"></span>
-      </div>
-      
-      <div class="winner-section">
-        <div class="winner-text" id="winnerDisplay"></div>
-      </div>
-      
-      <div class="stats" id="statsContainer"></div>
-      
-      <div class="game-buttons">
-        <a href="tic.html">
-          <button>
-            <i class="fas fa-times"></i>
-            <span>Tic Tac Toe</span>
-          </button>
-        </a>
-        <a href="rock.html">
-          <button>
-            <i class="fas fa-hand-rock"></i>
-            <span>Rock Paper Scissors</span>
-          </button>
-        </a>
-        <a href="mem.html">
-          <button>
-            <i class="fas fa-brain"></i>
-            <span>Memory Game</span>
-          </button>
-        </a>
-      </div>
-      
-      <div class="change-selection" onclick="resetSelection()">Change selection</div>
+  <div class="selector" id="selectorBox">
+    <label for="userSelect">Choose Yourself: </label>
+    <select id="userSelect"></select>
+    <label for="opponentSelect">Choose Partner: </label>
+    <select id="opponentSelect"></select>
+    <button onclick="startComparison()">Start</button>
+  </div>
+
+  <div id="dashboard" style="display:none;">
+    <div id="matchup"></div>
+    <div id="leaderSummary" class="leader"></div>
+    <div id="statsContainer"></div>
+    <div id="loveMessage" class="message"></div>
+    <div class="game-buttons">
+      <a href="tic.html"><button>🎮 Play Tic Tac Toe</button></a>
+      <a href="rock.html"><button>✊🤚✌ Play Rock Paper Scissors</button></a>
+      <a href="mem.html"><button>🃏 Play Memory</button></a>
     </div>
   </div>
 
@@ -280,159 +97,109 @@ const userGistMap = {
   preasx24: "50e60ff2c3bc108d63038c8eb6c26e8d"
 };
 
-// Mock data for demonstration purposes
-const mockData = {
-  lefa: {
-    gameData: {
-      ticTacToe: { score: 15 },
-      rps: { score: 22 },
-      memory: { score: 18 },
-      totalScore: 55
-    }
-  },
-  jonas: {
-    gameData: {
-      ticTacToe: { score: 12 },
-      rps: { score: 25 },
-      memory: { score: 20 },
-      totalScore: 57
-    }
-  },
-  owami: {
-    gameData: {
-      ticTacToe: { score: 18 },
-      rps: { score: 20 },
-      memory: { score: 15 },
-      totalScore: 53
-    }
-  },
-  preasx24: {
-    gameData: {
-      ticTacToe: { score: 20 },
-      rps: { score: 18 },
-      memory: { score: 22 },
-      totalScore: 60
-    }
-  }
-};
+const GIST_TOKEN_URL = "https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt";
+let GIST_TOKEN = "";
+let currentUser = "";
+let currentOpponent = "";
 
-// Check if selection already exists
-function checkExistingSelection() {
-  const user = localStorage.getItem('loveGameUser');
-  const opponent = localStorage.getItem('loveGameOpponent');
-  
-  if (user && opponent && user !== opponent) {
-    // Hide selection, show stats
-    document.getElementById('selectionSection').classList.add('hidden');
-    document.getElementById('statsSection').classList.remove('hidden');
-    
-    // Display selected players
-    document.getElementById('userDisplay').textContent = user;
-    document.getElementById('opponentDisplay').textContent = opponent;
-    
-    // Load stats
-    loadStats(user, opponent);
-  }
+// 🔹 Load token
+async function fetchToken() {
+  const res = await fetch(GIST_TOKEN_URL);
+  GIST_TOKEN = (await res.text()).trim();
 }
 
-// Save selection to localStorage
-function saveSelection() {
-  const user = document.getElementById("userSelect").value;
-  const opponent = document.getElementById("opponentSelect").value;
-  
-  if (user === opponent) {
-    alert("Please choose different players!");
-    return;
-  }
-  
-  localStorage.setItem('loveGameUser', user);
-  localStorage.setItem('loveGameOpponent', opponent);
-  
-  checkExistingSelection();
+// 🔹 Fetch game data
+async function fetchGameData(gistId) {
+  const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+    headers: { Authorization: `token ${GIST_TOKEN}` }
+  });
+  const gist = await res.json();
+  const fileName = Object.keys(gist.files)[0];
+  return JSON.parse(gist.files[fileName].content);
 }
 
-// Reset selection
-function resetSelection() {
-  localStorage.removeItem('loveGameUser');
-  localStorage.removeItem('loveGameOpponent');
-  document.getElementById('selectionSection').classList.remove('hidden');
-  document.getElementById('statsSection').classList.add('hidden');
-}
-
-// Populate dropdowns
+// 🔹 Populate selectors
 function populateSelectors() {
   const userSelect = document.getElementById("userSelect");
   const opponentSelect = document.getElementById("opponentSelect");
-  userSelect.innerHTML = "";
-  opponentSelect.innerHTML = "";
-
   Object.keys(userGistMap).forEach(user => {
-    let opt1 = new Option(user, user);
-    let opt2 = new Option(user, user);
-    userSelect.add(opt1);
-    opponentSelect.add(opt2);
+    userSelect.add(new Option(user, user));
+    opponentSelect.add(new Option(user, user));
   });
 }
 
-// Load and compare stats
-function loadStats(user, opponent) {
-  // For demo purposes, we'll use mock data
-  const userData = mockData[user];
-  const oppData = mockData[opponent];
-
-  if (!userData || !oppData) {
-    console.error("❌ Could not fetch both datasets.");
+// 🔹 Save choice and load dashboard
+function startComparison() {
+  currentUser = document.getElementById("userSelect").value;
+  currentOpponent = document.getElementById("opponentSelect").value;
+  if (currentUser === currentOpponent) {
+    alert("Choose different players!");
     return;
   }
+  localStorage.setItem("user", currentUser);
+  localStorage.setItem("opponent", currentOpponent);
+  document.getElementById("selectorBox").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  loadStats();
+  setInterval(loadStats, 15000); // auto refresh
+}
 
-  const games = [
-    { key: "ticTacToe", name: "Tic Tac Toe", icon: "fas fa-times" },
-    { key: "rps", name: "Rock Paper Scissors", icon: "fas fa-hand-rock" },
-    { key: "memory", name: "Memory Game", icon: "fas fa-brain" }
-  ];
-  
-  let statsHtml = '';
+// 🔹 Load stats
+async function loadStats() {
+  const userData = await fetchGameData(userGistMap[currentUser]);
+  const oppData = await fetchGameData(userGistMap[currentOpponent]);
 
-  games.forEach(game => {
-    const userScore = userData.gameData[game.key].score || 0;
-    const oppScore = oppData.gameData[game.key].score || 0;
-    let statusIcon = userScore > oppScore ? "💪" :
-                 userScore < oppScore ? "😢" : "⚖️";
-    
+  // Top line
+  document.getElementById("matchup").innerHTML = 
+    `<h2>💖 ${currentUser} vs ${currentOpponent} 💖</h2>`;
+
+  // Leader summary
+  const diff = userData.gameData.totalScore - oppData.gameData.totalScore;
+  let leaderSummary = "";
+  if (diff > 0) leaderSummary = `${currentUser} is winning by ${diff} points 👑`;
+  else if (diff < 0) leaderSummary = `${currentOpponent} is winning by ${Math.abs(diff)} points 👑`;
+  else leaderSummary = "It’s perfectly tied 💞";
+  document.getElementById("leaderSummary").innerHTML = leaderSummary;
+
+  // Game stats
+  let statsHtml = `<div class="stats">`;
+  ["ticTacToe", "rps", "memory"].forEach(game => {
+    const userScore = userData.gameData[game].score;
+    const oppScore = oppData.gameData[game].score;
     statsHtml += `
       <div class="card">
-        <h3><i class="${game.icon}"></i> ${game.name}</h3>
-        <p>${user}: ${userScore}</p>
-        <p>${opponent}: ${oppScore}</p>
-        <p>${statusIcon}</p>
+        <h3>${game.toUpperCase()}</h3>
+        <p>${currentUser}: ${userScore}</p>
+        <p>${currentOpponent}: ${oppScore}</p>
       </div>`;
   });
-
+  statsHtml += `</div>`;
   document.getElementById("statsContainer").innerHTML = statsHtml;
 
-  const userTotal = userData.gameData.totalScore || 0;
-  const oppTotal = oppData.gameData.totalScore || 0;
-  
-  let leaderText = '';
-  if (userTotal > oppTotal) {
-    leaderText = `${user} is winning! 👑 (${userTotal} - ${oppTotal})`;
-  } else if (oppTotal > userTotal) {
-    leaderText = `${opponent} is winning! 👑 (${oppTotal} - ${userTotal})`;
-  } else {
-    leaderText = "It's a tie! 💞";
-  }
-  
-  document.getElementById("winnerDisplay").textContent = leaderText;
+  // Love message
+  let loveMessage = "";
+  if (diff > 0) loveMessage = "Play to secure your top spot ❤️";
+  else if (diff < 0) loveMessage = "Okay, time to surpass your partner 💕";
+  else loveMessage = "So balanced, just like your love ✨";
+  document.getElementById("loveMessage").innerHTML = loveMessage;
 }
 
-// Initialize the page
-function init() {
+// 🔹 Init
+(async () => {
+  await fetchToken();
   populateSelectors();
-  checkExistingSelection();
-}
-
-// Run initialization when page loads
-window.onload = init;
+  // Restore saved players
+  const savedUser = localStorage.getItem("user");
+  const savedOpponent = localStorage.getItem("opponent");
+  if (savedUser && savedOpponent) {
+    currentUser = savedUser;
+    currentOpponent = savedOpponent;
+    document.getElementById("selectorBox").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    loadStats();
+    setInterval(loadStats, 15000);
+  }
+})();
 </script>
 
 </body>
