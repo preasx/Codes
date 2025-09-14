@@ -25,12 +25,12 @@
     }
     
     .container {
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: rgba(255, 255, 255, 0.95);
       border-radius: 20px;
       box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
       padding: 30px;
       width: 100%;
-      max-width: 800px;
+      max-width: 900px;
       text-align: center;
     }
     
@@ -98,11 +98,11 @@
     
     #gameBoard { 
       display: grid; 
-      grid-template-columns: repeat(4, 1fr);
-      gap: 15px; 
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px; 
       justify-content: center; 
       margin: 25px auto;
-      max-width: 500px;
+      max-width: 700px;
     }
     
     .card {
@@ -142,7 +142,7 @@
       align-items: center;
       justify-content: center;
       border-radius: 12px;
-      font-size: 2.5rem;
+      font-size: 2rem;
     }
     
     .card-front {
@@ -213,7 +213,23 @@
       font-weight: 600;
     }
     
-    @media (max-width: 600px) {
+    .change-user {
+      background: none;
+      border: none;
+      color: #667eea;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+      #gameBoard {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    @media (max-width: 480px) {
       .container {
         padding: 15px;
       }
@@ -223,12 +239,12 @@
       }
       
       #gameBoard {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 10px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
       }
       
       .card-front, .card-back {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
       }
       
       select, .startBtn {
@@ -258,6 +274,7 @@
     <div id="gameBoard"></div>
     <p id="status" class="status-waiting">Please select a username and press Start.</p>
     <p id="score"></p>
+    <button class="change-user" onclick="changeUser()">Change User</button>
   </div>
 
   <script>
@@ -277,12 +294,28 @@
     const statusDiv = document.getElementById("status");
     const scoreDiv = document.getElementById("score");
     const playerInfo = document.getElementById("playerInfo");
+    const playerSelect = document.getElementById("playerSelect");
+    const userSetup = document.getElementById("userSetup");
 
-    const emojis = ["🍎","🍌","🍓","🍇","🍊","🍉","🍒","🍍"];
+    // Increased number of emojis for more cards
+    const emojis = ["🍎","🍌","🍓","🍇","🍊","🍉","🍒","🍍","🥭","🍋","🍈","🍐","🥝","🍏","🥥","🫐"];
+
+    // Check for saved user on page load
+    window.onload = function() {
+      const savedPlayer = localStorage.getItem('memoryGamePlayer');
+      if (savedPlayer) {
+        playerSelect.value = savedPlayer;
+        startGame();
+      }
+    };
 
     async function startGame() {
-      player = document.getElementById("playerSelect").value;
+      player = playerSelect.value;
       if (!player) return alert("Please choose a username");
+      
+      // Save to local storage
+      localStorage.setItem('memoryGamePlayer', player);
+      
       gistInfo = userGistMap[player];
       token = await fetchToken();
       await loadPlayerData();
@@ -294,10 +327,22 @@
       }
 
       // lock username choice
-      document.getElementById("userSetup").style.display = "none";
+      userSetup.style.display = "none";
       playerInfo.textContent = `Playing as: ${player}`;
+      document.querySelector('.change-user').style.display = 'block';
 
       startNewRound();
+    }
+
+    function changeUser() {
+      localStorage.removeItem('memoryGamePlayer');
+      userSetup.style.display = "block";
+      playerInfo.textContent = "";
+      boardDiv.innerHTML = "";
+      statusDiv.textContent = "Please select a username and press Start.";
+      statusDiv.className = "status-waiting";
+      scoreDiv.textContent = "";
+      document.querySelector('.change-user').style.display = 'none';
     }
 
     function startNewRound() {
@@ -319,8 +364,9 @@
       flippedCards = [];
       lockBoard = false;
 
-      // create card pairs
-      let cards = [...emojis, ...emojis];
+      // Use 12 pairs for a more challenging game
+      const selectedEmojis = emojis.slice(0, 12);
+      let cards = [...selectedEmojis, ...selectedEmojis];
       cards.sort(() => Math.random() - 0.5);
 
       boardDiv.innerHTML = "";
@@ -371,7 +417,7 @@
         matchesFound++;
         await updateScore();
         resetFlipped();
-        if (matchesFound === emojis.length) {
+        if (matchesFound === 12) { // 12 pairs now
           statusDiv.textContent = "🎉 You cleared the board! Starting new round...";
           statusDiv.className = "status-success";
           setTimeout(startNewRound, 1500);
@@ -406,20 +452,32 @@
     }
 
     async function loadPlayerData() {
-      const res = await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
-        headers: { "Authorization": `token ${token}` }
-      });
-      const gist = await res.json();
-      playerData = JSON.parse(gist.files[gistInfo.file].content);
+      try {
+        const res = await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
+          headers: { "Authorization": `token ${token}` }
+        });
+        const gist = await res.json();
+        playerData = JSON.parse(gist.files[gistInfo.file].content);
+      } catch (error) {
+        console.error("Error loading player data:", error);
+        statusDiv.textContent = "Error loading data. Please try again.";
+        statusDiv.className = "status-error";
+      }
     }
 
     async function savePlayerData() {
-      const body = { files: { [gistInfo.file]: { content: JSON.stringify(playerData, null, 2) } } };
-      await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
-        method: "PATCH",
-        headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
+      try {
+        const body = { files: { [gistInfo.file]: { content: JSON.stringify(playerData, null, 2) } } };
+        await fetch(`https://api.github.com/gists/${gistInfo.id}`, {
+          method: "PATCH",
+          headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+      } catch (error) {
+        console.error("Error saving player data:", error);
+        statusDiv.textContent = "Error saving data. Please try again.";
+        statusDiv.className = "status-error";
+      }
     }
 
     async function updateScore() {
