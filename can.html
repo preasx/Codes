@@ -5,60 +5,63 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Love Challenge Game</title>
 <style>
-    body { font-family: Arial, sans-serif; background: #ffe6f0; margin:0; padding:0; }
-    .container { max-width: 500px; margin: 50px auto; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
-    input, select, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; }
-    button { background: #ff4d94; color: white; cursor: pointer; }
-    button:hover { background: #ff1a75; }
-    .section { margin-top: 20px; border-top: 1px solid #ddd; padding-top: 15px; }
-    h3 { color: #ff4d94; }
-    ul { padding-left: 20px; }
-    li { margin-bottom: 5px; }
+body { font-family: Arial, sans-serif; background: #ffe6f0; margin:0; padding:0; }
+.container { max-width: 500px; margin: 50px auto; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
+input, select, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; }
+button { background: #ff4d94; color: white; cursor: pointer; }
+button:hover { background: #ff1a75; }
+.section { margin-top: 20px; border-top: 1px solid #ddd; padding-top: 15px; }
+h3 { color: #ff4d94; }
+ul { padding-left: 20px; }
+li { margin-bottom: 5px; }
 </style>
 </head>
 <body>
 
 <div class="container" id="loginDiv">
-    <h2>Login / Register</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login / Register</button>
-    <p id="status"></p>
+<h2>Login / Register</h2>
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
+<button onclick="login()">Login / Register</button>
+<p id="status"></p>
 </div>
 
 <div class="container" id="mainDiv" style="display:none;">
-    <h2>Love Challenge Dashboard</h2>
-    <p>Logged in as: <span id="currentUser"></span></p>
-    <p>Your Points: <span id="pointsDisplay">0</span></p>
-    <div class="section">
-        <h3>Select Partner</h3>
-        <select id="partnerSelect" onchange="loadPartnerData()">
-            <option value="">Select Partner</option>
-        </select>
-        <p id="partnerStatus"></p>
-    </div>
-    <div class="section" id="sacrificesDiv" style="display:none;">
-        <h3>Create a Sacrifice</h3>
-        <input type="text" id="sacrificeDesc" placeholder="Sacrifice description">
-        <input type="number" id="sacrificePoints" placeholder="Points (10, 20, 30)">
-        <button onclick="createSacrifice()">Create Sacrifice</button>
-        <h4>Pending Sacrifices to Complete for Partner</h4>
-        <ul id="partnerSacrificesList"></ul>
-    </div>
-    <div class="section" id="certificatesDiv" style="display:none;">
-        <h3>Buy Certificate</h3>
-        <button onclick="buyCertificate(10)">10 Points Certificate (Questions)</button>
-        <button onclick="buyCertificate(20)">20 Points Certificate (Questions + Easy Date)</button>
-        <button onclick="buyCertificate(30)">30 Points Certificate (Private Date + Serious Questions)</button>
-        <p id="certStatus"></p>
-    </div>
+<h2>Love Challenge Dashboard</h2>
+<p>Logged in as: <span id="currentUser"></span></p>
+<p>Your Points: <span id="pointsDisplay">0</span></p>
+
+<div class="section">
+<h3>Select Partner</h3>
+<select id="partnerSelect" onchange="loadPartnerData()">
+<option value="">Select Partner</option>
+</select>
+<p id="partnerStatus"></p>
+</div>
+
+<div class="section" id="sacrificesDiv" style="display:none;">
+<h3>Create a Sacrifice</h3>
+<input type="text" id="sacrificeDesc" placeholder="Sacrifice description">
+<input type="number" id="sacrificePoints" placeholder="Points (10, 20, 30)">
+<button onclick="createSacrifice()">Create Sacrifice</button>
+<h4>Pending Sacrifices to Complete for Partner</h4>
+<ul id="partnerSacrificesList"></ul>
+</div>
+
+<div class="section" id="certificatesDiv" style="display:none;">
+<h3>Buy Certificate</h3>
+<button onclick="buyCertificate(10)">10 Points Certificate (Questions)</button>
+<button onclick="buyCertificate(20)">20 Points Certificate (Questions + Easy Date)</button>
+<button onclick="buyCertificate(30)">30 Points Certificate (Private Date + Serious Questions)</button>
+<p id="certStatus"></p>
+</div>
 </div>
 
 <script>
-const gistDataURL = 'https://gist.githubusercontent.com/Preasx24/b8d0eca0d174ac6b5b59c2ced0a9e2ad/raw/gist_1.json';
-const gistTokenURL = 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt';
 const gistID = 'b8d0eca0d174ac6b5b59c2ced0a9e2ad';
 const gistFileName = 'gist_1.json';
+const gistTokenURL = 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt';
+const gistRawURL = 'https://gist.githubusercontent.com/Preasx24/b8d0eca0d174ac6b5b59c2ced0a9e2ad/raw/gist_1.json';
 
 let gistToken = '';
 let userData = {};
@@ -71,11 +74,11 @@ async function fetchGistToken() {
 }
 
 async function fetchGistData() {
-    const res = await fetch(gistDataURL);
+    const res = await fetch(gistRawURL);
     try {
         return await res.json();
     } catch(e) {
-        return {}; // return empty if file empty
+        return {};
     }
 }
 
@@ -101,31 +104,29 @@ async function login() {
 
     if (!gistToken) await fetchGistToken();
     userData = await fetchGistData();
-
-    if (!userData) userData = {}; // ensure JSON exists
+    if (!userData) userData = {};
 
     if (userData[username]) {
         if (userData[username].password === password) {
             currentUser = username;
-            if (!userData[currentUser].points) userData[currentUser].points = 0;
-            if (!userData[currentUser].sacrifices) userData[currentUser].sacrifices = [];
-            if (!userData[currentUser].certificates) userData[currentUser].certificates = [];
+            initUserData();
             showDashboard();
         } else {
             alert('Incorrect password');
         }
     } else {
-        // register new
-        userData[username] = {
-            password: password,
-            points: 0,
-            sacrifices: [],
-            certificates: []
-        };
+        // Register new user
+        userData[username] = { password, points: 0, sacrifices: [], certificates: [] };
         await updateGistData(userData);
         currentUser = username;
         showDashboard();
     }
+}
+
+function initUserData() {
+    if (!userData[currentUser].points) userData[currentUser].points = 0;
+    if (!userData[currentUser].sacrifices) userData[currentUser].sacrifices = [];
+    if (!userData[currentUser].certificates) userData[currentUser].certificates = [];
 }
 
 function showDashboard() {
@@ -145,7 +146,6 @@ async function loadPartnerData() {
     currentPartner = document.getElementById('partnerSelect').value;
     if (!currentPartner) return;
 
-    // Ensure partner has proper JSON structure
     if (!userData[currentPartner].sacrifices) userData[currentPartner].sacrifices = [];
     if (!userData[currentPartner].certificates) userData[currentPartner].certificates = [];
     await updateGistData(userData);
@@ -159,10 +159,10 @@ function renderPartnerSacrifices() {
     const ul = document.getElementById('partnerSacrificesList');
     ul.innerHTML = '';
     const sacrifices = userData[currentPartner].sacrifices || [];
-    sacrifices.forEach((sac, index) => {
+    sacrifices.forEach((sac,index)=>{
         const li = document.createElement('li');
         li.innerHTML = `${sac.desc} - ${sac.points} points
-            <button onclick="markSacrificeComplete(${index})">Mark Completed</button>`;
+        <button onclick="markSacrificeComplete(${index})">Mark Completed</button>`;
         ul.appendChild(li);
     });
 }
@@ -176,8 +176,8 @@ async function createSacrifice() {
     userData[currentUser].sacrifices.push({desc, points, partner: currentPartner, completed:false});
     await updateGistData(userData);
     alert('Sacrifice created!');
-    document.getElementById('sacrificeDesc').value = '';
-    document.getElementById('sacrificePoints').value = '';
+    document.getElementById('sacrificeDesc').value='';
+    document.getElementById('sacrificePoints').value='';
     renderPartnerSacrifices();
 }
 
@@ -185,9 +185,7 @@ async function markSacrificeComplete(index) {
     const sacrifices = userData[currentPartner].sacrifices;
     const sac = sacrifices[index];
     if (!confirm(`Confirm with ${currentPartner} that this sacrifice is completed?`)) return;
-    // Award points
     userData[currentUser].points += sac.points;
-    // Remove sacrifice
     sacrifices.splice(index,1);
     await updateGistData(userData);
     document.getElementById('pointsDisplay').innerText = userData[currentUser].points;
@@ -201,10 +199,10 @@ async function buyCertificate(level) {
     await updateGistData(userData);
     document.getElementById('pointsDisplay').innerText = userData[currentUser].points;
 
-    let msg = '';
-    if(level === 10) msg = '10 points certificate: Questions only';
-    if(level === 20) msg = '20 points certificate: Questions + Easy Date';
-    if(level === 30) msg = '30 points certificate: Private Date + Serious Questions';
+    let msg='';
+    if(level===10) msg='10 points certificate: Questions only';
+    if(level===20) msg='20 points certificate: Questions + Easy Date';
+    if(level===30) msg='30 points certificate: Private Date + Serious Questions';
     document.getElementById('certStatus').innerText = `Purchased: ${msg}`;
 }
 </script>
