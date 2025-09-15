@@ -58,6 +58,7 @@
 const gistDataURL = 'https://gist.githubusercontent.com/Preasx24/b8d0eca0d174ac6b5b59c2ced0a9e2ad/raw/gist_1.json';
 const gistTokenURL = 'https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt';
 const gistID = 'b8d0eca0d174ac6b5b59c2ced0a9e2ad';
+const gistFileName = 'gist_1.json';
 
 let gistToken = '';
 let userData = {};
@@ -71,7 +72,11 @@ async function fetchGistToken() {
 
 async function fetchGistData() {
     const res = await fetch(gistDataURL);
-    return await res.json();
+    try {
+        return await res.json();
+    } catch(e) {
+        return {}; // return empty if file empty
+    }
 }
 
 async function updateGistData(newData) {
@@ -83,7 +88,7 @@ async function updateGistData(newData) {
         },
         body: JSON.stringify({
             files: {
-                'gist_1.json': { content: JSON.stringify(newData, null, 2) }
+                [gistFileName]: { content: JSON.stringify(newData, null, 2) }
             }
         })
     });
@@ -97,11 +102,14 @@ async function login() {
     if (!gistToken) await fetchGistToken();
     userData = await fetchGistData();
 
+    if (!userData) userData = {}; // ensure JSON exists
+
     if (userData[username]) {
         if (userData[username].password === password) {
-            sessionStorage.setItem('user', username);
             currentUser = username;
             if (!userData[currentUser].points) userData[currentUser].points = 0;
+            if (!userData[currentUser].sacrifices) userData[currentUser].sacrifices = [];
+            if (!userData[currentUser].certificates) userData[currentUser].certificates = [];
             showDashboard();
         } else {
             alert('Incorrect password');
@@ -115,7 +123,6 @@ async function login() {
             certificates: []
         };
         await updateGistData(userData);
-        sessionStorage.setItem('user', username);
         currentUser = username;
         showDashboard();
     }
