@@ -556,6 +556,8 @@ const backgrounds = [
 ];
 let validatedChapters = new Set();
 let currentQuestion = null;
+let lastInteractionTime = Date.now();
+let linkClicked = false;
 
 // Function to detect and convert URLs to clickable links
 function linkify(text) {
@@ -564,8 +566,15 @@ function linkify(text) {
   
   // Replace URLs with anchor tags
   return text.replace(urlRegex, function(url) {
-    return '<a href="' + url + '" class="diary-link" target="_blank">' + url + '</a>';
+    return '<a href="' + url + '" class="diary-link" target="_blank" onclick="handleLinkClick()">' + url + '</a>';
   });
+}
+
+// Track when a link is clicked
+function handleLinkClick() {
+  linkClicked = true;
+  localStorage.setItem('diaryLinkClicked', 'true');
+  localStorage.setItem('diaryLastInteraction', Date.now().toString());
 }
 
 // Initialize all features
@@ -573,6 +582,8 @@ function initFeatures() {
   // Load saved progress
   const savedPage = localStorage.getItem('diaryCurrentPage');
   const savedValidated = localStorage.getItem('diaryValidatedChapters');
+  const lastInteraction = localStorage.getItem('diaryLastInteraction');
+  const wasLinkClicked = localStorage.getItem('diaryLinkClicked') === 'true';
 
   if (savedPage) {
     currentPage = parseInt(savedPage);
@@ -581,6 +592,20 @@ function initFeatures() {
   if (savedValidated) {
     validatedChapters = new Set(JSON.parse(savedValidated));
   }
+
+  // Check if user was away for more than 1 minute and didn't leave via a link
+  if (lastInteraction && !wasLinkClicked) {
+    const timeAway = Date.now() - parseInt(lastInteraction);
+    if (timeAway > 60000) { // 1 minute in milliseconds
+      // User was away for more than 1 minute, ask a question
+      setTimeout(() => {
+        askRandomQuestion();
+      }, 1000);
+    }
+  }
+
+  // Reset link clicked flag
+  localStorage.setItem('diaryLinkClicked', 'false');
 
   // Start background color cycling
   backgroundInterval = setInterval(cycleBackgrounds, 10000); // Change every 10 seconds
@@ -593,10 +618,14 @@ function initFeatures() {
     }
   });
 
-  // Ask a random question when the page loads
-  setTimeout(() => {
-    askRandomQuestion();
-  }, 1000);
+  // Update last interaction time regularly
+  setInterval(() => {
+    lastInteractionTime = Date.now();
+    localStorage.setItem('diaryLastInteraction', lastInteractionTime.toString());
+  }, 5000);
+
+  // Set initial interaction time
+  localStorage.setItem('diaryLastInteraction', Date.now().toString());
 }
 
 // Cycle through background colors
@@ -889,6 +918,9 @@ function renderPage() {
     pageContent.classList.add('page-turn');
   }
 
+  // Always scroll to top when rendering a new page
+  pageContent.scrollTop = 0;
+
   if (page.isChapterPage) {
     pageContent.innerHTML = `
       <div class="chapter-page">
@@ -952,6 +984,22 @@ loadChapters().catch(error => {
   console.error("Failed to load chapters:", error);
   document.getElementById("page-content").textContent = 
     "Failed to load content. Please check if chapter files exist.";
+});
+
+// Handle page visibility changes
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible') {
+    // Page is visible again, update interaction time
+    lastInteractionTime = Date.now();
+    localStorage.setItem('diaryLastInteraction', lastInteractionTime.toString());
+  }
+});
+
+// Handle beforeunload to track if user is leaving via a link
+window.addEventListener('beforeunload', function() {
+  if (!linkClicked) {
+    localStorage.setItem('diaryLastInteraction', Date.now().toString());
+  }
 });
 </script>
 
