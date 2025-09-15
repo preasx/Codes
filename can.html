@@ -1,235 +1,279 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Love Challenge Game</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #ffe6f0; margin:0; padding:0; }
-.container { max-width: 600px; margin: 30px auto; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
-input, select, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; }
-button { background: #ff4d94; color: white; cursor: pointer; font-weight: bold; }
-button:hover { background: #e60073; }
-h2, h3 { color: #ff3385; margin-bottom: 10px; }
-.section { margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px; }
-.card { background:#fff5f9; padding:10px; border-radius:8px; margin-bottom:8px; }
-</style>
+  <meta charset="UTF-8">
+  <title>Sacrifice Certificates</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f9f9f9; padding:20px; }
+    h1 { color:#333; }
+    .section { background:#fff; padding:15px; margin:15px 0; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+    button { padding:8px 14px; margin:5px; border:none; border-radius:5px; cursor:pointer; background:#007bff; color:#fff; }
+    button:hover { background:#0056b3; }
+    input, select, textarea { padding:6px; margin:5px 0; width:100%; max-width:400px; }
+    .sacrifice { border-bottom:1px solid #ddd; padding:8px 0; }
+  </style>
 </head>
 <body>
+  <h1>Sacrifice & Certificates</h1>
 
-<div class="container" id="loginDiv">
-  <h2>Login / Register</h2>
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
-  <button onclick="login()">Login / Register</button>
-  <p id="status"></p>
-</div>
-
-<div class="container" id="mainDiv" style="display:none;">
-  <h2>Love Dashboard</h2>
-  <p>Logged in as: <span id="currentUser"></span></p>
-  <p>Your Points: <span id="pointsDisplay">0</span></p>
-
-  <div class="section">
-    <h3>Partner Setup</h3>
-    <select id="partnerSelect"></select>
-    <button onclick="setPartner()">Save Partner</button>
-    <p id="partnerStatus"></p>
+  <!-- LOGIN -->
+  <div id="loginDiv" class="section" style="display:none;">
+    <h2>Login / Register</h2>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
   </div>
 
-  <div class="section">
-    <h3>Create Sacrifice for Partner</h3>
-    <input type="text" id="sacrificeDesc" placeholder="Sacrifice description">
-    <input type="number" id="sacrificePoints" placeholder="Points (10, 20, 30)">
-    <button onclick="createSacrifice()">Create Sacrifice</button>
+  <!-- DASHBOARD -->
+  <div id="dashboard" style="display:none;">
+    <div class="section">
+      <h2>Welcome, <span id="userLabel"></span></h2>
+      <p>Points: <span id="pointsLabel">0</span></p>
+      <p>Partner: <span id="partnerLabel">None</span></p>
+      <button onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Assign partner if not set -->
+    <div class="section" id="partnerDiv" style="display:none;">
+      <h3>Choose Partner</h3>
+      <select id="partnerSelect"></select>
+      <button onclick="setPartner()">Set Partner</button>
+    </div>
+
+    <!-- Sacrifices Created for Partner -->
+    <div class="section">
+      <h3>My Sacrifices for Partner</h3>
+      <div id="mySacrifices"></div>
+      <h4>Create New Sacrifice</h4>
+      <input id="sacrificeDesc" placeholder="Describe sacrifice">
+      <input id="sacrificePoints" type="number" min="1" max="25" placeholder="Points (1-25)">
+      <button onclick="createSacrifice()">Add Sacrifice</button>
+    </div>
+
+    <!-- Sacrifices Assigned to Me -->
+    <div class="section">
+      <h3>Sacrifices Assigned to Me</h3>
+      <div id="assignedSacrifices"></div>
+    </div>
+
+    <!-- History -->
+    <div class="section">
+      <h3>Completed Sacrifices</h3>
+      <div id="history"></div>
+    </div>
+
+    <!-- Certificates -->
+    <div class="section">
+      <h3>Certificates</h3>
+      <select id="certType">
+        <option value="10">10 Points – Simple Questions</option>
+        <option value="20">20 Points – Date + Questions</option>
+        <option value="30">30 Points – Serious Date & Deep Questions</option>
+      </select>
+      <textarea id="certContent" placeholder="Enter questions/dares (one per line)"></textarea>
+      <input id="certPartner" placeholder="Partner name">
+      <button onclick="buyCertificate()">Buy Certificate</button>
+    </div>
   </div>
 
-  <div class="section">
-    <h3>Tasks for You</h3>
-    <div id="tasksForYou"></div>
-  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const gistId = "b8d0eca0d174ac6b5b59c2ced0a9e2ad";
+    const filename = "gist_1.json";
+    const tokenUrl = "https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt";
 
-  <div class="section">
-    <h3>History (Completed Sacrifices)</h3>
-    <div id="historyList"></div>
-  </div>
+    let githubToken = "";
+    let gistData = { users: {} };
+    let currentUser = null;
 
-  <div class="section">
-    <h3>Certificates</h3>
-    <input type="text" id="certTitle" placeholder="Certificate title">
-    <select id="certType">
-      <option value="Question">Question</option>
-      <option value="Dare">Dare</option>
-    </select>
-    <button onclick="buyCertificate(10)">Buy (10 pts)</button>
-    <button onclick="buyCertificate(20)">Buy (20 pts)</button>
-    <button onclick="buyCertificate(30)">Buy (30 pts)</button>
-    <p id="certStatus"></p>
-  </div>
-</div>
-
-<script>
-const gistID = "b8d0eca0d174ac6b5b59c2ced0a9e2ad";
-const gistFileName = "gist_1.json";
-const gistRawURL = `https://gist.githubusercontent.com/Preasx24/${gistID}/raw/${gistFileName}`;
-const tokenGistURL = "https://gist.githubusercontent.com/Preasx24/e8b6e2c45a6963ef3c5f4a24704ab5fb/raw/gistfile1.txt";
-
-let gistToken = "";
-let gistData = {};
-let currentUser = "";
-
-async function fetchToken() {
-  const res = await fetch(tokenGistURL);
-  gistToken = (await res.text()).split("\n")[0].trim();
-}
-
-async function fetchGist() {
-  const res = await fetch(gistRawURL + "?t=" + Date.now());
-  let data = await res.json();
-  if (!data.users) data = { users:{} };
-  return data;
-}
-
-async function saveGist() {
-  if (!gistToken) await fetchToken();
-  await fetch(`https://api.github.com/gists/${gistID}`, {
-    method: "PATCH",
-    headers: { "Authorization": `token ${gistToken}`, "Content-Type":"application/json" },
-    body: JSON.stringify({
-      files: { [gistFileName]: { content: JSON.stringify(gistData,null,2) } }
-    })
-  });
-}
-
-// --- LOGIN ---
-async function login() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
-  if (!username || !password) return alert("Enter both fields");
-
-  gistData = await fetchGist();
-  if (!gistData.users[username]) {
-    gistData.users[username] = { password, points:0, partner:"", sacrifices:[], history:[], certificates:[] };
-    await saveGist();
-  } else if (gistData.users[username].password !== password) {
-    return alert("Incorrect password");
-  }
-
-  currentUser = username;
-  document.getElementById("loginDiv").style.display="none";
-  document.getElementById("mainDiv").style.display="block";
-  refreshUI();
-  populatePartners();
-}
-
-// --- PARTNER SETUP ---
-function populatePartners() {
-  const sel = document.getElementById("partnerSelect");
-  sel.innerHTML = "";
-  Object.keys(gistData.users).forEach(u=>{
-    if (u!==currentUser) {
-      const opt=document.createElement("option");
-      opt.value=u;
-      opt.textContent=u;
-      if (gistData.users[currentUser].partner===u) opt.selected=true;
-      sel.appendChild(opt);
+    async function fetchToken() {
+      const res = await fetch(tokenUrl);
+      githubToken = (await res.text()).trim();
     }
-  });
-}
 
-async function setPartner() {
-  const partner = document.getElementById("partnerSelect").value;
-  if (!partner) return alert("Choose a partner");
-  gistData.users[currentUser].partner = partner;
-  gistData.users[partner].partner = currentUser;
-  await saveGist();
-  document.getElementById("partnerStatus").textContent="Partner set as " + partner;
-  refreshUI();
-}
+    async function fetchGistData() {
+      const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+        headers: { Authorization: "token " + githubToken }
+      });
+      const gist = await res.json();
+      const content = gist.files[filename]?.content || '{"users":{}}';
+      return JSON.parse(content);
+    }
 
-// --- SACRIFICES ---
-async function createSacrifice() {
-  const desc = document.getElementById("sacrificeDesc").value.trim();
-  const pts = parseInt(document.getElementById("sacrificePoints").value);
-  if (!desc || ![10,20,30].includes(pts)) return alert("Invalid input");
-  const partner = gistData.users[currentUser].partner;
-  if (!partner) return alert("No partner set");
+    async function updateGist() {
+      await fetch(`https://api.github.com/gists/${gistId}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: "token " + githubToken,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          files: { [filename]: { content: JSON.stringify(gistData, null, 2) } }
+        })
+      });
+    }
 
-  gistData.users[partner].sacrifices.push({desc, points:pts, from:currentUser});
-  await saveGist();
-  document.getElementById("sacrificeDesc").value="";
-  document.getElementById("sacrificePoints").value="";
-  refreshUI();
-}
+    function logout() {
+      localStorage.removeItem("currentUser");
+      location.reload();
+    }
 
-async function completeSacrifice(index) {
-  const me = gistData.users[currentUser];
-  const sac = me.sacrifices[index];
-  me.points += sac.points;
-  me.history.push(sac);
-  me.sacrifices.splice(index,1);
-  await saveGist();
-  refreshUI();
-}
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      if (!username || !password) return alert("Enter username & password");
 
-// --- CERTIFICATES ---
-async function buyCertificate(cost) {
-  const me = gistData.users[currentUser];
-  if (me.points < cost) return alert("Not enough points");
-  const title=document.getElementById("certTitle").value.trim();
-  const type=document.getElementById("certType").value;
-  const partner=me.partner;
-  if (!title || !partner) return alert("Fill all fields + have partner set");
+      if (!gistData.users[username]) {
+        gistData.users[username] = { password, points: 0, partner: null, sacrifices: [], history: [], certificates: [] };
+      } else if (gistData.users[username].password !== password) {
+        return alert("Wrong password");
+      }
 
-  me.points -= cost;
-  me.certificates.push({title, type, partner, cost});
-  await saveGist();
-  refreshUI();
-  generatePDF(title, type, partner, cost);
-}
+      currentUser = username;
+      localStorage.setItem("currentUser", currentUser);
+      await updateGist();
+      showDashboard();
+    }
 
-function generatePDF(title,type,partner,cost) {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.setFontSize(22);
-  doc.text("Love Certificate", 70, 30);
-  doc.setFontSize(16);
-  doc.text(`Awarded to: ${partner}`, 20, 60);
-  doc.text(`From: ${currentUser}`, 20, 70);
-  doc.text(`Type: ${type}`, 20, 90);
-  doc.text(`Title: ${title}`, 20, 100);
-  doc.text(`Points Used: ${cost}`, 20, 110);
-  doc.text("Certified with ❤️", 20, 140);
-  doc.save(`${title}.pdf`);
-}
+    function showDashboard() {
+      document.getElementById("loginDiv").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      document.getElementById("userLabel").innerText = currentUser;
+      document.getElementById("pointsLabel").innerText = gistData.users[currentUser].points;
 
-// --- REFRESH UI ---
-function refreshUI() {
-  const me = gistData.users[currentUser];
-  document.getElementById("currentUser").textContent=currentUser;
-  document.getElementById("pointsDisplay").textContent=me.points;
+      const partner = gistData.users[currentUser].partner;
+      if (!partner) {
+        document.getElementById("partnerDiv").style.display = "block";
+        const select = document.getElementById("partnerSelect");
+        select.innerHTML = "";
+        Object.keys(gistData.users).forEach(u => {
+          if (u !== currentUser) {
+            let opt = document.createElement("option");
+            opt.value = u; opt.textContent = u;
+            select.appendChild(opt);
+          }
+        });
+      } else {
+        document.getElementById("partnerLabel").innerText = partner;
+        document.getElementById("partnerDiv").style.display = "none";
+      }
+      renderSacrifices();
+      renderHistory();
+    }
 
-  const tasksDiv=document.getElementById("tasksForYou");
-  tasksDiv.innerHTML="";
-  me.sacrifices.forEach((s,i)=>{
-    const c=document.createElement("div");
-    c.className="card";
-    c.innerHTML=`<b>${s.desc}</b> (${s.points} pts, from ${s.from})
-    <button onclick="completeSacrifice(${i})">Mark Done</button>`;
-    tasksDiv.appendChild(c);
-  });
+    async function setPartner() {
+      const partner = document.getElementById("partnerSelect").value;
+      gistData.users[currentUser].partner = partner;
+      await updateGist();
+      showDashboard();
+    }
 
-  const hist=document.getElementById("historyList");
-  hist.innerHTML="";
-  me.history.forEach(h=>{
-    const c=document.createElement("div");
-    c.className="card";
-    c.textContent=`${h.desc} (${h.points} pts) from ${h.from}`;
-    hist.appendChild(c);
-  });
-}
-</script>
+    async function createSacrifice() {
+      const desc = document.getElementById("sacrificeDesc").value.trim();
+      const pts = parseInt(document.getElementById("sacrificePoints").value);
+      if (!desc || !pts) return;
+      if (pts < 1 || pts > 25) return alert("Points must be between 1 and 25");
+      const partner = gistData.users[currentUser].partner;
+      if (!partner) return alert("No partner set");
 
+      gistData.users[partner].sacrifices.push({ from: currentUser, desc, points: pts });
+      await updateGist();
+      renderSacrifices();
+    }
+
+    async function completeSacrifice(index) {
+      const sac = gistData.users[currentUser].sacrifices[index];
+      const fromUser = sac.from;
+      gistData.users[fromUser].points += sac.points;
+      gistData.users[fromUser].history.push({ desc: sac.desc, points: sac.points, by: currentUser });
+      gistData.users[currentUser].sacrifices.splice(index, 1);
+      await updateGist();
+      showDashboard();
+    }
+
+    function renderSacrifices() {
+      const me = gistData.users[currentUser];
+      const partner = me.partner;
+      const myDiv = document.getElementById("mySacrifices");
+      myDiv.innerHTML = "";
+      if (partner && gistData.users[partner]) {
+        const myList = gistData.users[partner].sacrifices.filter(s => s.from === currentUser);
+        myList.forEach(s => {
+          let d = document.createElement("div");
+          d.className = "sacrifice";
+          d.textContent = `${s.desc} (${s.points} pts)`;
+          myDiv.appendChild(d);
+        });
+      }
+
+      const assignedDiv = document.getElementById("assignedSacrifices");
+      assignedDiv.innerHTML = "";
+      me.sacrifices.forEach((s, i) => {
+        let d = document.createElement("div");
+        d.className = "sacrifice";
+        d.innerHTML = `${s.desc} (${s.points} pts) 
+          <button onclick="completeSacrifice(${i})">Mark Done</button>`;
+        assignedDiv.appendChild(d);
+      });
+    }
+
+    function renderHistory() {
+      const me = gistData.users[currentUser];
+      const hDiv = document.getElementById("history");
+      hDiv.innerHTML = "";
+      me.history.forEach(h => {
+        let d = document.createElement("div");
+        d.className = "sacrifice";
+        d.textContent = `${h.desc} - ${h.points} pts (confirmed by ${h.by})`;
+        hDiv.appendChild(d);
+      });
+    }
+
+    async function buyCertificate() {
+      const type = parseInt(document.getElementById("certType").value);
+      const content = document.getElementById("certContent").value.trim().split("\n");
+      const partner = document.getElementById("certPartner").value.trim();
+      const me = gistData.users[currentUser];
+      const now = new Date();
+      const monthKey = `${now.getFullYear()}-${now.getMonth()}`;
+
+      const certsThisMonth = me.certificates.filter(c => c.monthKey === monthKey).length;
+      if (certsThisMonth >= 2) return alert("Max 2 certificates per month reached");
+
+      if (me.points < type) return alert("Not enough points");
+
+      me.points -= type;
+      me.certificates.push({ date: now.toISOString(), monthKey, type, partner, content });
+      await updateGist();
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(18);
+      doc.text("Certificate of Sacrifice", 20, 20);
+      doc.setFontSize(12);
+      doc.text(`Awarded to: ${partner}`, 20, 35);
+      doc.text(`From: ${currentUser}`, 20, 45);
+      doc.text(`Level: ${type} Points`, 20, 55);
+      doc.text("Custom Challenges:", 20, 70);
+      content.forEach((line, i) => {
+        doc.text(`- ${line}`, 25, 80 + i * 10);
+      });
+      doc.save(`certificate_${currentUser}_${partner}.pdf`);
+
+      showDashboard();
+    }
+
+    window.onload = async () => {
+      await fetchToken();
+      gistData = await fetchGistData();
+      const savedUser = localStorage.getItem("currentUser");
+      if (savedUser && gistData.users[savedUser]) {
+        currentUser = savedUser;
+        showDashboard();
+      } else {
+        document.getElementById("loginDiv").style.display='block';
+      }
+    };
+  </script>
 </body>
 </html>
