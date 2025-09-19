@@ -10,6 +10,8 @@
     textarea { height:80px; }
     pre { background:#222; padding:10px; border-radius:5px; overflow-x:auto; }
     iframe { height:250px; border:1px solid #444; background:#fff; }
+    #progressContainer { width: 100%; background: #333; border-radius: 5px; margin-top:10px; height: 20px; }
+    #progressBar { height: 100%; width: 0%; background: #0f0; border-radius: 5px; transition: width 0.2s; }
   </style>
 </head>
 <body>
@@ -17,6 +19,10 @@
   <p>Type instructions (e.g., “Create a red button in the center of the page”):</p>
   <textarea id="prompt"></textarea>
   <button onclick="generateCode()">Generate Code</button>
+
+  <div id="progressContainer">
+    <div id="progressBar"></div>
+  </div>
 
   <h2>Generated Code:</h2>
   <pre id="output">Model not loaded yet...</pre>
@@ -28,10 +34,26 @@
     let model;
 
     async function loadModel() {
-      document.getElementById("output").textContent = "Loading SantaCoder-mini model (~200MB)...";
-      // Load SantaCoder-mini (quantized version) directly in the browser
-      model = await window.transformers.pipeline("text-generation", "xenova/santacoder-mini", { use_cache: true });
-      document.getElementById("output").textContent = "Model loaded! Type instructions above.";
+      const outputEl = document.getElementById("output");
+      const progressBar = document.getElementById("progressBar");
+      outputEl.textContent = "Loading SantaCoder-mini model (~200MB)...";
+
+      // Load SantaCoder-mini with progress callback
+      model = await window.transformers.pipeline(
+        "text-generation",
+        "xenova/santacoder-mini",
+        {
+          use_cache: true,
+          progress_callback: (loaded, total) => {
+            const percent = Math.floor((loaded / total) * 100);
+            progressBar.style.width = percent + "%";
+            outputEl.textContent = `Loading model... ${percent}%`;
+          }
+        }
+      );
+
+      outputEl.textContent = "Model loaded! Type instructions above.";
+      progressBar.style.width = "100%";
       console.log("SantaCoder-mini loaded");
     }
 
