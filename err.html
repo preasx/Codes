@@ -1,91 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>DTECH AI Code Builder</title>
-  <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js"></script>
-  <style>
-    body { font-family: Arial; background:#111; color:#eee; padding:20px; }
-    textarea, button, pre, iframe { width:100%; margin-top:10px; }
-    textarea { height:80px; }
-    pre { background:#222; padding:10px; border-radius:5px; overflow-x:auto; }
-    iframe { height:250px; border:1px solid #444; background:#fff; }
-    #progressContainer { width: 100%; background: #333; border-radius: 5px; margin-top:10px; height: 20px; }
-    #progressBar { height: 100%; width: 0%; background: #0f0; border-radius: 5px; transition: width 0.2s; }
-  </style>
+<meta charset="UTF-8">
+<title>DTECH AI Code Builder - Prototype</title>
+<script src="https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js"></script>
+<style>
+  body { font-family: Arial; background:#111; color:#eee; padding:20px; }
+  textarea, button, pre, iframe { width:100%; margin-top:10px; }
+  textarea { height:80px; }
+  pre { background:#222; padding:10px; border-radius:5px; overflow-x:auto; }
+  iframe { height:250px; border:1px solid #444; background:#fff; }
+  #progressContainer { width: 100%; background: #333; border-radius: 5px; margin-top:10px; height: 20px; }
+  #progressBar { height: 100%; width: 0%; background: #0f0; border-radius: 5px; transition: width 0.2s; }
+</style>
 </head>
 <body>
-  <h1>🔥 DTECH AI Code Builder</h1>
-  <p>Type instructions (e.g., “Create a red button in the center of the page”):</p>
-  <textarea id="prompt"></textarea>
-  <button onclick="generateCode()">Generate Code</button>
+<h1>🔥 DTECH AI Code Builder - Prototype</h1>
+<p>Type instructions (e.g., “Create a red button in the center of the page”):</p>
+<textarea id="prompt"></textarea>
+<button onclick="generateCode()">Generate Code</button>
 
-  <div id="progressContainer">
-    <div id="progressBar"></div>
-  </div>
+<div id="progressContainer">
+  <div id="progressBar"></div>
+</div>
 
-  <h2>Generated Code:</h2>
-  <pre id="output">Model not loaded yet...</pre>
+<h2>Generated Code:</h2>
+<pre id="output">Model not loaded yet...</pre>
 
-  <h2>Preview:</h2>
-  <iframe id="preview"></iframe>
+<h2>Preview:</h2>
+<iframe id="preview"></iframe>
 
-  <script>
-    let model;
+<script>
+let model;
 
-    async function loadModel() {
-      const outputEl = document.getElementById("output");
-      const progressBar = document.getElementById("progressBar");
-      outputEl.textContent = "Loading SantaCoder-mini model (~200MB)...";
+// Load a tiny in-browser code model for testing (~50MB)
+async function loadModel() {
+  const outputEl = document.getElementById("output");
+  const progressBar = document.getElementById("progressBar");
 
-      // Load SantaCoder-mini with progress callback
-      model = await window.transformers.pipeline(
-        "text-generation",
-        "xenova/santacoder-mini",
-        {
-          use_cache: true,
-          progress_callback: (loaded, total) => {
-            const percent = Math.floor((loaded / total) * 100);
-            progressBar.style.width = percent + "%";
-            outputEl.textContent = `Loading model... ${percent}%`;
-          }
-        }
-      );
+  outputEl.textContent = "Loading tiny model (~50MB)...";
 
-      outputEl.textContent = "Model loaded! Type instructions above.";
-      progressBar.style.width = "100%";
-      console.log("SantaCoder-mini loaded");
+  model = await window.transformers.pipeline("text-generation", "Xenova/santacoder-tiny", {
+    progress_callback: (loaded, total) => {
+      const percent = Math.floor((loaded / total) * 100);
+      progressBar.style.width = percent + "%";
+      outputEl.textContent = `Loading model... ${percent}%`;
     }
+  });
 
-    async function generateCode() {
-      const prompt = document.getElementById("prompt").value;
-      const outputEl = document.getElementById("output");
-      const previewEl = document.getElementById("preview");
+  outputEl.textContent = "Model loaded! Type instructions above.";
+  progressBar.style.width = "100%";
+  console.log("Tiny SantaCoder loaded");
+}
 
-      if (!model) {
-        outputEl.textContent = "Model still loading...";
-        return;
-      }
+async function generateCode() {
+  const prompt = document.getElementById("prompt").value;
+  const outputEl = document.getElementById("output");
+  const previewEl = document.getElementById("preview");
 
-      outputEl.textContent = "Generating code...";
-      try {
-        const result = await model(prompt, { max_length: 400 });
-        const code = result[0].generated_text;
+  if (!model) {
+    outputEl.textContent = "Model still loading...";
+    return;
+  }
 
-        // Show code in output
-        outputEl.textContent = code;
+  outputEl.textContent = "Generating code...";
 
-        // Inject into preview iframe
-        const doc = previewEl.contentDocument || previewEl.contentWindow.document;
-        doc.open();
-        doc.write(code);
-        doc.close();
-      } catch (e) {
-        outputEl.textContent = "Error generating code: " + e;
-      }
-    }
+  try {
+    const result = await model(prompt, { max_length: 200 });
+    const code = result[0].generated_text;
 
-    loadModel();
-  </script>
+    // Show code in output
+    outputEl.textContent = code;
+
+    // Inject into preview iframe
+    const doc = previewEl.contentDocument || previewEl.contentWindow.document;
+    doc.open();
+    doc.write(code);
+    doc.close();
+  } catch (e) {
+    outputEl.textContent = "Error generating code: " + e;
+  }
+}
+
+// Start loading the tiny model
+loadModel();
+</script>
 </body>
 </html>
