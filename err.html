@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DTECH AI Code Builder</title>
+  <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js"></script>
+  <style>
+    body { font-family: Arial; background:#111; color:#eee; padding:20px; }
+    textarea, button, pre, iframe { width:100%; margin-top:10px; }
+    textarea { height:80px; }
+    pre { background:#222; padding:10px; border-radius:5px; overflow-x:auto; }
+    iframe { height:250px; border:1px solid #444; background:#fff; }
+  </style>
+</head>
+<body>
+  <h1>🔥 DTECH AI Code Builder</h1>
+  <p>Type instructions (e.g., “Create a red button in the center of the page”):</p>
+  <textarea id="prompt"></textarea>
+  <button onclick="generateCode()">Generate Code</button>
+
+  <h2>Generated Code:</h2>
+  <pre id="output">Model not loaded yet...</pre>
+
+  <h2>Preview:</h2>
+  <iframe id="preview"></iframe>
+
+  <script>
+    let model;
+
+    async function loadModel() {
+      document.getElementById("output").textContent = "Loading SantaCoder-mini model (~200MB)...";
+      // Load SantaCoder-mini (quantized version) directly in the browser
+      model = await window.transformers.pipeline("text-generation", "xenova/santacoder-mini", { use_cache: true });
+      document.getElementById("output").textContent = "Model loaded! Type instructions above.";
+      console.log("SantaCoder-mini loaded");
+    }
+
+    async function generateCode() {
+      const prompt = document.getElementById("prompt").value;
+      const outputEl = document.getElementById("output");
+      const previewEl = document.getElementById("preview");
+
+      if (!model) {
+        outputEl.textContent = "Model still loading...";
+        return;
+      }
+
+      outputEl.textContent = "Generating code...";
+      try {
+        const result = await model(prompt, { max_length: 400 });
+        const code = result[0].generated_text;
+
+        // Show code in output
+        outputEl.textContent = code;
+
+        // Inject into preview iframe
+        const doc = previewEl.contentDocument || previewEl.contentWindow.document;
+        doc.open();
+        doc.write(code);
+        doc.close();
+      } catch (e) {
+        outputEl.textContent = "Error generating code: " + e;
+      }
+    }
+
+    loadModel();
+  </script>
+</body>
+</html>
