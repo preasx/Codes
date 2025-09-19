@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>DTECH Live HTML Preview</title>
+  <title>DTECH HTML Preview Tool</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,49 +13,78 @@
     h1, h2 {
       color: #0f0;
     }
-    input, textarea, button {
+    input, button, textarea {
       padding: 10px;
       font-size: 16px;
       margin-top: 10px;
       display: block;
       width: 80%;
+      border-radius: 5px;
+      border: none;
     }
     button {
       width: 200px;
       background-color: #0f0;
       color: #000;
-      border: none;
       cursor: pointer;
       margin-bottom: 20px;
     }
-    #preview {
+    #responseArea {
+      background-color: #1e1e1e;
+      padding: 15px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      margin-top: 20px;
+    }
+    iframe {
       width: 100%;
       height: 400px;
       border: 2px solid #0f0;
       margin-top: 20px;
     }
+    a {
+      color: #0f0;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <h1>DTECH Live HTML Preview</h1>
+  <h1>DTECH HTML Preview Tool</h1>
 
-  <p>Step 1: Go to <a href="https://chatgpt.com/" target="_blank" style="color:#0f0;">ChatGPT</a> and type your code prompt.</p>
-  <p>Step 2: Copy the generated HTML code.</p>
+  <h2>Step 1: Get HTML Code</h2>
+  <p>
+    Open the ChatGPT web version in your browser (do not use the app):<br>
+    <strong>https://chat.openai.com/chat?model=gpt-4</strong><br>
+    Type your code prompt → copy the HTML generated.
+  </p>
 
-  <h2>Step 3: Paste your HTML code here:</h2>
-  <textarea id="htmlInput" rows="10" placeholder="Paste your HTML code here..."></textarea>
-  <button onclick="updatePreview()">Preview HTML</button>
+  <h2>Step 2: Paste HTML Here</h2>
+  <textarea id="userInput" placeholder="Paste your HTML code here..." rows="6"></textarea>
+  <button onclick="previewHTML()">Preview HTML</button>
+
+  <div id="responseArea">Your HTML preview will appear below...</div>
 
   <h2>Live Preview:</h2>
   <iframe id="preview"></iframe>
 
   <script>
-    function updatePreview() {
-      const htmlCode = document.getElementById('htmlInput').value;
+    function previewHTML() {
+      const userInput = document.getElementById('userInput').value;
+      const responseDiv = document.getElementById('responseArea');
       const preview = document.getElementById('preview');
+
+      if (!userInput) {
+        alert("Please paste some HTML code first!");
+        return;
+      }
+
+      // Show HTML code in response area
+      responseDiv.textContent = userInput;
+
+      // Render HTML in iframe
       const doc = preview.contentDocument || preview.contentWindow.document;
       doc.open();
-      doc.write(htmlCode);
+      doc.write(userInput);
       doc.close();
     }
   </script>
