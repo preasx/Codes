@@ -2,23 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>DTECH AI Code Generator</title>
+  <title>DTECH AI Code Generator Test</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #121212;
+      background: #121212;
       color: #eee;
       padding: 20px;
     }
-    h1 {
+    h1, h2 {
       color: #0f0;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      border: 2px solid #0f0;
+      margin-bottom: 20px;
     }
     input, button {
       padding: 10px;
       font-size: 16px;
       margin-top: 10px;
-      width: 80%;
       display: block;
+      width: 80%;
     }
     button {
       width: 200px;
@@ -35,54 +41,77 @@
       white-space: pre-wrap;
       margin-top: 20px;
     }
-    iframe {
-      width: 100%;
-      height: 400px;
-      border: 2px solid #0f0;
-      margin-top: 20px;
+    .section {
+      margin-bottom: 50px;
     }
   </style>
 </head>
 <body>
-  <h1>DTECH AI Code Generator</h1>
-  <input type="text" id="userInput" placeholder="Enter your code instruction here...">
-  <button onclick="getAIResponse()">Generate Code</button>
+  <h1>DTECH AI Code Generator Demo</h1>
 
-  <h2>Generated Code:</h2>
-  <div id="responseArea">Your generated code will appear here...</div>
+  <!-- Section 1: ZZZ Code Iframe -->
+  <div class="section">
+    <h2>Option 1: ZZZ Code AI (Iframe)</h2>
+    <iframe src="https://zzzcode.ai/code-generator"></iframe>
+    <p>If iframe doesn’t load, the site may block embedding.</p>
+  </div>
 
-  <h2>Live Preview:</h2>
-  <iframe id="preview"></iframe>
+  <!-- Section 2: Tool-Sphere Iframe -->
+  <div class="section">
+    <h2>Option 2: Tool-Sphere AI (Iframe)</h2>
+    <iframe src="https://tool-sphere.github.io/tools/code-generator-ai/"></iframe>
+    <p>If iframe doesn’t load, the site may block embedding.</p>
+  </div>
+
+  <!-- Section 3: ZZZ Code Direct Integration -->
+  <div class="section">
+    <h2>Option 3: ZZZ Code AI (Direct Integration)</h2>
+    <input type="text" id="zzzInput" placeholder="Enter your code prompt...">
+    <button onclick="generateZZZCode()">Generate ZZZ Code</button>
+    <div id="zzzResponse" class="responseArea"></div>
+  </div>
+
+  <!-- Section 4: Tool-Sphere Direct Integration -->
+  <div class="section">
+    <h2>Option 4: Tool-Sphere AI (Direct Integration)</h2>
+    <input type="text" id="tsInput" placeholder="Enter your code prompt...">
+    <button onclick="generateTSCode()">Generate Tool-Sphere Code</button>
+    <div id="tsResponse" class="responseArea"></div>
+  </div>
 
   <script>
-    async function getAIResponse() {
-      const userInput = document.getElementById('userInput').value;
-      const responseArea = document.getElementById('responseArea');
-      const preview = document.getElementById('preview');
+    // ===== Simulated Direct Integration for ZZZ Code =====
+    async function generateZZZCode() {
+      const prompt = document.getElementById('zzzInput').value;
+      const responseDiv = document.getElementById('zzzResponse');
 
-      if (!userInput) {
-        alert("Please enter a prompt!");
-        return;
-      }
-
-      responseArea.textContent = "Generating code...";
+      if (!prompt) { alert("Enter a prompt!"); return; }
+      responseDiv.textContent = "Generating code...";
 
       try {
-        const apiURL = `https://free-unoficial-gpt4o-mini-api-g70n.onrender.com/chat/?query=${encodeURIComponent(userInput)}`;
-        const res = await fetch(apiURL, { method: 'GET', headers: { 'Accept': 'application/json' } });
-        const data = await res.json();
+        // NOTE: Free browser API may block CORS; this is a placeholder
+        // In production, you may need a proxy server
+        responseDiv.textContent = `// Simulated ZZZ Code for prompt:\n${prompt}\n\nfunction example() { console.log("Hello ZZZ Code!"); }`;
+      } catch (err) {
+        responseDiv.textContent = "Error generating code.";
+        console.error(err);
+      }
+    }
 
-        const generatedCode = data.response || "// No code returned";
-        responseArea.textContent = generatedCode;
+    // ===== Simulated Direct Integration for Tool-Sphere =====
+    async function generateTSCode() {
+      const prompt = document.getElementById('tsInput').value;
+      const responseDiv = document.getElementById('tsResponse');
 
-        // Render in iframe
-        const doc = preview.contentDocument || preview.contentWindow.document;
-        doc.open();
-        doc.write(generatedCode);
-        doc.close();
-      } catch (error) {
-        console.error("Error fetching AI response:", error);
-        responseArea.textContent = "Error generating code. Try again.";
+      if (!prompt) { alert("Enter a prompt!"); return; }
+      responseDiv.textContent = "Generating code...";
+
+      try {
+        // NOTE: Free browser API may block CORS; this is a placeholder
+        responseDiv.textContent = `// Simulated Tool-Sphere Code for prompt:\n${prompt}\n\nfunction example() { console.log("Hello Tool-Sphere!"); }`;
+      } catch (err) {
+        responseDiv.textContent = "Error generating code.";
+        console.error(err);
       }
     }
   </script>
